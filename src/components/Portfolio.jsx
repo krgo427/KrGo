@@ -1,40 +1,32 @@
 import React from 'react'
+import clgImg from '../assets/clg.jpg'
+import schoolImg from '../assets/school.png'
 
 const projects = [
   {
-    img: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=800',
-    title: 'Glamour Salon',
-    type: 'Beauty & Wellness',
+    img: schoolImg,
+    title: 'Modern Public School',
+    type: 'Education',
     description:
-      'A luxury website for a local hair salon with online booking, services list, and gallery — helping them get 2x more appointments.',
-    tag: 'Salon',
-    demoPath: '/demo/salon',
-    accent: 'from-rose-400 to-pink-500',
+      'A comprehensive website for a modern school with an event calendar, student portal, and admission forms.',
+    tag: 'School',
+    demoPath: 'https://gkschool.vercel.app/',
+    accent: 'from-blue-400 to-indigo-500',
   },
   {
-    img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800',
-    title: 'FitZone Gym',
-    type: 'Fitness & Health',
+    img: clgImg,
+    title: 'City Commerce College',
+    type: 'Higher Education',
     description:
-      'Bold and energetic website for a local gym with membership plans, class schedule, and a lead-capture form.',
-    tag: 'Gym',
-    demoPath: '/demo/gym',
-    accent: 'from-orange-400 to-red-500',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?auto=format&fit=crop&q=80&w=800',
-    title: 'Sharma Kirana Store',
-    type: 'Local Retail',
-    description:
-      'A simple and friendly website for a neighborhood shop with product highlights, WhatsApp ordering, and home delivery info.',
-    tag: 'Local Shop',
-    demoPath: '/demo/kirana',
-    accent: 'from-green-400 to-emerald-500',
-  },
+      'A professional college website featuring course catalogs, faculty directories, and online application tracking.',
+    tag: 'College',
+    demoPath: '/demo/college',
+    accent: 'from-purple-400 to-fuchsia-500',
+  }
 ]
 
 const ProjectCard = ({ p, isMobile }) => (
-  <div className={`group flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 transition-all duration-300 ${isMobile ? 'w-[280px] flex-shrink-0 relative' : 'hover:shadow-xl hover:-translate-y-1'}`}>
+  <a href={p.demoPath} target="_blank" rel="noopener noreferrer" className={`group flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 transition-all duration-300 ${isMobile ? 'w-[280px] flex-shrink-0 relative' : 'hover:shadow-xl hover:-translate-y-1'}`}>
     <div className="relative overflow-hidden h-52">
       <img src={p.img} alt={`${p.title} website preview`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
       <div className="absolute inset-0 bg-gray-900 opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
@@ -47,7 +39,7 @@ const ProjectCard = ({ p, isMobile }) => (
       <h3 className="text-xl font-bold text-secondary mb-2">{p.title}</h3>
       <p className="text-gray-500 text-sm leading-relaxed flex-1">{p.description}</p>
     </div>
-  </div>
+  </a>
 );
 
 export default function Portfolio() {
