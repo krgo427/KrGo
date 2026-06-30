@@ -78,9 +78,9 @@ export default function Contact() {
         {/* Left: Info */}
         <div>
           <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-2">Get In Touch</p>
-          <h2 className="section-title text-left">Ready to Grow Your Business Online?</h2>
+          <h2 className="section-title text-left">Ready to Transform Your Business?</h2>
           <p className="text-gray-500 mb-8 leading-relaxed">
-            Fill in the form and we'll get back to you within a few hours. No commitment required — just a friendly chat about your business.
+            Fill in the form and we'll get back to you within a few hours. Let's discuss how our technology solutions can accelerate your growth.
           </p>
 
           <div className="space-y-6 mt-8 hidden md:block">
@@ -198,7 +198,7 @@ export default function Contact() {
                     type="text"
                     value={form.projectType}
                     onChange={handleChange}
-                    placeholder="e.g. Retail Shop, Gym, etc."
+                    placeholder="e.g. Custom ERP, AI Chatbot, Website"
                     className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition ${
                       errors.projectType ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-bg'
                     }`}
@@ -234,7 +234,7 @@ export default function Contact() {
                   name="message"
                   value={form.message}
                   onChange={handleChange}
-                  placeholder="Tell us what kind of website you need..."
+                  placeholder="Tell us about your project requirements..."
                   rows={3}
                   className="w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition border-gray-200 bg-bg"
                 />
@@ -248,7 +248,7 @@ export default function Contact() {
                 {submitting ? 'Submitting...' : 'Send My Request →'}
               </button>
               <p className="text-center text-xs text-gray-400">
-                No spam. We'll only contact you about your website.
+                No spam. We'll only contact you regarding your inquiry.
               </p>
             </form>
           )}

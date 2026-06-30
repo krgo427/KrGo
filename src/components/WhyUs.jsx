@@ -4,11 +4,47 @@ const reasons = [
   {
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+      </svg>
+    ),
+    title: 'Modern Technology Stack',
+    description: 'We use the latest frameworks like React, Node.js, and Python to ensure your solutions are future-proof.',
+  },
+  {
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+      </svg>
+    ),
+    title: 'Scalable Architecture',
+    description: 'Our solutions are built to grow with your business, handling increased traffic and data effortlessly.',
+  },
+  {
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
     title: 'Fast Delivery',
-    description: 'Your website is ready in just 2–3 days. No long waits, no delays.',
+    description: 'We value your time. We deploy agile methodologies to deliver projects swiftly without compromising quality.',
+  },
+  {
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+    ),
+    title: 'Transparent Communication',
+    description: 'We keep you in the loop at every stage. Clear updates, direct access to developers, and no hidden surprises.',
+  },
+  {
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+    ),
+    title: 'Dedicated Support',
+    description: 'Post-launch, our team remains available to ensure your application runs smoothly and securely.',
   },
   {
     icon: (
@@ -16,118 +52,40 @@ const reasons = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
-    title: 'Affordable Pricing',
-    description: 'Plans starting at just ₹5,000. Quality work that fits a small business budget.',
-  },
-  {
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
-      </svg>
-    ),
-    title: 'Local Support (India)',
-    description: 'We understand your market. Hindi & English support. Available on WhatsApp.',
-  },
-  {
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-      </svg>
-    ),
-    title: 'Mobile-Optimized',
-    description: 'Every website we build works perfectly on phones — where most of your customers browse.',
-  },
+    title: 'Affordable Solutions',
+    description: 'Enterprise-grade technology delivered at competitive prices that fit your budget.',
+  }
 ]
 
-const ReasonCard = ({ r, isMobile }) => (
-  <div className={`flex items-start gap-4 border border-white/15 rounded-2xl p-6 transition-colors duration-200 ${isMobile ? 'w-[280px] flex-shrink-0 bg-white/10' : 'bg-white/10 hover:bg-white/15'}`}>
-    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent/20 text-accent flex items-center justify-center">
+const ReasonCard = ({ r }) => (
+  <div className="flex flex-col h-full bg-white border border-gray-100 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+    <div className="w-14 h-14 rounded-xl bg-blue-50 text-primary flex items-center justify-center mb-6">
       {r.icon}
     </div>
-    <div>
-      <h3 className="text-lg font-semibold text-white mb-2">{r.title}</h3>
-      <p className="text-slate-300 text-sm leading-relaxed">{r.description}</p>
-    </div>
+    <h3 className="text-xl font-bold text-secondary mb-3">{r.title}</h3>
+    <p className="text-gray-500 text-base leading-relaxed flex-grow">{r.description}</p>
   </div>
 );
 
-export default function WhyUs({ compact = false }) {
-  if (compact) {
-    return (
-      <div>
-        <div className="mb-6 text-center">
-          <p className="text-accent font-semibold text-xs tracking-widest mb-1">WHY KrGo</p>
-          <h2 className="text-2xl md:text-3xl font-bold text-white">Why Small Businesses Choose Us</h2>
-          <p className="text-slate-300 text-sm mt-2 max-w-xl mx-auto">
-            We're not just developers — we're your digital growth partner who speaks your language.
-          </p>
-        </div>
-
-        <div className="flex overflow-x-auto scroll-smooth snap-x snap-mandatory gap-4 pb-4 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-          {reasons.map((r) => (
-            <div
-              key={r.title}
-              className="flex-shrink-0 w-[85vw] snap-center sm:w-[45vw] md:flex-shrink md:w-auto flex items-start gap-4 bg-white/10 border border-white/15 rounded-xl p-4 hover:bg-white/15 transition-colors duration-200"
-            >
-              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-accent/20 text-accent flex items-center justify-center">
-                {r.icon}
-              </div>
-              <div>
-                <h3 className="text-base font-semibold text-white mb-1">{r.title}</h3>
-                <p className="text-slate-300 text-sm leading-relaxed">{r.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    )
-  }
-
+export default function WhyUs() {
   return (
-    <section id="why-us" className="py-12 md:py-20 bg-secondary">
+    <section id="why-us" className="py-20 md:py-32 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-14">
-          <p className="text-accent font-semibold text-sm tracking-widest mb-2">WHY KrGo</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Why Small Businesses Choose Us
+        <div className="text-center mb-16 md:mb-20">
+          <p className="text-primary font-bold text-sm uppercase tracking-[0.2em] mb-3">Why KrGo</p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-secondary mb-6 tracking-tight">
+            The Right Technology Partner
           </h2>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-            We're not just developers — we're your digital growth partner who speaks your language.
+          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
+            We don't just write code; we deliver strategic technology solutions that solve real business problems and drive growth.
           </p>
         </div>
 
-        {/* Desktop Grid */}
-        <div className="hidden md:grid grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {reasons.map((r) => (
-            <ReasonCard key={r.title} r={r} isMobile={false} />
+            <ReasonCard key={r.title} r={r} />
           ))}
         </div>
-
-        {/* Mobile Marquee */}
-        <div className="md:hidden relative max-w-[100vw] -mx-4 pb-6 overflow-hidden">
-          <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-secondary to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-secondary to-transparent z-10 pointer-events-none"></div>
-          <div className="flex overflow-hidden group">
-            <div className="flex w-max animate-slow-marquee group-hover:[animation-play-state:paused]">
-              <div className="flex gap-4 pr-4">
-                {reasons.map((r, idx) => <ReasonCard key={`r1-${idx}`} r={r} isMobile={true} />)}
-              </div>
-              <div className="flex gap-4 pr-4">
-                {reasons.map((r, idx) => <ReasonCard key={`r2-${idx}`} r={r} isMobile={true} />)}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <style>{`
-          @keyframes slow-marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
-          }
-          .animate-slow-marquee {
-            animation: slow-marquee 25s linear infinite;
-          }
-        `}</style>
       </div>
     </section>
   )

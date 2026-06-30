@@ -1,60 +1,49 @@
 import './index.css'
 import { useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
-import { useLocation } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import Services from './components/Services'
-import Portfolio from './components/Portfolio'
-import Pricing from './components/Pricing'
-import WhyUs from './components/WhyUs'
-import Testimonials from './components/Testimonials'
-import Contact from './components/Contact'
-import Footer from './components/Footer'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import Home from './pages/Home'
+import About from './pages/About'
+import PortfolioPage from './pages/PortfolioPage'
+import IndustriesPage from './pages/IndustriesPage'
+import Blog from './pages/Blog'
+import ContactPage from './pages/ContactPage'
 import ServiceDetailsPage from './pages/ServiceDetailsPage'
+import WhatsAppFloat from './components/WhatsAppFloat'
 
-
-function HomePage() {
-  const location = useLocation()
+function ScrollToTop() {
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    const targetId = location.hash ? location.hash.replace('#', '') : location.state?.scrollTo;
-    if (targetId) {
+    if (!hash) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    } else {
       setTimeout(() => {
-        const element = document.getElementById(targetId);
+        const element = document.getElementById(hash.replace('#', ''));
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 100);
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [location.hash, location.state])
+  }, [pathname, hash]);
 
-  return (
-    <>
-      <Navbar />
-      <main>
-        <Hero />
-        <Services />
-        <Portfolio />
-        <Pricing />
-        <WhyUs />
-        <Testimonials />
-        <Contact />
-      </main>
-      <Footer />
-      <div className="md:hidden h-24 bg-secondary"></div>
-    </>
-  )
+  return null;
 }
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/services/:slug" element={<ServiceDetailsPage />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/portfolio" element={<PortfolioPage />} />
+        <Route path="/industries" element={<IndustriesPage />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/services/:slug" element={<ServiceDetailsPage />} />
+      </Routes>
+      <WhatsAppFloat />
+    </>
   )
 }
 

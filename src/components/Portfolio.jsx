@@ -1,96 +1,134 @@
-import React from 'react'
-import clgImg from '../assets/clg.jpg'
-import schoolImg from '../assets/school.png'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
-const projects = [
+const allProjects = [
   {
-    img: schoolImg,
-    title: 'Modern Public School',
-    type: 'Education',
-    description:
-      'A comprehensive website for a modern school with an event calendar, student portal, and admission forms.',
-    tag: 'School',
-    demoPath: 'https://gkschool.vercel.app/',
-    accent: 'from-blue-400 to-indigo-500',
+    title: 'Business Website & Portal',
+    category: 'Software',
+    description: 'A comprehensive corporate website with a secure client portal for a financial firm.',
+    imgColor: 'bg-blue-100',
+    icon: '💻'
   },
   {
-    img: clgImg,
-    title: 'City Commerce College',
-    type: 'Higher Education',
-    description:
-      'A professional college website featuring course catalogs, faculty directories, and online application tracking.',
-    tag: 'College',
-    demoPath: '/demo/college',
-    accent: 'from-purple-400 to-fuchsia-500',
+    title: 'Inventory Management System',
+    category: 'Software',
+    description: 'A scalable ERP module to track stock, manage orders, and forecast inventory needs.',
+    imgColor: 'bg-green-100',
+    icon: '📦'
+  },
+  {
+    title: 'Restaurant POS System',
+    category: 'Software',
+    description: 'A cloud-based point-of-sale system with real-time analytics and offline capabilities.',
+    imgColor: 'bg-orange-100',
+    icon: '🍔'
+  },
+  {
+    title: 'Sales Analytics Dashboard',
+    category: 'Data',
+    description: 'An interactive Power BI dashboard visualizing regional sales data and KPIs.',
+    imgColor: 'bg-purple-100',
+    icon: '📈'
+  },
+  {
+    title: 'Customer Churn Prediction',
+    category: 'Data',
+    description: 'A machine learning model predicting customer churn based on historical data.',
+    imgColor: 'bg-teal-100',
+    icon: '👥'
+  },
+  {
+    title: 'AI Customer Support Chatbot',
+    category: 'AI',
+    description: 'An intelligent chatbot integrated with OpenAI to handle tier-1 customer inquiries.',
+    imgColor: 'bg-indigo-100',
+    icon: '🤖'
+  },
+  {
+    title: 'Invoice OCR Automation',
+    category: 'Automation',
+    description: 'Automated data extraction from invoices using OCR and NLP technologies.',
+    imgColor: 'bg-pink-100',
+    icon: '🧾'
+  },
+  {
+    title: 'Automated Marketing Workflows',
+    category: 'Automation',
+    description: 'Zapier-based automated workflows for lead nurturing and CRM updates.',
+    imgColor: 'bg-yellow-100',
+    icon: '⚙️'
   }
 ]
 
-const ProjectCard = ({ p, isMobile }) => (
-  <a href={p.demoPath} target="_blank" rel="noopener noreferrer" className={`group flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 transition-all duration-300 ${isMobile ? 'w-[280px] flex-shrink-0 relative' : 'hover:shadow-xl hover:-translate-y-1'}`}>
-    <div className="relative overflow-hidden h-52">
-      <img src={p.img} alt={`${p.title} website preview`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-      <div className="absolute inset-0 bg-gray-900 opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-      <div className="absolute top-3 left-3">
-        <span className="bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full">{p.tag}</span>
-      </div>
-    </div>
-    <div className="p-6 flex flex-col flex-1">
-      <p className="text-xs text-primary font-semibold uppercase tracking-widest mb-1">{p.type}</p>
-      <h3 className="text-xl font-bold text-secondary mb-2">{p.title}</h3>
-      <p className="text-gray-500 text-sm leading-relaxed flex-1">{p.description}</p>
-    </div>
-  </a>
-);
+export default function Portfolio({ preview = false }) {
+  const [filter, setFilter] = useState('All')
+  
+  const categories = ['All', 'Software', 'Data', 'AI', 'Automation']
+  
+  const filteredProjects = filter === 'All' 
+    ? allProjects 
+    : allProjects.filter(p => p.category === filter)
+    
+  const displayProjects = preview ? filteredProjects.slice(0, 6) : filteredProjects
 
-export default function Portfolio() {
   return (
-    <section id="portfolio" className="py-12 md:py-20 bg-bg">
+    <section id="portfolio" className="py-20 md:py-32 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-14">
-          <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-2">Our Work</p>
-          <h2 className="section-title">Demo Projects We've Built</h2>
-          <p className="section-subtitle">
-            Here are some examples of websites we've designed for different types of small businesses in India.
+        <div className="text-center mb-12">
+          <p className="text-primary font-bold text-sm uppercase tracking-[0.2em] mb-3">Our Work</p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-secondary mb-6 tracking-tight">Featured Projects</h2>
+          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
+            Explore how we've helped businesses transform their operations through custom technology solutions.
           </p>
         </div>
 
-        {/* Desktop Grid */}
-        <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {projects.map((p) => (
-            <ProjectCard key={p.title} p={p} isMobile={false} />
+        {/* Filter */}
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setFilter(cat)}
+              className={`px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+                filter === cat 
+                  ? 'bg-secondary text-white shadow-md' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {cat}
+            </button>
           ))}
         </div>
 
-        {/* Mobile Marquee */}
-        <div className="sm:hidden relative max-w-[100vw] -mx-4 pb-6 overflow-hidden">
-          <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-bg to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-bg to-transparent z-10 pointer-events-none"></div>
-          <div className="flex overflow-hidden group">
-            <div className="flex w-max animate-slow-marquee group-hover:[animation-play-state:paused]">
-              <div className="flex gap-4 pr-4">
-                {projects.map((p, idx) => <ProjectCard key={`p1-${idx}`} p={p} isMobile={true} />)}
+        {/* Grid */}
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+          {displayProjects.map((p, idx) => (
+            <div key={idx} className="group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
+              <div className={`h-48 ${p.imgColor} flex items-center justify-center text-6xl relative overflow-hidden`}>
+                <span className="relative z-10 group-hover:scale-110 transition-transform duration-300">{p.icon}</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
-              <div className="flex gap-4 pr-4">
-                {projects.map((p, idx) => <ProjectCard key={`p2-${idx}`} p={p} isMobile={true} />)}
+              <div className="p-6 flex flex-col flex-1">
+                <span className="text-xs font-bold text-primary uppercase tracking-widest mb-2">{p.category}</span>
+                <h3 className="text-xl font-bold text-secondary mb-3">{p.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-1">{p.description}</p>
+                <Link to="/portfolio" className="text-secondary font-bold text-sm hover:text-primary transition-colors flex items-center gap-2 group/btn">
+                  View Case Study
+                  <svg className="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
               </div>
             </div>
+          ))}
+        </div>
+        
+        {preview && (
+          <div className="text-center mt-12">
+            <Link to="/portfolio" className="btn-outline px-8 py-3">
+              View All Projects
+            </Link>
           </div>
-        </div>
-
-        <style>{`
-          @keyframes slow-marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
-          }
-          .animate-slow-marquee {
-            animation: slow-marquee 25s linear infinite;
-          }
-        `}</style>
-
-        <div className="text-center mt-12">
-          <p className="text-gray-500 mb-4">Want a website like these for your business?</p>
-          <a href="#contact" className="btn-primary">Get Started Today</a>
-        </div>
+        )}
       </div>
     </section>
   )

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import hero1 from '../assets/hero1.png'
 import hero2 from '../assets/hero2.png'
 import hero3 from '../assets/hero3.png'
 import hero4 from '../assets/hero4.png'
 import hero5 from '../assets/hero5.png'
 import TextSlider from './TextSlider'
-
 
 export default function Hero() {
   const [currentImgIdx, setCurrentImgIdx] = useState(0)
@@ -21,75 +21,90 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="min-h-screen bg-gradient-to-br from-bg via-white to-blue-50 pt-20 pb-10 md:pt-24 md:pb-16 flex items-center"
+      className="min-h-screen bg-gradient-to-br from-bg via-white to-blue-50 pt-24 pb-16 flex items-center relative overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 grid md:grid-cols-12 gap-8 lg:gap-12 items-center">
+      {/* Abstract Background Elements */}
+      <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-0 left-[-100px] w-[400px] h-[400px] bg-blue-400/5 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 grid md:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
         {/* Text Content */}
         <div className="md:col-span-7 flex flex-col text-center md:text-left">
-          <div className="inline-flex max-w-[90%] mx-auto md:max-w-none md:mx-0 items-center justify-center gap-2 bg-blue-50 text-primary text-xs font-semibold px-3 py-1.5 rounded-full mb-6 mt-4 md:mt-0">
-            <span className="w-2 h-2 rounded-full bg-accent flex-shrink-0"></span>
-            Trusted by 15+ Indian small businesses
+          <div className="inline-flex max-w-[90%] mx-auto md:max-w-none md:mx-0 items-center justify-center gap-2 bg-blue-50/80 backdrop-blur-sm border border-blue-100 text-primary text-xs font-semibold px-4 py-2 rounded-full mb-8 mt-4 md:mt-0 shadow-sm">
+            <span className="relative flex h-2.5 w-2.5 mr-1">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+            </span>
+            Building Software. Driving Decisions with Data.
           </div>
 
-          <h1 className="text-[28px] sm:text-3xl md:text-5xl font-extrabold text-secondary leading-tight mb-5 min-h-[80px] md:min-h-[160px] max-w-[90%] mx-auto md:max-w-none md:mx-0">
-            <span className="md:hidden flex flex-col">
-              <span>We Help Small Businesses</span>
-              <span className="text-primary mt-1">Increase Sales Online</span>
-            </span>
-            <span className="hidden md:inline">
-              We Help Small Businesses{' '}
-              <span className="text-primary">
-                <TextSlider words={['Get More Customers', 'Grow Their Brands', 'Increase Sales', 'Build Trust']} />
-              </span>{' '}
-              Online
-            </span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-extrabold text-secondary leading-[1.1] mb-6 mx-auto md:mx-0">
+            Build. <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">Analyze.</span> Automate.
           </h1>
 
-          <p className="block md:hidden text-center text-sm font-medium mb-8 mt-2 text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis w-[90%] mx-auto">
-            Starting from ₹5000 – Get your business online today
-          </p>
-          <p className="hidden md:block text-lg text-gray-500 mb-8 leading-relaxed">
-            Professional websites, SEO, and complete online setup — all in one place.
-            Get found on Google, grow your customer base, and earn more — without the tech headache.
+          <p className="text-lg md:text-xl text-gray-500 mb-10 leading-relaxed max-w-2xl mx-auto md:mx-0">
+            KrGo Technology Solutions helps businesses grow through Software Development, Data Science, AI Automation, Cloud Technologies, and Business Intelligence.
           </p>
 
-          <div className="flex flex-col md:flex-row items-center md:items-start md:justify-start gap-3 md:gap-4 mb-2 md:mb-10 w-[90%] mx-auto md:w-auto md:mx-0">
-            <a href="#contact" className="btn-primary text-base px-7 py-3 w-full md:w-auto">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-              Get Your Website
+          <div className="flex flex-col sm:flex-row items-center sm:justify-center md:justify-start gap-4 mb-12">
+            <Link to="/contact" className="btn-primary text-base px-8 py-4 shadow-xl shadow-primary/20 hover:-translate-y-1 w-full sm:w-auto">
+              Get Started
+            </Link>
+            <a href="#services" className="btn-outline text-base px-8 py-4 bg-white/50 backdrop-blur-sm hover:-translate-y-1 w-full sm:w-auto">
+              Explore Services
             </a>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-2 mt-6 md:mt-0 mb-8 md:mb-0 md:flex md:flex-wrap md:justify-start md:gap-8 max-w-[95%] mx-auto md:max-w-none md:mx-0">
-            {[
-              { value: '15+', label: 'Businesses' },
-              { value: '2–3', label: 'Days' },
-              { value: '₹5K+', label: 'Starting Price' },
-            ].map((s) => (
-              <div key={s.label} className="text-center md:text-left bg-blue-50/50 md:bg-transparent rounded-xl py-3 px-1 md:p-0">
-                <p className="text-lg md:text-2xl font-bold text-primary">{s.value}</p>
-                <p className="text-[11px] sm:text-xs md:text-sm text-gray-500 whitespace-nowrap mt-0.5">{s.label}</p>
-              </div>
+          {/* Stats / Tech Tags */}
+          <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 opacity-80">
+            {['Software Development', 'Data Science', 'AI & ML', 'Cloud Native'].map((tag) => (
+              <span key={tag} className="px-3 py-1 bg-white border border-gray-200 text-gray-600 text-xs sm:text-sm font-medium rounded-md shadow-sm">
+                {tag}
+              </span>
             ))}
           </div>
         </div>
 
-        <div className="hidden md:flex md:col-span-5 justify-center mt-10 md:mt-0">
-          <div className="relative w-full max-w-md aspect-square rounded-3xl">
-            <div className="absolute inset-0 bg-primary/10 rounded-3xl transform rotate-3 scale-105 z-0"></div>
+        {/* Image / Graphic Area */}
+        <div className="hidden md:flex md:col-span-5 justify-center relative">
+          <div className="relative w-full max-w-lg aspect-[4/5] rounded-3xl z-10">
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-blue-300/20 rounded-3xl transform rotate-6 scale-105 transition-transform duration-700 ease-in-out hover:rotate-2 hover:scale-100"></div>
             {heroImages.map((img, idx) => (
               <img
                 key={idx}
                 src={img}
-                alt={`Small business owner matching design ${idx + 1}`}
-                className={`absolute inset-0 w-full h-full object-cover rounded-3xl shadow-xl transition-opacity duration-1000 ease-in-out ${
-                  idx === currentImgIdx ? 'opacity-100' : 'opacity-0'
+                alt={`KrGo Technology Solutions Concept ${idx + 1}`}
+                className={`absolute inset-0 w-full h-full object-cover rounded-3xl shadow-2xl transition-all duration-1000 ease-in-out ${
+                  idx === currentImgIdx ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'
                 }`}
               />
             ))}
+            
+            {/* Floating Element - Example Data Viz */}
+            <div className="absolute -bottom-8 -left-8 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 z-20 animate-bounce" style={{animationDuration: '3s'}}>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
+                <div className="text-xs font-bold text-secondary">Performance</div>
+              </div>
+              <div className="text-2xl font-extrabold text-secondary">+124%</div>
+            </div>
+            
+            {/* Floating Element - Example Code */}
+            <div className="absolute -top-6 -right-6 bg-secondary p-4 rounded-xl shadow-xl border border-gray-700 z-20 opacity-90 hidden lg:block">
+              <pre className="text-[10px] text-green-400 font-mono">
+                <code>
+                  const optimize = async () =&gt; {'{\n'}
+                  {'  '}await analyzeData();{'\n'}
+                  {'  '}return scale();{'\n'}
+                  {'}'}
+                </code>
+              </pre>
+            </div>
+            
           </div>
         </div>
       </div>
