@@ -7,7 +7,7 @@ export default function About() {
     <>
       <Navbar />
       <main className="pt-24 min-h-screen bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 md:py-16">
           <h1 className="text-4xl md:text-5xl font-extrabold text-secondary mb-8">About KrGo</h1>
           <p className="text-xl text-gray-500 mb-12">Helping businesses leverage modern technology to grow smarter.</p>
           

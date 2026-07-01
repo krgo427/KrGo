@@ -8,6 +8,7 @@ import IndustriesPage from './pages/IndustriesPage'
 import Blog from './pages/Blog'
 import ContactPage from './pages/ContactPage'
 import ServiceDetailsPage from './pages/ServiceDetailsPage'
+import CaseStudyMateshwari from './pages/CaseStudyMateshwari'
 import WhatsAppFloat from './components/WhatsAppFloat'
 
 function ScrollToTop() {
@@ -41,6 +42,7 @@ function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/services/:slug" element={<ServiceDetailsPage />} />
+        <Route path="/case-studies/mateshwari-industries" element={<CaseStudyMateshwari />} />
       </Routes>
       <WhatsAppFloat />
     </>

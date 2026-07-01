@@ -14,7 +14,7 @@ export default function Blog() {
     <>
       <Navbar />
       <main className="pt-24 min-h-screen bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-16">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-extrabold text-secondary mb-6">Technical Insights</h1>
             <p className="text-xl text-gray-500">Thoughts, updates, and engineering deep-dives from the KrGo team.</p>

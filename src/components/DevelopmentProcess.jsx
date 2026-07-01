@@ -12,7 +12,7 @@ const processSteps = [
 
 export default function DevelopmentProcess() {
   return (
-    <section className="py-20 md:py-32 bg-gray-50 relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-gray-50 relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
         <div className="text-center mb-16 md:mb-20">
           <p className="text-primary font-bold text-sm uppercase tracking-[0.2em] mb-3">Our Workflow</p>

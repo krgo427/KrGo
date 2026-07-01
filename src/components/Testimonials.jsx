@@ -88,7 +88,7 @@ function TestimonialCard({ t }) {
 
 export default function Testimonials() {
   return (
-    <section id="reviews" className="py-12 md:py-20 bg-bg overflow-hidden">
+    <section id="reviews" className="py-12 md:py-16 bg-bg overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-14">
         {/* Header */}
         <div className="text-center">
