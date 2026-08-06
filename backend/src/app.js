@@ -46,6 +46,11 @@ app.post("/api/leads", async (req, res) => {
         throw new Error("Failed to forward to Google Sheets");
     }
 
+    // Send confirmation emails
+    import('./services/mailer.js').then(({ sendConfirmationEmails }) => {
+      sendConfirmationEmails(req.body);
+    }).catch(err => console.error("Failed to load mailer", err));
+
     res.status(200).json({ success: true, message: "Lead saved successfully" });
   } catch (error) {
     console.error("Error saving lead:", error);

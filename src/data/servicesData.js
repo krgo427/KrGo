@@ -1,22 +1,7 @@
 export const services = [
   {
-    slug: "software-development",
-    title: "Software Development",
-    shortDescription: "We develop scalable websites, business applications, ERP systems, CRM solutions, mobile apps, and custom software tailored to your business needs.",
-    details: "Our software development services encompass everything from business websites to complex ERP systems. We build reliable, secure, and scalable solutions.",
-    deliverables: [
-      "Business Websites & Web Applications",
-      "Mobile Apps (iOS & Android)",
-      "ERP & CRM Solutions",
-      "Billing & Inventory Systems",
-      "API Development & Integration",
-      "Website Maintenance & Support"
-    ],
-    icon: "code"
-  },
-  {
-    slug: "data-science-analytics",
-    title: "Data Science & Analytics",
+    slug: "data-science",
+    title: "Data Science",
     shortDescription: "Transform your raw data into meaningful business insights through dashboards, visualization, reporting, predictive analytics, and business intelligence.",
     details: "Unlock the hidden potential in your data. We provide comprehensive data science services to help you make data-driven decisions that drive growth.",
     deliverables: [
@@ -30,8 +15,8 @@ export const services = [
     icon: "chart"
   },
   {
-    slug: "ai-automation",
-    title: "AI & Automation",
+    slug: "automation-ai",
+    title: "Automation & AI",
     shortDescription: "Automate repetitive tasks, integrate AI-powered assistants, build intelligent workflows, and improve business efficiency using modern AI technologies.",
     details: "Enhance your business operations with cutting-edge AI and automation. Reduce manual work, improve accuracy, and deliver 24/7 intelligent assistance.",
     deliverables: [
@@ -45,19 +30,19 @@ export const services = [
     icon: "bot"
   },
   {
-    slug: "cloud-devops",
-    title: "Cloud & DevOps",
-    shortDescription: "Deploy secure, scalable, and reliable applications using cloud infrastructure, Docker, CI/CD pipelines, and monitoring solutions.",
-    details: "Ensure your applications are highly available and performant. We handle cloud architecture, deployment pipelines, and continuous monitoring.",
+    slug: "software-website-development",
+    title: "Software & Website Development",
+    shortDescription: "We develop scalable websites, business applications, ERP systems, CRM solutions, mobile apps, and custom software tailored to your business needs.",
+    details: "Our software development services encompass everything from business websites to complex ERP systems. We build reliable, secure, and scalable solutions.",
     deliverables: [
-      "AWS & Azure Cloud Deployment",
-      "Docker Containerization & Kubernetes",
-      "CI/CD Pipeline Setup",
-      "Cloud Migration & Strategy",
-      "Infrastructure Setup & Management",
-      "Monitoring & Performance Optimization"
+      "Business Websites & Web Applications",
+      "Mobile Apps (iOS & Android)",
+      "ERP & CRM Solutions",
+      "Billing & Inventory Systems",
+      "API Development & Integration",
+      "Website Maintenance & Support"
     ],
-    icon: "cloud"
+    icon: "code"
   }
 ];
 

@@ -74,14 +74,13 @@ export default function Hero() {
                 key={idx}
                 src={img}
                 alt={`KrGo Technology Solutions Concept ${idx + 1}`}
-                className={`absolute inset-0 w-full h-full object-cover rounded-3xl shadow-2xl transition-all duration-1000 ease-in-out ${
-                  idx === currentImgIdx ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'
-                }`}
+                className={`absolute inset-0 w-full h-full object-cover rounded-3xl shadow-2xl transition-all duration-1000 ease-in-out ${idx === currentImgIdx ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'
+                  }`}
               />
             ))}
-            
+
             {/* Floating Element - Example Data Viz */}
-            <div className="absolute -bottom-8 -left-8 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 z-20 animate-bounce" style={{animationDuration: '3s'}}>
+            <div className="absolute -bottom-8 -left-8 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 z-20 animate-bounce" style={{ animationDuration: '3s' }}>
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
                   <svg className="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -92,7 +91,7 @@ export default function Hero() {
               </div>
               <div className="text-2xl font-extrabold text-secondary">+124%</div>
             </div>
-            
+
             {/* Floating Element - Example Code */}
             <div className="absolute -top-6 -right-6 bg-secondary p-4 rounded-xl shadow-xl border border-gray-700 z-20 opacity-90 hidden lg:block">
               <pre className="text-[10px] text-green-400 font-mono">
@@ -104,7 +103,7 @@ export default function Hero() {
                 </code>
               </pre>
             </div>
-            
+
           </div>
         </div>
       </div>

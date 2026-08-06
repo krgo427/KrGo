@@ -9,7 +9,7 @@ import Blog from './pages/Blog'
 import ContactPage from './pages/ContactPage'
 import ServiceDetailsPage from './pages/ServiceDetailsPage'
 import CaseStudyMateshwari from './pages/CaseStudyMateshwari'
-import WhatsAppFloat from './components/WhatsAppFloat'
+import HelpAssistFloat from './components/HelpAssistFloat'
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -44,7 +44,7 @@ function App() {
         <Route path="/services/:slug" element={<ServiceDetailsPage />} />
         <Route path="/case-studies/mateshwari-industries" element={<CaseStudyMateshwari />} />
       </Routes>
-      <WhatsAppFloat />
+      <HelpAssistFloat />
     </>
   )
 }

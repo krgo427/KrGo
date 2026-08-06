@@ -19,7 +19,7 @@ export default function Footer() {
             </div>
           </Link>
           <p className="text-slate-400 text-sm leading-relaxed mb-6">
-            KrGo Technology Solutions is a premier technology partner delivering Software Development, Data Science, AI, and Cloud solutions worldwide. We build software and drive decisions with data.
+            KrGo Technology Solutions is a premier technology partner delivering Data Science, Automation & AI, and Software & Website Development solutions worldwide. We build software and drive decisions with data.
           </p>
           <div className="flex items-center gap-3">
             <a href={`mailto:${CONTACT_EMAIL}`} className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-2 bg-white/5 px-4 py-2 rounded-lg">
@@ -53,10 +53,9 @@ export default function Footer() {
           <h4 className="font-semibold text-white mb-6 text-sm uppercase tracking-widest">Services</h4>
           <ul className="space-y-4">
             {[
-              { label: 'Software Development', href: '/services/software-development' },
-              { label: 'Data Science', href: '/services/data-science-analytics' },
-              { label: 'AI & Automation', href: '/services/ai-automation' },
-              { label: 'Cloud & DevOps', href: '/services/cloud-devops' },
+              { label: 'Data Science', href: '/services/data-science' },
+              { label: 'Automation & AI', href: '/services/automation-ai' },
+              { label: 'Software & Website Development', href: '/services/software-website-development' },
             ].map((l) => (
               <li key={l.href}>
                 <Link to={l.href} className="text-slate-400 hover:text-white hover:pl-1 text-sm transition-all duration-200">
