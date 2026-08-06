@@ -1,11 +1,40 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 export default function HelpAssistFloat() {
+  const [showBorder, setShowBorder] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const ctaSection = document.getElementById('cta-section');
+      if (ctaSection) {
+        const ctaRect = ctaSection.getBoundingClientRect();
+        // Calculate button approximate position (bottom-6 is 24px, h-14 is 56px)
+        const buttonTop = window.innerHeight - (24 + 56);
+        const buttonBottom = window.innerHeight - 24;
+        
+        // Check if the button overlaps with the CTA section
+        if (ctaRect.top <= buttonBottom && ctaRect.bottom >= buttonTop) {
+          setShowBorder(true);
+        } else {
+          setShowBorder(false);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    // Initial check
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <Link
       to="/contact"
-      className="fixed bottom-6 right-6 bg-blue-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:bg-blue-700 transition-all duration-300 z-50 hover:scale-110 hover:-translate-y-1 group"
+      className={`fixed bottom-6 right-6 bg-accent text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(0,174,239,0.4)] transition-all duration-300 z-50 hover:scale-110 hover:-translate-y-1 group hover:brightness-110 ${
+        showBorder ? 'border-2 border-white' : 'border-2 border-transparent'
+      }`}
       aria-label="Get Help / Assistance"
     >
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -1,18 +1,18 @@
 export const services = [
   {
-    slug: "data-science",
-    title: "Data Science",
-    shortDescription: "Transform your raw data into meaningful business insights through dashboards, visualization, reporting, predictive analytics, and business intelligence.",
-    details: "Unlock the hidden potential in your data. We provide comprehensive data science services to help you make data-driven decisions that drive growth.",
+    slug: "software-website-development",
+    title: "Software & Website Development",
+    shortDescription: "We develop scalable websites, business applications, ERP systems, CRM solutions, mobile apps, and custom software tailored to your business needs.",
+    details: "Our software development services encompass everything from business websites to complex ERP systems. We build reliable, secure, and scalable solutions.",
     deliverables: [
-      "Data Analytics & Visualization",
-      "Dashboard Development (Power BI, Tableau)",
-      "Predictive Analytics & Machine Learning",
-      "Data Cleaning & Preprocessing",
-      "ETL Pipelines & Data Warehousing",
-      "Reporting Automation"
+      "Business Websites & Web Applications",
+      "Mobile Apps (iOS & Android)",
+      "ERP & CRM Solutions",
+      "Billing & Inventory Systems",
+      "API Development & Integration",
+      "Website Maintenance & Support"
     ],
-    icon: "chart"
+    icon: "code"
   },
   {
     slug: "automation-ai",
@@ -30,19 +30,20 @@ export const services = [
     icon: "bot"
   },
   {
-    slug: "software-website-development",
-    title: "Software & Website Development",
-    shortDescription: "We develop scalable websites, business applications, ERP systems, CRM solutions, mobile apps, and custom software tailored to your business needs.",
-    details: "Our software development services encompass everything from business websites to complex ERP systems. We build reliable, secure, and scalable solutions.",
+    slug: "data-analytics",
+    title: "Data Analytics",
+    shortDescription: "Transform your raw data into meaningful business insights through dashboards, visualization, reporting, predictive analytics, and business intelligence.",
+    details: "Unlock the hidden potential in your data. We provide comprehensive data analytics services to help you make data-driven decisions that drive growth.",
     deliverables: [
-      "Business Websites & Web Applications",
-      "Mobile Apps (iOS & Android)",
-      "ERP & CRM Solutions",
-      "Billing & Inventory Systems",
-      "API Development & Integration",
-      "Website Maintenance & Support"
+      "Data Analytics & Visualization",
+      "Dashboard Development (Power BI, Tableau)",
+      "Business Intelligence",
+      "Predictive Analytics & Machine Learning",
+      "Data Cleaning & Preprocessing",
+      "ETL Pipelines & Data Warehousing",
+      "Reporting Automation"
     ],
-    icon: "code"
+    icon: "chart"
   }
 ];
 

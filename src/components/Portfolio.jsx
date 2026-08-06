@@ -50,7 +50,7 @@ export default function Portfolio({ preview = false }) {
   const navigate = useNavigate()
 
   return (
-    <section id="portfolio" className="py-16 md:py-20 bg-[#0b1120] relative text-white border-t border-white/5">
+    <section id="portfolio" className="py-16 md:py-20 bg-secondary relative text-white border-t border-white/5">
       {/* Decorative Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] transform translate-x-1/3 -translate-y-1/3"></div>
@@ -74,11 +74,11 @@ export default function Portfolio({ preview = false }) {
               className="group bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-5 md:p-6 flex flex-col h-full transition-all duration-300 hover:-translate-y-1 hover:bg-white/10 hover:border-white/20 hover:shadow-xl hover:shadow-blue-900/20"
             >
               {/* Preview Image */}
-              <div className="mb-6 w-full overflow-hidden rounded-xl border border-white/10 relative">
+              <div className="mb-6 w-full h-52 overflow-hidden rounded-xl border border-white/10 relative">
                 <img 
                   src={p.image} 
                   alt={p.title} 
-                  className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" 
+                  className="w-full h-full object-cover object-top opacity-90 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" 
                 />
               </div>
 
@@ -103,9 +103,9 @@ export default function Portfolio({ preview = false }) {
                   </svg>
                 </Link>
                 {p.technologies && (
-                  <div className="flex gap-1.5">
-                    {p.technologies.slice(0,2).map(t => (
-                      <span key={t} className="text-[10px] px-2 py-1 bg-white/5 rounded text-slate-300">{t}</span>
+                  <div className="flex flex-wrap gap-1 justify-end max-w-[50%]">
+                    {p.technologies.map(t => (
+                      <span key={t} className="text-[9px] px-1.5 py-0.5 bg-white/10 rounded-sm text-slate-300 whitespace-nowrap">{t}</span>
                     ))}
                   </div>
                 )}

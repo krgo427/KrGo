@@ -1,20 +1,31 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { CONTACT_EMAIL } from '../config/siteConfig'
+import logoImg from '../assets/logo.png'
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0b1120] text-white">
+    <footer className="bg-secondary text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 grid sm:grid-cols-2 md:grid-cols-5 gap-10">
         {/* Brand */}
         <div className="md:col-span-2 pr-0 md:pr-10">
           <Link to="/" className="flex items-center gap-2 mb-6 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
+            <img 
+              src={logoImg} 
+              alt="KrGo Tech Logo" 
+              className="h-16 md:h-20 w-auto object-contain transform group-hover:scale-105 transition-transform"
+              onError={(e) => {
+                e.target.onerror = null; 
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
+            />
+            <div className="hidden w-10 h-10 bg-gradient-to-br from-primary to-blue-700 rounded-xl items-center justify-center shadow-lg">
               <span className="text-white font-bold text-lg">KG</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-extrabold text-white tracking-tight leading-tight">
-                KrGo <span className="text-primary font-bold">Tech</span>
+              <span className="text-2xl font-extrabold tracking-tight leading-tight">
+                <span className="text-white">Kr</span><span className="text-primary">Go</span> <span className="text-white font-bold">Tech</span>
               </span>
             </div>
           </Link>

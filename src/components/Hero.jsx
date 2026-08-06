@@ -39,11 +39,11 @@ export default function Hero() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-extrabold text-secondary leading-[1.1] mb-6 mx-auto md:mx-0">
-            Build. <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">Analyze.</span> Automate.
+            Build. <span className="text-primary">Analyze.</span> Automate.
           </h1>
 
           <p className="text-lg md:text-xl text-gray-500 mb-10 leading-relaxed max-w-2xl mx-auto md:mx-0">
-            KrGo Technology Solutions helps businesses grow through Software Development, Data Science, AI Automation, Cloud Technologies, and Business Intelligence.
+            KrGo Technology Solutions helps businesses grow through Software Development, Data Analytics, AI Automation, Cloud Technologies, and Business Intelligence.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center sm:justify-center md:justify-start gap-4 mb-12">
@@ -57,7 +57,7 @@ export default function Hero() {
 
           {/* Stats / Tech Tags */}
           <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 opacity-80">
-            {['Software Development', 'Data Science', 'AI & ML', 'Cloud Native'].map((tag) => (
+            {['Software Development', 'Data Analytics', 'AI & ML', 'Cloud Native'].map((tag) => (
               <span key={tag} className="px-3 py-1 bg-white border border-gray-200 text-gray-600 text-xs sm:text-sm font-medium rounded-md shadow-sm">
                 {tag}
               </span>

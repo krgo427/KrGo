@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { services } from '../data/servicesData'
 
 const serviceIcons = {
-  'data-science': (
+  'data-analytics': (
     <svg className="w-6 h-6 text-primary group-hover:text-white transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
   ),
   'automation-ai': (
@@ -23,12 +23,13 @@ export default function Services() {
   }
 
   const renderCard = (svc, isMobile, keyStr) => (
-    <div key={keyStr} className={`card group flex flex-col transition-all duration-300 ${isMobile ? 'w-[280px] sm:w-[320px] flex-shrink-0 relative' : 'hover:-translate-y-2 hover:shadow-xl'}`}>
-      <button
-        type="button"
-        onClick={() => openServiceDetails(svc.slug)}
+    <div 
+      key={keyStr} 
+      onClick={() => openServiceDetails(svc.slug)}
+      className={`card group flex flex-col transition-all duration-300 cursor-pointer text-left ${isMobile ? 'w-[280px] sm:w-[320px] flex-shrink-0 relative' : 'hover:-translate-y-2 hover:shadow-xl'}`}
+    >
+      <div
         className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:scale-110 transition-all duration-300"
-        aria-label={`Open ${svc.title} details`}
       >
         <div className="group-hover:[&_svg]:text-white">
           {serviceIcons[svc.slug] || (
@@ -37,16 +38,15 @@ export default function Services() {
             </svg>
           )}
         </div>
-      </button>
+      </div>
       <h3 className="text-2xl font-bold text-secondary mb-3">{svc.title}</h3>
       <p className="text-gray-500 text-base leading-relaxed mb-8 flex-grow">{svc.shortDescription}</p>
       
-      <button 
-        onClick={() => openServiceDetails(svc.slug)}
-        className="text-primary font-bold text-sm hover:text-blue-700 mt-auto flex items-center gap-2 group-hover:gap-3 transition-all uppercase tracking-wider"
+      <span 
+        className="text-primary font-bold text-sm group-hover:text-blue-700 mt-auto flex items-center gap-2 group-hover:gap-3 transition-all uppercase tracking-wider"
       >
         Learn More <span aria-hidden="true" className="text-lg">→</span>
-      </button>
+      </span>
     </div>
   )
 
