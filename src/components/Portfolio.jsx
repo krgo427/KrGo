@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import clgScreenshot from '../assets/clg.jpg'
 import schoolScreenshot from '../assets/school.png'
+import CardSwap, { Card } from './CardSwap'
 
 const allProjects = [
   {
@@ -21,6 +22,7 @@ const allProjects = [
     status: 'DEMO',
     industry: 'EdTech',
     description: "A comprehensive ERP platform built to digitize and manage student records, grades, and faculty workflows effortlessly.",
+    technologies: ['React', 'Tailwind CSS', 'Node.js', 'Express', 'MongoDB'],
     liveLink: 'https://vocal-fudge-3ea55d.netlify.app/',
     image: clgScreenshot
   },
@@ -30,6 +32,7 @@ const allProjects = [
     status: 'DEMO',
     industry: 'EdTech',
     description: "A robust school management system designed for seamless attendance tracking, academic administration, and report cards.",
+    technologies: ['React', 'Tailwind CSS', 'Firebase', 'JavaScript'],
     liveLink: 'https://gkschool.vercel.app/',
     image: schoolScreenshot
   }
@@ -46,8 +49,9 @@ const StatusBadge = ({ status }) => {
   )
 }
 
-export default function Portfolio({ preview = false }) {
-  const navigate = useNavigate()
+export default function Portfolio() {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const activeProject = allProjects[activeIndex]
 
   return (
     <section id="portfolio" className="py-16 md:py-20 bg-secondary relative text-white border-t border-white/5">
@@ -66,8 +70,8 @@ export default function Portfolio({ preview = false }) {
           </p>
         </div>
 
-        {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        {/* Mobile/Tablet Grid Layout (lg:hidden) */}
+        <div className="grid md:grid-cols-2 lg:hidden gap-6 mb-16">
           {allProjects.map((p) => (
             <div 
               key={p.id} 
@@ -113,6 +117,101 @@ export default function Portfolio({ preview = false }) {
             </div>
           ))}
         </div>
+
+        {/* Desktop Split Layout (hidden lg:flex) */}
+        <div className="hidden lg:flex items-center justify-between gap-16 mb-16 min-h-[480px]">
+          {/* Left Side: Active Project Details (5/12 width) */}
+          <div className="w-5/12 text-left flex flex-col justify-center min-h-[380px]">
+            <div key={activeIndex} className="animate-fade-in">
+              <div className="flex items-center gap-3 mb-5">
+                <StatusBadge status={activeProject.status} />
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{activeProject.industry}</span>
+              </div>
+              
+              <h3 className="text-4xl font-extrabold text-white mb-4 tracking-tight leading-tight">
+                {activeProject.title}
+              </h3>
+              
+              <p className="text-slate-350 text-base leading-relaxed mb-8 font-light">
+                {activeProject.description}
+              </p>
+              
+              {activeProject.technologies && (
+                <div className="flex flex-wrap gap-2 mb-8">
+                  {activeProject.technologies.map(t => (
+                    <span key={t} className="text-xs px-3 py-1 bg-white/10 rounded-md text-slate-300 font-medium tracking-wide">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+              
+              <Link 
+                to={activeProject.caseStudyLink || activeProject.liveLink} 
+                className="inline-flex items-center gap-2.5 text-primary hover:text-white font-bold text-base uppercase tracking-wider transition-colors duration-200"
+              >
+                {activeProject.caseStudyLink ? 'Read Case Study' : 'View Live Demo'}
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+
+          {/* Right Side: CardSwap Screenshot Stack (7/12 width) */}
+          <div className="w-7/12 flex items-center justify-center relative min-h-[450px]">
+            <div className="relative pt-6 pr-6">
+              <CardSwap 
+                width={560} 
+                height={350} 
+                cardDistance={30} 
+                verticalDistance={25} 
+                delay={3500} 
+                pauseOnHover={true}
+                onActiveIndexChange={setActiveIndex}
+              >
+                {allProjects.map((p) => (
+                  <Card 
+                    key={p.id} 
+                    className="w-full h-full flex flex-col bg-slate-900 border border-white/10 shadow-2xl overflow-hidden text-left"
+                  >
+                    {/* Browser Mockup Header */}
+                    <div className="h-6 bg-slate-900 border-b border-white/5 flex items-center px-3 gap-1.5 flex-shrink-0 select-none">
+                      <div className="w-2 h-2 rounded-full bg-rose-500/80"></div>
+                      <div className="w-2 h-2 rounded-full bg-amber-500/80"></div>
+                      <div className="w-2 h-2 rounded-full bg-emerald-500/80"></div>
+                    </div>
+                    {/* Full Screenshot Container (Contain fitting, no cropping) */}
+                    <div className="flex-1 w-full overflow-hidden relative bg-slate-950 flex items-center justify-center">
+                      <img 
+                        src={p.image} 
+                        alt={p.title} 
+                        className="w-full h-full object-contain opacity-95" 
+                        draggable={false}
+                      />
+                    </div>
+                  </Card>
+                ))}
+              </CardSwap>
+            </div>
+          </div>
+        </div>
+
+        <style>{`
+          @keyframes fade-in {
+            from {
+              opacity: 0;
+              transform: translateY(12px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          .animate-fade-in {
+            animation: fade-in 0.4s ease-out forwards;
+          }
+        `}</style>
 
         {/* Compact CTA */}
         <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-blue-900/50 to-slate-800/50 border border-blue-500/20 p-8 md:p-12 text-center flex flex-col md:flex-row items-center justify-between gap-6">

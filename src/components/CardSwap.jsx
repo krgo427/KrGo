@@ -36,6 +36,9 @@ const CardSwap = ({
   onCardClick,
   skewAmount = 6,
   easing = 'elastic',
+  className = '',
+  style = {},
+  onActiveIndexChange,
   children
 }) => {
   const config =
@@ -69,6 +72,7 @@ const CardSwap = ({
   const tlRef = useRef(null);
   const intervalRef = useRef();
   const container = useRef(null);
+  const triggerManualSwapRef = useRef(null);
 
   useEffect(() => {
     const total = refs.length;
@@ -78,6 +82,7 @@ const CardSwap = ({
       if (order.current.length < 2) return;
 
       const [front, ...rest] = order.current;
+      onActiveIndexChange?.(rest[0]);
       const elFront = refs[front].current;
       const tl = gsap.timeline();
       tlRef.current = tl;
@@ -132,7 +137,13 @@ const CardSwap = ({
       });
     };
 
-    swap();
+    const triggerManualSwap = () => {
+      clearInterval(intervalRef.current);
+      swap();
+      intervalRef.current = window.setInterval(swap, delay);
+    };
+    triggerManualSwapRef.current = triggerManualSwap;
+
     intervalRef.current = window.setInterval(swap, delay);
 
     if (pauseOnHover) {
@@ -166,13 +177,14 @@ const CardSwap = ({
           onClick: e => {
             child.props.onClick?.(e);
             onCardClick?.(i);
+            triggerManualSwapRef.current?.();
           }
         })
       : child
   );
 
   return (
-    <div ref={container} className="card-swap-container" style={{ width, height }}>
+    <div ref={container} className={`card-swap-container ${className}`.trim()} style={{ width, height, ...style }}>
       {rendered}
     </div>
   );

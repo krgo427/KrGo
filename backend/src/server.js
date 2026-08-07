@@ -20,9 +20,12 @@ process.on("unhandledRejection", (reason, promise) => {
  * so nodemon restarts don't leave zombie Chrome processes.
  */
 async function gracefulShutdown(signal) {
-  console.log(`\n${signal} received  shutting down gracefully...`);
+  console.log(`\n${signal} received   shutting down gracefully...`);
   process.exit(0);
 }
+
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

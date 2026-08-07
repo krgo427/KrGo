@@ -1,5 +1,6 @@
 import React from 'react'
-import CardSwap, { Card } from './CardSwap'
+import AccordionGallery from './AccordionGallery'
+import educationBg from '../assets/education.png'
 
 const industries = [
   { 
@@ -17,7 +18,7 @@ const industries = [
   { 
     name: 'Education', 
     desc: 'Scalable e-learning and campus management.',
-    image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=800',
+    image: educationBg,
     icon: 'M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222' 
   },
   { 
@@ -53,60 +54,38 @@ const industries = [
 ]
 
 export default function Industries() {
+  const galleryItems = industries.map(ind => ({
+    image: ind.image,
+    label: ind.name,
+    desc: ind.desc,
+    icon: ind.icon,
+    link: '#'
+  }))
+
   return (
-    <section className="py-16 md:py-24 bg-white overflow-hidden relative min-h-[600px] flex items-center">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full flex flex-col md:flex-row items-center justify-between gap-12 relative z-10">
+    <section id="industries" className="py-16 md:py-24 bg-white overflow-hidden relative min-h-[600px] flex items-center">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full relative z-10">
         
-        {/* Text Section */}
-        <div className="md:w-5/12 text-left mb-16 md:mb-0 relative z-20">
+        {/* Header Text Centered */}
+        <div className="max-w-2xl mx-auto mb-16 relative z-20 text-center">
           <p className="text-primary font-bold text-sm uppercase tracking-[0.2em] mb-3">Industries</p>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-secondary mb-6 tracking-tight">Who We Serve</h2>
-          <p className="text-lg text-gray-500 max-w-xl">
-            We deliver tailor-made technology solutions across a wide range of industries. Watch our capabilities stack up.
+          <h2 className="text-3xl md:text-5xl font-extrabold text-secondary mb-6 tracking-tight">Who We Serve</h2>
+          <p className="text-base md:text-lg text-gray-500 font-light leading-relaxed">
+            We deliver tailor-made technology solutions across a wide range of industries. Watch our capabilities expand.
           </p>
         </div>
 
-        {/* CardSwap Section */}
-        <div className="md:w-7/12 relative h-[450px] w-full flex items-center justify-center md:justify-end">
-          <div className="relative w-full max-w-[400px] h-full flex justify-center items-center">
-            <CardSwap width={280} height={380} delay={2500} pauseOnHover={true}>
-              {industries.map((ind, idx) => (
-                <Card 
-                  key={idx} 
-                  className="flex flex-col items-start justify-start p-6 bg-secondary border border-white/20 shadow-2xl overflow-hidden group"
-                >
-                  {/* Background Image */}
-                  <div 
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                    style={{ backgroundImage: `url(${ind.image})` }}
-                  ></div>
-                  
-                  {/* Dark Overlay for Text Readability */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/80 group-hover:bg-black/60 transition-colors duration-500"></div>
-                  
-                  {/* Content (Top-Left Aligned) */}
-                  <div className="relative z-10 w-full h-full flex flex-col">
-                    <div className="w-12 h-12 rounded-xl bg-primary/90 flex items-center justify-center mb-4 shadow-lg backdrop-blur-sm">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={ind.icon} />
-                      </svg>
-                    </div>
-                    
-                    <h3 className="text-2xl font-bold text-white mb-2">{ind.name}</h3>
-                    <p className="text-sm text-gray-200 leading-relaxed font-medium">
-                      {ind.desc}
-                    </p>
-                    
-                    <div className="mt-auto pt-4">
-                      <span className="inline-flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-wider group-hover:text-white transition-colors">
-                        Explore <span className="text-lg leading-none">&rarr;</span>
-                      </span>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </CardSwap>
-          </div>
+        {/* Accordion Gallery Section */}
+        <div className="w-full relative z-10 pt-4">
+          <AccordionGallery 
+            items={galleryItems} 
+            height={460} 
+            gap={12} 
+            radius={20} 
+            accentColor="#a855f7" 
+            grayscale={false} 
+            trigger="hover" 
+          />
         </div>
 
       </div>

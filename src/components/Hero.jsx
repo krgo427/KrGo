@@ -7,9 +7,10 @@ import hero4 from '../assets/hero4.png'
 import hero5 from '../assets/hero5.png'
 import TextSlider from './TextSlider'
 
+const heroImages = [hero1, hero2, hero3, hero4, hero5]
+
 export default function Hero() {
   const [currentImgIdx, setCurrentImgIdx] = useState(0)
-  const heroImages = [hero1, hero2, hero3, hero4, hero5]
 
   useEffect(() => {
     const timer = setInterval(() => {

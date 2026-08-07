@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { servicesBySlug } from "../data/servicesData";
@@ -8,7 +8,6 @@ import CallToAction from "../components/CallToAction";
 
 export default function ServiceDetailsPage() {
   const { slug } = useParams();
-  const navigate = useNavigate();
   const service = servicesBySlug[slug];
 
   useEffect(() => {

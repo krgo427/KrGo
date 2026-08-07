@@ -10,6 +10,7 @@ import ContactPage from './pages/ContactPage'
 import ServiceDetailsPage from './pages/ServiceDetailsPage'
 import CaseStudyMateshwari from './pages/CaseStudyMateshwari'
 import HelpAssistFloat from './components/HelpAssistFloat'
+import ClickSpark from './components/ClickSpark'
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -32,7 +33,7 @@ function ScrollToTop() {
 
 function App() {
   return (
-    <>
+    <ClickSpark sparkColor="#00AEEF" sparkSize={10} sparkRadius={20} sparkCount={10} duration={400}>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -45,7 +46,7 @@ function App() {
         <Route path="/case-studies/mateshwari-industries" element={<CaseStudyMateshwari />} />
       </Routes>
       <HelpAssistFloat />
-    </>
+    </ClickSpark>
   )
 }
 
