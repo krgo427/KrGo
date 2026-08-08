@@ -39,57 +39,42 @@ export default function Contact() {
     
     try {
       setSubmitting(true)
-      let isSuccess = false;
 
-      // Try sending to Supabase
-      try {
-        const { supabase } = await import('../config/supabaseClient');
-        const { error: sbError } = await supabase.from('contact_requests').insert([{
-          name: form.name.trim(),
-          email: null,
-          phone: form.phone.trim(),
-          message: `Project Type: ${form.projectType}\nCall Time: ${form.callRequestTime}\nMessage: ${form.message.trim()}`
-        }]);
-        if (sbError) throw sbError;
-        isSuccess = true;
-      } catch (sbError) {
-        console.error("Supabase insert error:", sbError);
+      // 1. Send to Supabase (so it appears in the Admin Portal)
+      const { supabase } = await import('../config/supabaseClient');
+      const { error: sbError } = await supabase.from('contact_requests').insert([{
+        name: form.name.trim(),
+        email: null,
+        phone: form.phone.trim(),
+        message: `Project Type: ${form.projectType}\nCall Time: ${form.callRequestTime}\nMessage: ${form.message.trim()}`
+      }]);
+      
+      if (sbError) {
+        throw new Error("Failed to save to database.");
       }
 
-      // Send to Backend API which syncs with Google Sheets
+      // 2. Send Email to krgo427@gmail.com via FormSubmit
       try {
-        const endpoint = `${API_BASE_URL}${LEADS_API_PATH}`;
-        const response = await fetch(endpoint, {
+        await fetch("https://formsubmit.co/ajax/krgo427@gmail.com", {
           method: "POST",
           headers: { 
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
           body: JSON.stringify({
-            // Maps seamlessly to the unchanged Google Apps Script structure
+            _subject: "New Consultation Request - KrGo",
             Name: form.name.trim(),
             Phone: form.phone.trim(),
-            WebsiteType: form.projectType.trim(),
-            TimeSlot: form.callRequestTime,
-            DateLabel: form.message.trim() || "No message provided.",
-            Timestamp: new Date().toLocaleString()
+            ProjectType: form.projectType.trim(),
+            CallRequestTime: form.callRequestTime,
+            Message: form.message.trim() || "No message provided."
           })
         });
-
-        if (!response.ok) {
-          console.warn("Failed to send message to the backend server.");
-        } else {
-          isSuccess = true;
-        }
-      } catch (backendError) {
-        console.warn("Backend sync error (likely unreachable in production):", backendError);
+      } catch (emailError) {
+        console.warn("Failed to send email notification, but saved to DB:", emailError);
       }
 
-      if (isSuccess) {
-        setSubmitted(true)
-      } else {
-        throw new Error("Both Supabase and Backend sync failed.")
-      }
+      setSubmitted(true)
     } catch (error) {
       console.error('Submit Error:', error)
       setSubmitError('Could not submit your request. Please try again or contact us directly.')
