@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { API_BASE_URL, LEADS_API_PATH } from '../config/siteConfig'
+import { supabase } from '../config/supabaseClient'
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', phone: '', projectType: '', callRequestTime: '', message: '' })
@@ -41,7 +42,6 @@ export default function Contact() {
       setSubmitting(true)
 
       // 1. Send to Supabase (so it appears in the Admin Portal)
-      const { supabase } = await import('../config/supabaseClient');
       const { error: sbError } = await supabase.from('contact_requests').insert([{
         name: form.name.trim(),
         email: null,
@@ -50,7 +50,7 @@ export default function Contact() {
       }]);
       
       if (sbError) {
-        throw new Error("Failed to save to database.");
+        throw new Error(`Database Error: ${sbError.message || 'Unknown error'}`);
       }
 
       // 2. Send Email to krgo427@gmail.com via FormSubmit
@@ -77,7 +77,7 @@ export default function Contact() {
       setSubmitted(true)
     } catch (error) {
       console.error('Submit Error:', error)
-      setSubmitError('Could not submit your request. Please try again or contact us directly.')
+      setSubmitError(error.message || 'Could not submit your request. Please try again or contact us directly.')
     } finally {
       setSubmitting(false)
     }
