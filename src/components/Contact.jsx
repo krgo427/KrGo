@@ -40,6 +40,19 @@ export default function Contact() {
     try {
       setSubmitting(true)
 
+      // Try sending to Supabase
+      try {
+        const { supabase } = await import('../config/supabaseClient');
+        await supabase.from('contact_requests').insert([{
+          name: form.name.trim(),
+          email: null,
+          phone: form.phone.trim(),
+          message: `Project Type: ${form.projectType}\nCall Time: ${form.callRequestTime}\nMessage: ${form.message.trim()}`
+        }]);
+      } catch (sbError) {
+        console.error("Supabase insert error:", sbError);
+      }
+
       // Send to Backend API which syncs with Google Sheets
       const endpoint = `${API_BASE_URL}${LEADS_API_PATH}`;
       const response = await fetch(endpoint, {
@@ -65,7 +78,7 @@ export default function Contact() {
 
       setSubmitted(true)
     } catch (error) {
-      console.error('EmailJS Error:', error)
+      console.error('Submit Error:', error)
       setSubmitError('Could not submit your request. Please try again or contact us directly.')
     } finally {
       setSubmitting(false)

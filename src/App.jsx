@@ -11,6 +11,13 @@ import ServiceDetailsPage from './pages/ServiceDetailsPage'
 import CaseStudyMateshwari from './pages/CaseStudyMateshwari'
 import HelpAssistFloat from './components/HelpAssistFloat'
 
+// Admin Pages
+import AdminLayout from './pages/admin/AdminLayout'
+import Dashboard from './pages/admin/Dashboard'
+import Clients from './pages/admin/Clients'
+import Requests from './pages/admin/Requests'
+import Billing from './pages/admin/Billing'
+
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
 
@@ -43,6 +50,14 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/services/:slug" element={<ServiceDetailsPage />} />
         <Route path="/case-studies/mateshwari-industries" element={<CaseStudyMateshwari />} />
+        
+        {/* Admin Portal Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="clients" element={<Clients />} />
+          <Route path="requests" element={<Requests />} />
+          <Route path="billing" element={<Billing />} />
+        </Route>
       </Routes>
       <HelpAssistFloat />
     </>
