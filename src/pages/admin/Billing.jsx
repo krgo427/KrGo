@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../config/supabaseClient';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 const Billing = () => {
   const [clients, setClients] = useState([]);
@@ -105,7 +105,7 @@ const Billing = () => {
     const tax = subtotal * (formData.taxRate / 100);
     const grandTotal = subtotal + tax;
 
-    doc.autoTable({
+    autoTable(doc, {
       startY: 80,
       head: [tableColumn],
       body: tableRows,

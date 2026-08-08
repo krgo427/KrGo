@@ -8,6 +8,9 @@ const Clients = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', company: '', phone: '' });
 
+  const [clientToDelete, setClientToDelete] = useState(null);
+  const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
+
   useEffect(() => {
     fetchClients();
   }, []);
@@ -36,14 +39,21 @@ const Clients = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this client?')) {
-      const { error } = await supabase.from('clients').delete().eq('id', id);
-      if (error) {
-        console.error("Error deleting client:", error);
-      } else {
-        fetchClients();
-      }
+  const confirmDelete = (client) => {
+    setClientToDelete(client);
+    setDeleteConfirmationText('');
+  };
+
+  const handleDelete = async () => {
+    if (!clientToDelete) return;
+    
+    const { error } = await supabase.from('clients').delete().eq('id', clientToDelete.id);
+    if (error) {
+      console.error("Error deleting client:", error);
+      alert("Failed to delete client.");
+    } else {
+      setClientToDelete(null);
+      fetchClients();
     }
   };
 
@@ -82,7 +92,7 @@ const Clients = () => {
                     <td className="p-4 text-gray-400">{client.email}</td>
                     <td className="p-4 text-gray-400">{client.phone}</td>
                     <td className="p-4 text-right">
-                      <button onClick={() => handleDelete(client.id)} className="text-red-400 hover:text-red-300 p-2">
+                      <button onClick={() => confirmDelete(client)} className="text-red-400 hover:text-red-300 p-2 transition-colors">
                         <FaTrash />
                       </button>
                     </td>
@@ -125,6 +135,49 @@ const Clients = () => {
                 <button type="submit" className="flex-1 px-4 py-2 bg-[#00AEEF] hover:bg-[#0095CC] text-white rounded-lg transition-colors shadow-lg shadow-[#00AEEF]/20">Save</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {clientToDelete && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 border border-red-900/30 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <h2 className="text-2xl font-bold text-red-500 mb-2">Delete Client?</h2>
+            <p className="text-gray-300 text-sm mb-6">
+              This action cannot be undone. You are about to permanently delete <strong className="text-white">{clientToDelete.name}</strong> from the database.
+            </p>
+            
+            <div className="mb-6">
+              <label className="block text-gray-400 text-sm mb-2">
+                Type <span className="font-mono text-red-400 font-bold bg-red-900/20 px-2 py-0.5 rounded">DELETE</span> to confirm
+              </label>
+              <input 
+                type="text" 
+                value={deleteConfirmationText} 
+                onChange={e => setDeleteConfirmationText(e.target.value)} 
+                placeholder="DELETE"
+                className="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-red-500" 
+              />
+            </div>
+            
+            <div className="flex gap-4">
+              <button 
+                type="button" 
+                onClick={() => setClientToDelete(null)} 
+                className="flex-1 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                onClick={handleDelete}
+                disabled={deleteConfirmationText !== 'DELETE'}
+                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-500 disabled:bg-gray-800 disabled:text-gray-500 text-white rounded-lg transition-colors"
+              >
+                Permanently Delete
+              </button>
+            </div>
           </div>
         </div>
       )}
