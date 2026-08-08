@@ -10,8 +10,10 @@ const Billing = () => {
     invoiceDate: new Date().toISOString().split('T')[0],
     dueDate: '',
     items: [{ description: '', quantity: 1, price: 0 }],
-    taxRate: 18, // Default 18% GST for example
-    notes: 'Thank you for your business!'
+    taxRate: 0,
+    advanceReceived: 0,
+    includedInPackage: 'Business Website\nAdmin Portal\nQR Campaign System\nQR Generation System\nQR Validation System\n3 Years Domain Registration',
+    notes: 'Hosting/VPS charges are separate and will be billed only if required.\nOne minor website change/update is included free of charge after delivery.'
   });
 
   useEffect(() => {
@@ -41,6 +43,20 @@ const Billing = () => {
     setFormData({ ...formData, items: newItems });
   };
 
+  const loadBase64Image = async (url) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+    } catch (e) {
+      return null;
+    }
+  };
+
   const generatePDF = async (e) => {
     e.preventDefault();
     if (!formData.clientId) {
@@ -51,110 +67,371 @@ const Billing = () => {
     const client = clients.find(c => c.id === formData.clientId);
     if (!client) return;
 
-    const doc = new jsPDF();
-    const invoiceNumber = `INV-${Date.now().toString().slice(-6)}`;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = doc.internal.pageSize.getWidth(); // 210
+    const margin = 15;
     
+    // Format Date: e.g., "18 June 2026"
+    const dateObj = new Date(formData.invoiceDate);
+    const formattedDate = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    const invoiceNumber = `INV-${dateObj.getFullYear()}-${Date.now().toString().slice(-4)}`;
+
     // Brand Colors
-    const primaryColor = [0, 174, 239]; // #00AEEF
+    const primaryBlue = [11, 66, 164];    // #0B42A4
+    const bgBlue = [238, 245, 255];       // Light Blue for boxes
+    const borderBlue = [180, 200, 235];   // Box borders
+    const textGray = [80, 80, 80];        // Standard text
+    const textDark = [30, 30, 30];        // Headings
+    const redAccent = [217, 48, 37];      // Red text
 
-    // Header
-    doc.setFontSize(24);
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-    doc.text("KrGo", 14, 22);
-    
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
-    doc.text("Digital Consultancy Services", 14, 28);
-    
-    // Invoice details (Right aligned)
+    let y = margin + 5;
+
+    // ==========================================
+    // 1. HEADER SECTION
+    // ==========================================
+    // Left: KG Logo Box
+    doc.setFillColor(...primaryBlue);
+    doc.roundedRect(margin, y, 22, 22, 3, 3, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.text("KG", margin + 11, y + 15, { align: "center" });
+
+    // Left: Company Info
+    doc.setTextColor(...primaryBlue);
     doc.setFontSize(20);
-    doc.setTextColor(40, 40, 40);
-    doc.text("INVOICE", 150, 22);
+    doc.text("KRGO", margin + 28, y + 8);
+    doc.setTextColor(...textDark);
+    doc.setFontSize(14);
+    doc.text("SOFTWARE SOLUTIONS", margin + 28, y + 15);
+    doc.setTextColor(...primaryBlue);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.text("Web Development & Digital Solutions", margin + 28, y + 21);
+
+    // Right: Contact Info (Placeholder circles for icons)
+    const contactX = pageWidth - margin - 45;
+    doc.setFontSize(9);
+    doc.setTextColor(...textDark);
     
-    doc.setFontSize(10);
-    doc.text(`Invoice #: ${invoiceNumber}`, 150, 30);
-    doc.text(`Date: ${formData.invoiceDate}`, 150, 35);
-    doc.text(`Due Date: ${formData.dueDate || 'N/A'}`, 150, 40);
+    // Phone
+    doc.setFillColor(...primaryBlue);
+    doc.circle(contactX - 5, y + 4, 3, 'F');
+    doc.text("+91 9325791196", contactX, y + 5);
+    // Email
+    doc.circle(contactX - 5, y + 12, 3, 'F');
+    doc.text("krgo427@gmail.com", contactX, y + 13);
+    // Location
+    doc.circle(contactX - 5, y + 20, 3, 'F');
+    doc.text("India", contactX, y + 21);
 
-    // Bill To
+    // Separator Line
+    y += 30;
+    doc.setDrawColor(...primaryBlue);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, pageWidth - margin, y);
+
+    // ==========================================
+    // 2. TITLE "INVOICE"
+    // ==========================================
+    y += 12;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(...primaryBlue);
+    doc.text("INVOICE", pageWidth / 2, y, { align: "center" });
+    // Decorative lines next to INVOICE
+    doc.line(pageWidth / 2 - 40, y - 2, pageWidth / 2 - 25, y - 2);
+    doc.circle(pageWidth / 2 - 23, y - 2, 1, 'F');
+    doc.circle(pageWidth / 2 + 23, y - 2, 1, 'F');
+    doc.line(pageWidth / 2 + 25, y - 2, pageWidth / 2 + 40, y - 2);
+
+    // ==========================================
+    // 3. INVOICE META BOX
+    // ==========================================
+    y += 8;
+    doc.setDrawColor(...borderBlue);
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(margin, y, pageWidth - margin * 2, 18, 2, 2, 'FD');
+    doc.line(pageWidth / 2, y, pageWidth / 2, y + 18); // Center divider
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(...primaryBlue);
+    doc.text("Invoice No.", margin + 5, y + 6);
+    doc.text("Date", pageWidth / 2 + 5, y + 6);
+
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
-    doc.setTextColor(40, 40, 40);
-    doc.text("Bill To:", 14, 50);
-    doc.setFontSize(10);
-    doc.text(`${client.name}`, 14, 56);
-    if (client.company) doc.text(`${client.company}`, 14, 61);
-    doc.text(`${client.email}`, 14, 66);
-    if (client.phone) doc.text(`${client.phone}`, 14, 71);
+    doc.setTextColor(...textDark);
+    doc.text(invoiceNumber, margin + 5, y + 13);
+    doc.text(formattedDate, pageWidth / 2 + 5, y + 13);
 
-    // Table Data
-    const tableColumn = ["Description", "Quantity", "Price (₹)", "Total (₹)"];
+    // ==========================================
+    // 4. BILL TO BOX
+    // ==========================================
+    y += 24;
+    doc.setDrawColor(...borderBlue);
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(margin, y, pageWidth - margin * 2, 38, 2, 2, 'FD');
+    
+    // "BILL TO" Blue Tab
+    doc.setFillColor(...primaryBlue);
+    doc.roundedRect(margin - 0.5, y - 0.5, 45, 8, 2, 2, 'F');
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(255, 255, 255);
+    doc.text("BILL TO", margin + 5, y + 5);
+
+    // Client Details
+    doc.setTextColor(...primaryBlue);
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    
+    // Icons (Circles)
+    doc.setFillColor(...primaryBlue);
+    doc.circle(margin + 10, y + 15, 4, 'F');
+    doc.circle(margin + 10, y + 25, 4, 'F');
+    doc.circle(margin + 10, y + 35, 4, 'F');
+
+    doc.text("Client Name", margin + 18, y + 13);
+    doc.text("Business Name", margin + 18, y + 23);
+    doc.text("Phone", margin + 18, y + 33);
+
+    doc.setTextColor(...textDark);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text(client.name, margin + 18, y + 18);
+    doc.text(client.company || 'N/A', margin + 18, y + 28);
+    doc.text(client.phone || 'N/A', margin + 18, y + 38);
+
+    // Right side graphic placeholder (Receipt with Rs symbol)
+    doc.setDrawColor(...borderBlue);
+    doc.setFillColor(...bgBlue);
+    doc.roundedRect(pageWidth - margin - 40, y + 8, 25, 30, 2, 2, 'F');
+    doc.roundedRect(pageWidth - margin - 35, y + 5, 25, 30, 2, 2, 'FD');
+    // Lines on receipt
+    doc.line(pageWidth - margin - 30, y + 12, pageWidth - margin - 15, y + 12);
+    doc.line(pageWidth - margin - 30, y + 16, pageWidth - margin - 15, y + 16);
+    doc.line(pageWidth - margin - 30, y + 20, pageWidth - margin - 15, y + 20);
+    // Rupee circle
+    doc.setFillColor(255, 255, 255);
+    doc.circle(pageWidth - margin - 35, y + 20, 6, 'FD');
+    doc.setTextColor(...primaryBlue);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text("Rs.", pageWidth - margin - 38, y + 21);
+
+    // ==========================================
+    // 5. TABLE SECTION
+    // ==========================================
+    y += 48;
+    const tableColumn = ["Sr. No.", "Description of Services", "Amount (Rs.)"];
     const tableRows = [];
     
     let subtotal = 0;
-    formData.items.forEach(item => {
+    formData.items.forEach((item, index) => {
       const total = item.quantity * item.price;
       subtotal += total;
       tableRows.push([
+        (index + 1).toString(),
         item.description,
-        item.quantity.toString(),
-        item.price.toFixed(2),
-        total.toFixed(2)
+        `Rs. ${total.toLocaleString('en-IN')}`
       ]);
     });
 
-    const tax = subtotal * (formData.taxRate / 100);
-    const grandTotal = subtotal + tax;
+    const advance = Number(formData.advanceReceived) || 0;
+    const balance = subtotal - advance;
 
     autoTable(doc, {
-      startY: 80,
+      startY: y,
       head: [tableColumn],
       body: tableRows,
-      theme: 'striped',
-      headStyles: { fillColor: primaryColor, textColor: 255 },
-      styles: { fontSize: 10, cellPadding: 5 },
+      theme: 'grid',
+      headStyles: { fillColor: primaryBlue, textColor: 255, fontStyle: 'bold', halign: 'center' },
+      bodyStyles: { textColor: textDark, fontSize: 9, cellPadding: 6 },
       columnStyles: {
-        1: { halign: 'center' },
-        2: { halign: 'right' },
-        3: { halign: 'right' }
-      }
+        0: { halign: 'center', cellWidth: 20 },
+        1: { halign: 'left' },
+        2: { halign: 'right', cellWidth: 40 }
+      },
+      alternateRowStyles: { fillColor: [255, 255, 255] }
     });
 
-    const finalY = doc.lastAutoTable.finalY || 80;
+    let finalY = doc.lastAutoTable.finalY || y + 30;
 
-    // Totals
-    doc.setFontSize(10);
-    doc.text(`Subtotal:`, 140, finalY + 10);
-    doc.text(`₹${subtotal.toFixed(2)}`, 170, finalY + 10, { align: 'right' });
+    // ==========================================
+    // 6. PAYMENT SUMMARY
+    // ==========================================
+    finalY += 10;
+    doc.setDrawColor(...borderBlue);
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(margin, finalY, pageWidth - margin * 2, 35, 2, 2, 'FD');
     
-    doc.text(`Tax (${formData.taxRate}%):`, 140, finalY + 18);
-    doc.text(`₹${tax.toFixed(2)}`, 170, finalY + 18, { align: 'right' });
+    // "PAYMENT SUMMARY" Blue Tab
+    doc.setFillColor(...primaryBlue);
+    // Draw polygon for the slant tab
+    doc.lines([[60, 0], [-5, 8], [-55, 0], [0, -8]], margin - 0.5, finalY - 0.5, [1, 1], 'F', true);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    doc.text("PAYMENT SUMMARY", margin + 5, finalY + 5);
+
+    // Left Side (Calculations)
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(...textDark);
+    
+    doc.text("Subtotal", margin + 8, finalY + 16);
+    doc.text(`Rs. ${subtotal.toLocaleString('en-IN')}`, pageWidth / 2, finalY + 16, { align: 'right' });
+
+    doc.text("Advance Received", margin + 8, finalY + 24);
+    doc.text(`Rs. ${advance.toLocaleString('en-IN')}`, pageWidth / 2, finalY + 24, { align: 'right' });
+
+    // Dotted line
+    doc.setDrawColor(...borderBlue);
+    doc.setLineDashPattern([1, 1], 0);
+    doc.line(margin + 5, finalY + 28, pageWidth / 2 + 5, finalY + 28);
+    doc.setLineDashPattern([], 0); // reset
+
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...redAccent);
+    doc.text("Balance Amount Payable", margin + 8, finalY + 33);
+    doc.text(`Rs. ${balance.toLocaleString('en-IN')}`, pageWidth / 2, finalY + 33, { align: 'right' });
+
+    // Right Side (Payment Status)
+    doc.setFillColor(...bgBlue);
+    doc.roundedRect(pageWidth / 2 + 10, finalY + 2, (pageWidth / 2) - margin - 12, 31, 2, 2, 'F');
+    
+    doc.circle(pageWidth * 0.75, finalY + 12, 8, 'S'); // Fake icon
+    doc.setFontSize(9);
+    doc.setTextColor(...primaryBlue);
+    doc.setFont("helvetica", "normal");
+    doc.text("Payment Status", pageWidth * 0.75, finalY + 25, { align: 'center' });
     
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text(`Total:`, 140, finalY + 28);
-    doc.text(`₹${grandTotal.toFixed(2)}`, 170, finalY + 28, { align: 'right' });
+    const paymentStatusText = balance <= 0 ? "FULLY PAID" : (advance > 0 ? "PARTIALLY PAID" : "UNPAID");
+    doc.text(paymentStatusText, pageWidth * 0.75, finalY + 30, { align: 'center' });
 
-    // Notes
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(100, 100, 100);
-    if (formData.notes) {
-      doc.text("Notes:", 14, finalY + 10);
-      doc.text(formData.notes, 14, finalY + 15, { maxWidth: 100 });
-    }
 
-    // Signature Line
-    doc.setDrawColor(0);
-    doc.line(14, finalY + 50, 64, finalY + 50);
-    doc.text("Authorized Signature", 14, finalY + 55);
+    // ==========================================
+    // 7. INCLUDED IN PACKAGE & NOTES
+    // ==========================================
+    finalY += 45;
+    const boxWidth = (pageWidth - margin * 2 - 10) / 2;
     
-    // Simulate digital signature (cursive font)
+    // Left Box (Included)
+    doc.setDrawColor(...borderBlue);
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(margin, finalY, boxWidth, 40, 2, 2, 'FD');
+    doc.setFillColor(...primaryBlue);
+    doc.circle(margin + 8, finalY + 8, 3, 'F');
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("INCLUDED IN PACKAGE", margin + 14, finalY + 9);
+
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...textDark);
+    const includedItems = formData.includedInPackage.split('\n');
+    includedItems.forEach((item, idx) => {
+      if (item.trim()) {
+        doc.setTextColor(...primaryBlue);
+        doc.circle(margin + 6, finalY + 16 + (idx * 5), 1.5, 'F'); // Bullet
+        doc.setTextColor(...textDark);
+        doc.text(item.trim(), margin + 10, finalY + 17 + (idx * 5));
+      }
+    });
+
+    // Right Box (Notes)
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(margin + boxWidth + 10, finalY, boxWidth, 40, 2, 2, 'FD');
+    doc.setFillColor(...primaryBlue);
+    doc.circle(margin + boxWidth + 18, finalY + 8, 3, 'F');
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("NOTES", margin + boxWidth + 24, finalY + 9);
+
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...textDark);
+    const noteItems = formData.notes.split('\n');
+    let noteY = finalY + 16;
+    noteItems.forEach((item) => {
+      if (item.trim()) {
+        doc.circle(margin + boxWidth + 15, noteY - 1, 1, 'F');
+        const splitText = doc.splitTextToSize(item.trim(), boxWidth - 15);
+        doc.text(splitText, margin + boxWidth + 18, noteY);
+        noteY += splitText.length * 4 + 2;
+      }
+    });
+
+    // ==========================================
+    // 8. FOOTER & SIGNATURE
+    // ==========================================
+    finalY += 50;
+    doc.setDrawColor(...primaryBlue);
+    doc.setLineWidth(1);
+    doc.line(margin, finalY, pageWidth - margin, finalY);
+    
+    // Footer Text
+    doc.setFillColor(...primaryBlue);
+    doc.circle(margin + 8, finalY + 10, 6, 'F'); // Handshake placeholder
+    
     doc.setFont("times", "italic");
     doc.setFontSize(16);
-    doc.setTextColor(0, 50, 150);
-    doc.text("KrGo Admin", 20, finalY + 45);
+    doc.setTextColor(...primaryBlue);
+    doc.text("Thank you", margin + 20, finalY + 10);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(...textDark);
+    doc.text("for your business!", margin + 20, finalY + 15);
 
-    // Save PDF
+    // Separator
+    doc.setDrawColor(...borderBlue);
+    doc.setLineWidth(0.5);
+    doc.line(pageWidth / 2 - 10, finalY + 5, pageWidth / 2 - 10, finalY + 18);
+
+    doc.setFontSize(8);
+    doc.setTextColor(...primaryBlue);
+    doc.text("Prepared By", pageWidth / 2, finalY + 10);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...textDark);
+    doc.text("KRGO Software Solutions", pageWidth / 2, finalY + 15);
+
+    // Signature Area
+    const sigX = pageWidth - margin - 40;
+    
+    // Try to load user signature from public folder
+    const signatureBase64 = await loadBase64Image('/signature.png');
+    if (signatureBase64) {
+      try {
+        doc.addImage(signatureBase64, 'PNG', sigX + 5, finalY + 2, 30, 15);
+      } catch(e) {
+        // Fallback cursive text if image fails to add
+        doc.setFont("times", "italic");
+        doc.setFontSize(16);
+        doc.setTextColor(0, 50, 150);
+        doc.text("KrGo Admin", sigX + 5, finalY + 15);
+      }
+    } else {
+      // Fallback cursive text
+      doc.setFont("times", "italic");
+      doc.setFontSize(16);
+      doc.setTextColor(0, 50, 150);
+      doc.text("KrGo Admin", sigX + 5, finalY + 15);
+    }
+    
+    doc.setDrawColor(...textDark);
+    doc.line(sigX, finalY + 18, sigX + 40, finalY + 18);
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    doc.text("Authorized Signature", sigX + 5, finalY + 22);
+
+    // ==========================================
+    // SAVE PDF
+    // ==========================================
     doc.save(`${client.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_invoice_${invoiceNumber}.pdf`);
 
     // Optionally save bill record to Supabase
@@ -162,8 +439,8 @@ const Billing = () => {
       await supabase.from('bills').insert([{
         client_id: client.id,
         invoice_number: invoiceNumber,
-        amount: grandTotal,
-        status: 'generated'
+        amount: balance,
+        status: paymentStatusText.toLowerCase()
       }]);
     } catch (err) {
       console.log("Supabase save optional/failed");
@@ -172,11 +449,13 @@ const Billing = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-white mb-8">Bill Generator</h1>
+      <h1 className="text-3xl font-bold text-white mb-8">Premium Bill Generator</h1>
       
       <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-xl">
-        <form onSubmit={generatePDF} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <form onSubmit={generatePDF} className="space-y-8">
+          
+          {/* CLIENT & DATE */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-950/50 p-6 rounded-xl border border-gray-800/50">
             <div className="col-span-1">
               <label className="block text-gray-400 text-sm mb-2">Select Client</label>
               <select 
@@ -208,7 +487,6 @@ const Billing = () => {
               <label className="block text-gray-400 text-sm mb-2">Due Date</label>
               <input 
                 type="date" 
-                required
                 value={formData.dueDate}
                 onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
                 className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00AEEF]"
@@ -217,24 +495,24 @@ const Billing = () => {
             </div>
           </div>
 
-          <div className="border-t border-gray-800 pt-6">
+          {/* INVOICE ITEMS */}
+          <div>
             <h3 className="text-lg font-medium text-white mb-4">Invoice Items</h3>
-            
             <div className="space-y-4">
               {formData.items.map((item, index) => (
                 <div key={index} className="flex flex-col md:flex-row gap-4 items-end bg-gray-950/50 p-4 rounded-xl border border-gray-800/50">
                   <div className="flex-1 w-full">
-                    <label className="block text-gray-500 text-xs mb-1">Description</label>
+                    <label className="block text-gray-500 text-xs mb-1">Description of Services</label>
                     <input 
                       type="text" 
                       required
-                      placeholder="Service or product description"
+                      placeholder="e.g., Website Development + Admin Portal"
                       value={item.description}
                       onChange={(e) => handleItemChange(index, 'description', e.target.value)}
                       className="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#00AEEF]"
                     />
                   </div>
-                  <div className="w-full md:w-32">
+                  <div className="w-full md:w-24 hidden">
                     <label className="block text-gray-500 text-xs mb-1">Qty</label>
                     <input 
                       type="number" 
@@ -246,11 +524,11 @@ const Billing = () => {
                     />
                   </div>
                   <div className="w-full md:w-40">
-                    <label className="block text-gray-500 text-xs mb-1">Price (₹)</label>
+                    <label className="block text-gray-500 text-xs mb-1">Amount (Rs.)</label>
                     <input 
                       type="number" 
                       min="0"
-                      step="0.01"
+                      step="1"
                       required
                       value={item.price}
                       onChange={(e) => handleItemChange(index, 'price', Number(e.target.value))}
@@ -269,7 +547,6 @@ const Billing = () => {
                 </div>
               ))}
             </div>
-            
             <button 
               type="button" 
               onClick={addItem}
@@ -279,37 +556,51 @@ const Billing = () => {
             </button>
           </div>
 
-          <div className="border-t border-gray-800 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-gray-400 text-sm mb-2">Notes</label>
+          {/* ADVANCE, INCLUDED, NOTES */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div className="col-span-1 space-y-4">
+              <div>
+                <label className="block text-gray-400 text-sm mb-2">Advance Received (Rs.)</label>
+                <input 
+                  type="number"
+                  min="0"
+                  value={formData.advanceReceived}
+                  onChange={(e) => setFormData({...formData, advanceReceived: e.target.value})}
+                  className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00AEEF]"
+                />
+              </div>
+              <div className="bg-gray-950 p-6 rounded-xl border border-gray-800 flex flex-col justify-center h-40">
+                <button 
+                  type="submit"
+                  className="w-full py-4 bg-[#00AEEF] hover:bg-[#0095CC] text-white font-bold text-lg rounded-xl transition-colors shadow-[0_0_15px_rgba(0,174,239,0.3)] flex justify-center items-center gap-2"
+                >
+                  Generate PDF
+                </button>
+                <p className="text-xs text-gray-500 mt-3 text-center">Place signature at public/signature.png</p>
+              </div>
+            </div>
+
+            <div className="col-span-1">
+              <label className="block text-gray-400 text-sm mb-2">Included In Package (One per line)</label>
               <textarea 
-                rows="3"
+                rows="7"
+                value={formData.includedInPackage}
+                onChange={(e) => setFormData({...formData, includedInPackage: e.target.value})}
+                className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00AEEF] resize-none"
+              ></textarea>
+            </div>
+
+            <div className="col-span-1">
+              <label className="block text-gray-400 text-sm mb-2">Notes (One per line)</label>
+              <textarea 
+                rows="7"
                 value={formData.notes}
                 onChange={(e) => setFormData({...formData, notes: e.target.value})}
                 className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00AEEF] resize-none"
               ></textarea>
             </div>
             
-            <div className="bg-gray-950 p-6 rounded-xl border border-gray-800 flex flex-col justify-center">
-              <div className="flex justify-between mb-2">
-                <span className="text-gray-400">Tax Rate (%)</span>
-                <input 
-                  type="number" 
-                  min="0" max="100" 
-                  value={formData.taxRate} 
-                  onChange={(e) => setFormData({...formData, taxRate: Number(e.target.value)})}
-                  className="w-20 bg-gray-900 border border-gray-700 rounded text-right px-2 py-1 text-white text-sm"
-                />
-              </div>
-              
-              <button 
-                type="submit"
-                className="mt-6 w-full py-3 bg-[#00AEEF] hover:bg-[#0095CC] text-white font-semibold rounded-xl transition-colors shadow-[0_0_15px_rgba(0,174,239,0.3)] flex justify-center items-center gap-2"
-              >
-                Generate & Download PDF
-              </button>
-              <p className="text-xs text-gray-500 mt-3 text-center">Your digital signature will be automatically attached.</p>
-            </div>
           </div>
         </form>
       </div>
