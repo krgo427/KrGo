@@ -10,6 +10,7 @@ import ContactPage from './pages/ContactPage'
 import ServiceDetailsPage from './pages/ServiceDetailsPage'
 import CaseStudyMateshwari from './pages/CaseStudyMateshwari'
 import HelpAssistFloat from './components/HelpAssistFloat'
+import ClickSpark from './components/ClickSpark'
 
 // Admin Pages
 import AdminLayout from './pages/admin/AdminLayout'
@@ -39,7 +40,7 @@ function ScrollToTop() {
 
 function App() {
   return (
-    <>
+    <ClickSpark sparkColor="#00AEEF" sparkSize={10} sparkRadius={20} sparkCount={10} duration={400}>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -60,7 +61,7 @@ function App() {
         </Route>
       </Routes>
       <HelpAssistFloat />
-    </>
+    </ClickSpark>
   )
 }
 

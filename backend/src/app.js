@@ -63,7 +63,7 @@ const distPath = path.join(__dirname, "../../dist");
 app.use(express.static(distPath));
 
 // Handle React routing, return all requests to React app
-app.use((req, res, next) => {
+app.use((req, res) => {
   if (req.originalUrl.startsWith("/api") || req.originalUrl.startsWith("/webhook") || req.originalUrl.startsWith("/health")) {
     return res.status(404).json({
       success: false,
