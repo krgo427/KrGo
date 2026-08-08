@@ -252,7 +252,7 @@ const Billing = () => {
         {/* HEADER */}
         <div className="flex justify-between items-start mb-6 border-b-2 border-[#0B42A4] pb-6">
           <div className="flex items-center gap-4">
-            <img src={logoUrl} alt="Logo" className="h-16 w-16 object-contain" />
+            <img src={logoUrl} alt="KrGo Logo" className="h-16 w-auto max-w-[200px] object-contain" />
             <div>
               <h1 className="text-[#0B42A4] text-3xl font-extrabold tracking-wide uppercase m-0 leading-none">KRGO</h1>
               <h2 className="text-gray-900 text-lg font-bold tracking-wide uppercase m-0 leading-tight">Software Solutions</h2>
