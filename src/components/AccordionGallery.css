@@ -1,5 +1,5 @@
 .accordion-gallery {
-  --ag-accent: #ffffff;
+  --ag-accent: #00AEEF;
   --ag-overlay: #060010;
   --ag-text: #ffffff;
   --ag-gap: 10px;
@@ -127,10 +127,12 @@
     perspective: none;
     height: auto !important;
   }
+
   .ag-panel {
     min-height: 84px;
     transform: none !important;
   }
+
   .accordion-gallery .ag-panel__media {
     width: 100%;
     height: var(--ag-media-size);
@@ -138,6 +140,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .ag-panel,
   .ag-panel__media {
     will-change: auto;
@@ -150,6 +153,7 @@
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

@@ -82,7 +82,7 @@ export default function Industries() {
             height={460} 
             gap={12} 
             radius={20} 
-            accentColor="#a855f7" 
+            accentColor="#00AEEF" 
             grayscale={false} 
             trigger="hover" 
           />
