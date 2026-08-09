@@ -219,7 +219,7 @@ const BillingApp = () => {
       </div>
 
       {/* Hidden Print Container - Only visible during window.print() */}
-      <div className="hidden print:block absolute top-0 left-0 w-full h-full bg-white z-[9999]">
+      <div className="hidden print:flex print:justify-center print:w-full print:bg-white print:m-0 print:p-0">
         {printingInvoice && <InvoicePreview ref={printRef} invoice={printingInvoice} settings={settings} />}
       </div>
     </div>

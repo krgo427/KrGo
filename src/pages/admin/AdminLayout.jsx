@@ -69,10 +69,10 @@ const AdminLayout = () => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-950 text-gray-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-gray-950 text-gray-100 overflow-hidden font-sans print:h-auto print:bg-white print:block">
       {/* Sidebar */}
       <aside
-        className={`bg-gray-900 border-r border-gray-800 transition-all duration-300 flex flex-col ${
+        className={`bg-gray-900 border-r border-gray-800 transition-all duration-300 flex flex-col print:hidden ${
           sidebarOpen ? 'w-64' : 'w-20'
         }`}
       >
@@ -118,8 +118,8 @@ const AdminLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto bg-gray-950 relative">
-        <div className="p-8 max-w-7xl mx-auto">
+      <main className="flex-1 overflow-y-auto bg-gray-950 relative print:static print:bg-white print:overflow-visible print:w-full print:p-0">
+        <div className="p-8 max-w-7xl mx-auto print:p-0 print:max-w-none print:m-0">
           <Outlet />
         </div>
       </main>

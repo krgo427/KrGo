@@ -26,11 +26,9 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
       <style>{`
         @media print {
           @page { margin: 0; size: A4; }
-          body * { visibility: hidden; }
-          #printable-invoice, #printable-invoice * { visibility: visible; }
           #printable-invoice {
-            position: absolute; left: 0; top: 0; width: 210mm; min-height: 297mm;
-            margin: 0; padding: 20mm; background-color: white !important;
+            width: 210mm; min-height: 297mm;
+            margin: 0; padding: 15mm; background-color: white !important;
             color: black !important;
             box-sizing: border-box;
           }
