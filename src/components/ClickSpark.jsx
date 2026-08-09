@@ -142,11 +142,10 @@ const ClickSpark = ({
     >
       <canvas
         ref={canvasRef}
-        className="print:hidden"
+        className="block print:hidden"
         style={{
           width: '100%',
           height: '100%',
-          display: 'block',
           userSelect: 'none',
           position: 'absolute',
           top: 0,
