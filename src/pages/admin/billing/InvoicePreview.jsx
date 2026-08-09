@@ -40,23 +40,23 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
       
       {/* Wrapper to allow preview scaling in UI */}
       <div className="bg-white overflow-hidden shadow-2xl mx-auto rounded-lg print:shadow-none print:rounded-none" style={{ maxWidth: '210mm' }}>
-        <div id="printable-invoice" ref={ref} className="bg-white text-gray-900 font-sans p-[15mm] md:p-[20mm] box-border relative w-full h-full min-h-[297mm]">
+        <div id="printable-invoice" ref={ref} className="bg-white text-gray-900 font-sans p-[15mm] md:p-[20mm] box-border w-full min-h-[297mm] flex flex-col">
           
           {/* HEADER */}
           <div className="flex justify-between items-start mb-12">
             <div className="flex flex-col">
-              <div className="flex items-center gap-4 mb-4">
-                <img src={logoUrl} alt="KrGo Logo" className="h-12 w-auto max-w-[150px] object-contain" />
+              <div className="mb-6">
+                <img src={logoUrl} alt="KrGo Logo" className="h-16 w-auto max-w-[200px] object-contain" />
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-gray-900 uppercase">
+              <h1 className="text-2xl font-bold tracking-tight text-gray-900 uppercase mb-1">
                 {settings?.business_name || 'KrGo Technology Solutions'}
               </h1>
-              <p className="text-xs font-semibold text-[#00AEEF] tracking-widest uppercase mb-4">
+              <p className="text-xs font-bold text-[#00AEEF] tracking-widest uppercase mb-6">
                 Software • Data • AI • Cloud • Business Intelligence
               </p>
-              <div className="text-xs text-gray-600 leading-relaxed">
+              <div className="text-sm text-gray-700 leading-relaxed">
                 {settings?.business_address && <p className="whitespace-pre-wrap">{settings.business_address}</p>}
-                <p className="mt-2">
+                <p className="mt-1">
                   {settings?.business_email && <span>{settings.business_email}</span>}
                   {settings?.business_phone && <span> | {settings.business_phone}</span>}
                 </p>
@@ -95,13 +95,13 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
           <hr className="border-gray-200 mb-8" />
 
           {/* BILL TO */}
-          <div className="mb-10">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Bill To</h3>
+          <div className="mb-12">
+            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 border-b border-gray-100 pb-2">Bill To</h3>
             <div className="text-sm text-gray-800 leading-relaxed">
-              <p className="font-bold text-lg text-gray-900">{invoice.client_name || 'Client Name'}</p>
-              {invoice.client_company && <p className="font-medium text-gray-700">{invoice.client_company}</p>}
-              {invoice.client_address && <p className="whitespace-pre-wrap mt-1 text-gray-600">{invoice.client_address}</p>}
-              <p className="mt-2">
+              <p className="font-bold text-xl text-gray-900 mb-1">{invoice.client_name || 'Client Name'}</p>
+              {invoice.client_company && <p className="font-semibold text-gray-700">{invoice.client_company}</p>}
+              {invoice.client_address && <p className="whitespace-pre-wrap mt-2 text-gray-600">{invoice.client_address}</p>}
+              <p className="mt-2 text-gray-600">
                 {invoice.client_email && <span>{invoice.client_email}</span>}
                 {invoice.client_phone && <span> | {invoice.client_phone}</span>}
               </p>
@@ -225,15 +225,17 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
             </div>
           </div>
 
-          {/* FOOTER SIGNATURE */}
-          <div className="absolute bottom-[20mm] right-[20mm] w-64 text-center">
-             {/* Signature Image (Loaded from public folder) */}
-             <img src="/signature.png" alt="Signature" className="h-16 w-full object-contain mx-auto mb-2" onError={(e) => { e.target.style.display = 'none'; }} />
-             <div className="w-full border-t border-gray-300 pt-3 text-[10px] font-bold text-gray-900 uppercase tracking-widest">
-               For {settings?.business_name || 'KrGo Technology Solutions'}
-               <br />
-               <span className="font-medium text-gray-500">Authorized Signatory</span>
-             </div>
+          {/* FOOTER SIGNATURE - Pushed to bottom naturally without overlap */}
+          <div className="mt-auto pt-16 flex justify-end">
+            <div className="w-64 text-center">
+               {/* Signature Image (Loaded from public folder) */}
+               <img src="/signature.png" alt="Signature" className="h-16 w-full object-contain mx-auto mb-2" onError={(e) => { e.target.style.display = 'none'; }} />
+               <div className="w-full border-t border-gray-300 pt-3 text-[10px] font-bold text-gray-900 uppercase tracking-widest">
+                 For {settings?.business_name || 'KrGo Technology Solutions'}
+                 <br />
+                 <span className="font-medium text-gray-500">Authorized Signatory</span>
+               </div>
+            </div>
           </div>
 
         </div>
