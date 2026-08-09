@@ -142,13 +142,9 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
                   <label className="block text-xs font-medium text-gray-400 mb-1">Due Date</label>
                   <input type="date" value={invoice.due_date} onChange={e => setInvoice({...invoice, due_date: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" style={{ colorScheme: 'dark' }} />
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1">Project Name</label>
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-medium text-gray-400 mb-1">Business Name</label>
                   <input type="text" value={invoice.project_name} onChange={e => setInvoice({...invoice, project_name: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1">PO / Reference No.</label>
-                  <input type="text" value={invoice.reference_number} onChange={e => setInvoice({...invoice, reference_number: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" />
                 </div>
               </div>
             </div>

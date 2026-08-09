@@ -106,21 +106,13 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
             </div>
           </div>
 
-          {/* PROJECT / REF */}
-          {(invoice.project_name || invoice.reference_number) && (
+          {/* BUSINESS NAME */}
+          {invoice.project_name && (
             <div className="flex gap-12 mb-8 bg-gray-50 p-4 rounded-lg border border-gray-100">
-              {invoice.project_name && (
-                <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Project</p>
-                  <p className="text-sm font-medium text-gray-900">{invoice.project_name}</p>
-                </div>
-              )}
-              {invoice.reference_number && (
-                <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Reference / PO</p>
-                  <p className="text-sm font-medium text-gray-900">{invoice.reference_number}</p>
-                </div>
-              )}
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Business Name</p>
+                <p className="text-sm font-medium text-gray-900">{invoice.project_name}</p>
+              </div>
             </div>
           )}
 
