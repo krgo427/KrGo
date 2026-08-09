@@ -104,7 +104,8 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
             <FaEye /> {isPreview ? 'Edit Form' : 'Live Preview'}
           </button>
           <button 
-            onClick={handleSubmit}
+            type="submit"
+            form="invoice-form"
             className="flex items-center gap-2 px-4 py-2 bg-[#00AEEF] hover:bg-[#0095CC] text-white rounded-lg font-medium transition-colors shadow-[0_0_15px_rgba(0,174,239,0.3)]"
           >
             <FaSave /> Save Invoice

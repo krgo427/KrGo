@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS public.invoices (
     status VARCHAR(50) DEFAULT 'Pending',
     
     -- Client Info (Stored directly so past invoices don't change if client changes)
-    client_id UUID REFERENCES public.clients(id) ON DELETE SET NULL,
     client_name VARCHAR(255),
     client_company VARCHAR(255),
     client_email VARCHAR(255),
