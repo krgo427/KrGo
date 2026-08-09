@@ -100,15 +100,19 @@ const BillingApp = () => {
           await supabase.from('invoice_items').insert(itemsToInsert);
         }
       } else {
-        // Update existing (this is simplified for the fallback, complex DB updates require deleting/re-inserting items)
+        // Update existing
         const { items, ...invoiceMeta } = savedInvoice;
-        await supabase.from('invoices').update(invoiceMeta).eq('id', invoiceMeta.id);
+        const { error: updateErr } = await supabase.from('invoices').update(invoiceMeta).eq('id', invoiceMeta.id);
+        if (updateErr) throw updateErr;
         
         // Very basic replace items strategy for simple updates
-        await supabase.from('invoice_items').delete().eq('invoice_id', invoiceMeta.id);
+        const { error: delErr } = await supabase.from('invoice_items').delete().eq('invoice_id', invoiceMeta.id);
+        if (delErr) throw delErr;
+
         if (items && items.length > 0) {
            const itemsToInsert = items.map(item => ({ ...item, invoice_id: invoiceMeta.id, id: undefined }));
-           await supabase.from('invoice_items').insert(itemsToInsert);
+           const { error: insErr } = await supabase.from('invoice_items').insert(itemsToInsert);
+           if (insErr) throw insErr;
         }
       }
       // Re-fetch all data to ensure sync
