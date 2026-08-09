@@ -1,0 +1,245 @@
+import React from 'react';
+import { formatCurrency, numberToWordsIndian } from '../../../utils/currency';
+import logoUrl from '../../../assets/logo.png';
+
+const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
+  if (!invoice) return null;
+
+  const { items = [] } = invoice;
+  const subtotal = invoice.subtotal || 0;
+  const discount = invoice.discount || 0;
+  const total = invoice.total_amount || 0;
+  
+  // Format dates safely
+  const formatDate = (d) => {
+    if (!d) return '';
+    try {
+      const date = new Date(d);
+      return isNaN(date) ? d : date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    } catch {
+      return d;
+    }
+  };
+
+  return (
+    <>
+      <style>{`
+        @media print {
+          @page { margin: 0; size: A4; }
+          body * { visibility: hidden; }
+          #printable-invoice, #printable-invoice * { visibility: visible; }
+          #printable-invoice {
+            position: absolute; left: 0; top: 0; width: 210mm; min-height: 297mm;
+            margin: 0; padding: 20mm; background-color: white !important;
+            color: black !important;
+            box-sizing: border-box;
+          }
+          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+      `}</style>
+      
+      {/* Wrapper to allow preview scaling in UI */}
+      <div className="bg-white overflow-hidden shadow-2xl mx-auto rounded-lg print:shadow-none print:rounded-none" style={{ maxWidth: '210mm' }}>
+        <div id="printable-invoice" ref={ref} className="bg-white text-gray-900 font-sans p-[15mm] md:p-[20mm] box-border relative w-full h-full min-h-[297mm]">
+          
+          {/* HEADER */}
+          <div className="flex justify-between items-start mb-12">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-4 mb-4">
+                <img src={logoUrl} alt="KrGo Logo" className="h-12 w-auto max-w-[150px] object-contain" />
+              </div>
+              <h1 className="text-xl font-bold tracking-tight text-gray-900 uppercase">
+                {settings?.business_name || 'KrGo Technology Solutions'}
+              </h1>
+              <p className="text-xs font-semibold text-[#00AEEF] tracking-widest uppercase mb-4">
+                Software • Data • AI • Cloud • Business Intelligence
+              </p>
+              <div className="text-xs text-gray-600 leading-relaxed">
+                {settings?.business_address && <p className="whitespace-pre-wrap">{settings.business_address}</p>}
+                <p className="mt-2">
+                  {settings?.business_email && <span>{settings.business_email}</span>}
+                  {settings?.business_phone && <span> | {settings.business_phone}</span>}
+                </p>
+                {settings?.business_website && <p>{settings.business_website}</p>}
+              </div>
+            </div>
+
+            <div className="text-right">
+              <h2 className="text-4xl font-light tracking-widest text-gray-300 uppercase mb-8">
+                Invoice
+              </h2>
+              
+              <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-gray-800 text-right">
+                <span className="font-semibold text-gray-500">Invoice No.</span>
+                <span className="font-bold">{invoice.invoice_number || 'DRAFT'}</span>
+                
+                <span className="font-semibold text-gray-500">Invoice Date</span>
+                <span className="font-medium">{formatDate(invoice.invoice_date)}</span>
+                
+                {invoice.due_date && (
+                  <>
+                    <span className="font-semibold text-gray-500 mt-2">Due Date</span>
+                    <span className="font-bold text-gray-900 mt-2">{formatDate(invoice.due_date)}</span>
+                  </>
+                )}
+                {invoice.terms && (
+                  <>
+                    <span className="font-semibold text-gray-500">Terms</span>
+                    <span className="font-medium">{invoice.terms}</span>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <hr className="border-gray-200 mb-8" />
+
+          {/* BILL TO */}
+          <div className="mb-10">
+            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Bill To</h3>
+            <div className="text-sm text-gray-800 leading-relaxed">
+              <p className="font-bold text-lg text-gray-900">{invoice.client_name || 'Client Name'}</p>
+              {invoice.client_company && <p className="font-medium text-gray-700">{invoice.client_company}</p>}
+              {invoice.client_address && <p className="whitespace-pre-wrap mt-1 text-gray-600">{invoice.client_address}</p>}
+              <p className="mt-2">
+                {invoice.client_email && <span>{invoice.client_email}</span>}
+                {invoice.client_phone && <span> | {invoice.client_phone}</span>}
+              </p>
+            </div>
+          </div>
+
+          {/* PROJECT / REF */}
+          {(invoice.project_name || invoice.reference_number) && (
+            <div className="flex gap-12 mb-8 bg-gray-50 p-4 rounded-lg border border-gray-100">
+              {invoice.project_name && (
+                <div>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Project</p>
+                  <p className="text-sm font-medium text-gray-900">{invoice.project_name}</p>
+                </div>
+              )}
+              {invoice.reference_number && (
+                <div>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Reference / PO</p>
+                  <p className="text-sm font-medium text-gray-900">{invoice.reference_number}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ITEMS TABLE */}
+          <div className="mb-8">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b-2 border-gray-900 text-gray-900 text-xs uppercase tracking-widest">
+                  <th className="py-3 px-2 font-bold w-[50%]">Description</th>
+                  <th className="py-3 px-2 font-bold text-center w-[15%]">Qty</th>
+                  <th className="py-3 px-2 font-bold text-right w-[15%]">Rate</th>
+                  <th className="py-3 px-2 font-bold text-right w-[20%]">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="py-8 text-center text-gray-400 text-sm border-b border-gray-200">No items added.</td>
+                  </tr>
+                ) : (
+                  items.map((item, index) => (
+                    <tr key={index} className="border-b border-gray-200 text-sm">
+                      <td className="py-4 px-2">
+                        <p className="font-semibold text-gray-900">{item.service_name || 'Service'}</p>
+                        {item.description && <p className="text-gray-500 mt-1 text-xs whitespace-pre-wrap leading-relaxed">{item.description}</p>}
+                      </td>
+                      <td className="py-4 px-2 text-center text-gray-700">{item.quantity}</td>
+                      <td className="py-4 px-2 text-right text-gray-700">{formatCurrency(item.rate, invoice.currency)}</td>
+                      <td className="py-4 px-2 text-right font-semibold text-gray-900">{formatCurrency(item.amount, invoice.currency)}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* TOTALS & WORDS */}
+          <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12">
+            {/* Amount in words */}
+            <div className="w-full md:w-1/2 pt-4">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Amount in Words</p>
+              <p className="text-sm font-semibold text-gray-800 italic">
+                {numberToWordsIndian(total)}
+              </p>
+            </div>
+
+            {/* Totals Box */}
+            <div className="w-full md:w-[40%] bg-gray-50 rounded-lg p-6 border border-gray-200">
+              <div className="flex justify-between py-2 text-sm text-gray-600">
+                <span className="font-medium">Subtotal</span>
+                <span className="font-medium">{formatCurrency(subtotal, invoice.currency)}</span>
+              </div>
+              {discount > 0 && (
+                <div className="flex justify-between py-2 text-sm text-gray-600">
+                  <span className="font-medium">Discount</span>
+                  <span className="font-medium text-red-600">-{formatCurrency(discount, invoice.currency)}</span>
+                </div>
+              )}
+              {invoice.tax_amount > 0 && (
+                <div className="flex justify-between py-2 text-sm text-gray-600">
+                  <span className="font-medium">{invoice.tax_type || 'Tax'}</span>
+                  <span className="font-medium">{formatCurrency(invoice.tax_amount, invoice.currency)}</span>
+                </div>
+              )}
+              <div className="flex justify-between py-4 mt-2 text-lg font-bold text-gray-900 border-t-2 border-gray-900">
+                <span className="uppercase tracking-widest text-sm self-center">Total Due</span>
+                <span>{formatCurrency(total, invoice.currency)}</span>
+              </div>
+            </div>
+          </div>
+
+          <hr className="border-gray-200 mb-8" />
+
+          {/* PAYMENT & NOTES */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-sm text-gray-600 mb-12">
+            <div>
+              <h3 className="font-bold text-gray-900 mb-3 uppercase tracking-widest text-xs border-b border-gray-200 pb-2">Payment Details</h3>
+              <div className="space-y-1.5 mt-4">
+                {settings?.bank_name && <p><span className="font-semibold text-gray-800">Bank:</span> {settings.bank_name}</p>}
+                {settings?.account_holder && <p><span className="font-semibold text-gray-800">Account Name:</span> {settings.account_holder}</p>}
+                {settings?.account_number && <p><span className="font-semibold text-gray-800">Account No:</span> {settings.account_number}</p>}
+                {settings?.ifsc_code && <p><span className="font-semibold text-gray-800">IFSC Code:</span> {settings.ifsc_code}</p>}
+                {settings?.upi_id && <p className="mt-2 pt-2 border-t border-gray-100"><span className="font-semibold text-gray-800">UPI ID:</span> {settings.upi_id}</p>}
+              </div>
+            </div>
+
+            <div>
+              {invoice.notes && (
+                <div className="mb-6">
+                  <h3 className="font-bold text-gray-900 mb-3 uppercase tracking-widest text-xs border-b border-gray-200 pb-2">Notes</h3>
+                  <p className="whitespace-pre-wrap text-sm leading-relaxed mt-4">{invoice.notes}</p>
+                </div>
+              )}
+              {invoice.terms && (
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-3 uppercase tracking-widest text-xs border-b border-gray-200 pb-2">Terms & Conditions</h3>
+                  <p className="whitespace-pre-wrap text-xs text-gray-500 leading-relaxed mt-4">{invoice.terms}</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* FOOTER SIGNATURE */}
+          <div className="absolute bottom-[20mm] right-[20mm] w-64 text-center">
+             {/* Signature Image (Loaded from public folder) */}
+             <img src="/signature.png" alt="Signature" className="h-16 w-full object-contain mx-auto mb-2" onError={(e) => { e.target.style.display = 'none'; }} />
+             <div className="w-full border-t border-gray-300 pt-3 text-[10px] font-bold text-gray-900 uppercase tracking-widest">
+               For {settings?.business_name || 'KrGo Technology Solutions'}
+               <br />
+               <span className="font-medium text-gray-500">Authorized Signatory</span>
+             </div>
+          </div>
+
+        </div>
+      </div>
+    </>
+  );
+});
+
+export default InvoicePreview;
