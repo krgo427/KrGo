@@ -154,7 +154,7 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
               <h3 className="text-lg font-semibold text-white mb-4 border-b border-gray-800 pb-2">Client Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-medium text-gray-400 mb-1">Client Name / Business Name *</label>
+                  <label className="block text-xs font-medium text-gray-400 mb-1">Client Name *</label>
                   <input required type="text" value={invoice.client_name} onChange={e => setInvoice({...invoice, client_name: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" />
                 </div>
                 <div>
