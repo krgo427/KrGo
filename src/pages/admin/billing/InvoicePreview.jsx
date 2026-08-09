@@ -227,7 +227,7 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
           <div className="mt-auto pt-16 flex justify-end">
             <div className="w-64 text-center">
                {/* Signature Image (Loaded from public folder) */}
-               <img src="/signature.png" alt="Signature" className="h-16 w-full object-contain mx-auto mb-2" onError={(e) => { e.target.style.display = 'none'; }} />
+               <img src="/signature.png" alt="Signature" className="h-16 w-full object-contain mx-auto mb-2" />
                <div className="w-full border-t border-gray-300 pt-3 text-[10px] font-bold text-gray-900 uppercase tracking-widest">
                  For {settings?.business_name || 'KrGo Technology Solutions'}
                  <br />
