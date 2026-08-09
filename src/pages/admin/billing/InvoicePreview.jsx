@@ -74,12 +74,7 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
                 <span className="font-semibold text-gray-500">Invoice Date</span>
                 <span className="font-medium">{formatDate(invoice.invoice_date)}</span>
                 
-                {invoice.due_date && (
-                  <>
-                    <span className="font-semibold text-gray-500 mt-2">Due Date</span>
-                    <span className="font-bold text-gray-900 mt-2">{formatDate(invoice.due_date)}</span>
-                  </>
-                )}
+
                 {invoice.terms && (
                   <>
                     <span className="font-semibold text-gray-500">Terms</span>
@@ -165,12 +160,7 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
                 <span className="font-medium">Subtotal</span>
                 <span className="font-medium">{formatCurrency(subtotal, invoice.currency)}</span>
               </div>
-              {discount > 0 && (
-                <div className="flex justify-between py-2 text-sm text-gray-600">
-                  <span className="font-medium">Discount</span>
-                  <span className="font-medium text-red-600">-{formatCurrency(discount, invoice.currency)}</span>
-                </div>
-              )}
+
               {invoice.tax_amount > 0 && (
                 <div className="flex justify-between py-2 text-sm text-gray-600">
                   <span className="font-medium">{invoice.tax_type || 'Tax'}</span>
@@ -178,7 +168,7 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
                 </div>
               )}
               <div className="flex justify-between py-4 mt-2 text-lg font-bold text-gray-900 border-t-2 border-gray-900">
-                <span className="uppercase tracking-widest text-sm self-center">Total Due</span>
+                <span className="uppercase tracking-widest text-sm self-center">Total Amount</span>
                 <span>{formatCurrency(total, invoice.currency)}</span>
               </div>
             </div>
