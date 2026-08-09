@@ -260,10 +260,10 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
 
         {/* PREVIEW STICKY SECTION */}
         <div className={`xl:sticky top-6 ${isPreview ? 'block w-full' : 'hidden xl:block'}`}>
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-4 shadow-xl overflow-x-auto">
-            <h3 className="text-gray-400 text-xs uppercase tracking-widest font-bold mb-4 text-center">Live PDF Preview</h3>
-            {/* The scale keeps it readable on smaller admin screens */}
-            <div className="origin-top flex justify-center w-full" style={{ transform: 'scale(0.85)', marginBottom: '-15%' }}>
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl w-full flex flex-col items-center overflow-hidden">
+            <h3 className="text-gray-400 text-xs uppercase tracking-widest font-bold mb-6 text-center">Live PDF Preview</h3>
+            {/* Proper scaling container for fixed 210mm A4 page */}
+            <div className="relative origin-top" style={{ transform: 'scale(0.55)', width: '210mm', height: '297mm', marginBottom: '-60%' }}>
               <InvoicePreview invoice={invoice} settings={settings} />
             </div>
           </div>

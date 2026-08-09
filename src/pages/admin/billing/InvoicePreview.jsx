@@ -39,8 +39,8 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
       `}</style>
       
       {/* Wrapper to allow preview scaling in UI */}
-      <div className="bg-white overflow-hidden shadow-2xl mx-auto rounded-lg print:shadow-none print:rounded-none" style={{ maxWidth: '210mm' }}>
-        <div id="printable-invoice" ref={ref} className="bg-white text-gray-900 font-sans p-[15mm] md:p-[20mm] box-border w-full min-h-[297mm] flex flex-col">
+      <div className="bg-white shadow-2xl mx-auto print:shadow-none print:rounded-none" style={{ width: '210mm', minWidth: '210mm', minHeight: '297mm' }}>
+        <div id="printable-invoice" ref={ref} className="bg-white text-gray-900 font-sans p-[15mm] md:p-[20mm] box-border w-[210mm] min-h-[297mm] flex flex-col mx-auto relative overflow-hidden">
           
           {/* HEADER */}
           <div className="flex justify-between items-start mb-12">
