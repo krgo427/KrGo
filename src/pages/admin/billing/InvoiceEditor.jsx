@@ -82,10 +82,24 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (!invoice.client_name.trim()) {
+      alert("Please enter a Client Name.");
+      return;
+    }
+    
     if (invoice.items.length === 0) {
       alert("Please add at least one line item.");
       return;
     }
+
+    // Check if items have names
+    const invalidItem = invoice.items.find(item => !item.service_name.trim());
+    if (invalidItem) {
+      alert("Please provide a Service name for all line items.");
+      return;
+    }
+
     onSave(invoice);
   };
 
@@ -124,7 +138,7 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1">Invoice Number *</label>
-                  <input required type="text" value={invoice.invoice_number} onChange={e => setInvoice({...invoice, invoice_number: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" />
+                  <input type="text" value={invoice.invoice_number} onChange={e => setInvoice({...invoice, invoice_number: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1">Status</label>
@@ -137,7 +151,7 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1">Invoice Date *</label>
-                  <input required type="date" value={invoice.invoice_date} onChange={e => setInvoice({...invoice, invoice_date: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" style={{ colorScheme: 'dark' }} />
+                  <input type="date" value={invoice.invoice_date} onChange={e => setInvoice({...invoice, invoice_date: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" style={{ colorScheme: 'dark' }} />
                 </div>
 
                 <div className="md:col-span-2">
@@ -153,7 +167,7 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <label className="block text-xs font-medium text-gray-400 mb-1">Client Name *</label>
-                  <input required type="text" value={invoice.client_name} onChange={e => setInvoice({...invoice, client_name: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" />
+                  <input type="text" value={invoice.client_name} onChange={e => setInvoice({...invoice, client_name: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1">Email</label>
@@ -176,11 +190,11 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
                     <div className="grid grid-cols-12 gap-4">
                       <div className="col-span-12 md:col-span-7">
                         <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Service</label>
-                        <input required type="text" placeholder="e.g. Website Development" value={item.service_name} onChange={e => handleItemChange(index, 'service_name', e.target.value)} className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-1.5 text-white text-sm focus:border-[#00AEEF] outline-none" />
+                        <input type="text" placeholder="e.g. Website Development" value={item.service_name} onChange={e => handleItemChange(index, 'service_name', e.target.value)} className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-1.5 text-white text-sm focus:border-[#00AEEF] outline-none" />
                       </div>
                       <div className="col-span-8 md:col-span-3">
                         <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Rate ({invoice.currency})</label>
-                        <input required type="number" min="0" step="0.01" value={item.rate} onChange={e => handleItemChange(index, 'rate', e.target.value)} className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-1.5 text-white text-sm focus:border-[#00AEEF] outline-none" />
+                        <input type="number" min="0" step="0.01" value={item.rate} onChange={e => handleItemChange(index, 'rate', e.target.value)} className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-1.5 text-white text-sm focus:border-[#00AEEF] outline-none" />
                       </div>
                       <div className="col-span-12 md:col-span-2 flex justify-end md:justify-center items-end pb-1.5">
                          {invoice.items.length > 1 && (
