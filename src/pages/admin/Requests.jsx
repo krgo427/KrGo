@@ -5,6 +5,8 @@ import { FaTrash, FaCheck } from 'react-icons/fa';
 const Requests = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [requestToDelete, setRequestToDelete] = useState(null);
+  const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
 
   useEffect(() => {
     fetchRequests();
@@ -28,13 +30,18 @@ const Requests = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Delete this request?')) {
-      const { error } = await supabase.from('contact_requests').delete().eq('id', id);
-      if (!error) {
-        fetchRequests();
-      }
+  const confirmDelete = (request) => {
+    setRequestToDelete(request);
+    setDeleteConfirmationText('');
+  };
+
+  const executeDelete = async () => {
+    if (!requestToDelete) return;
+    const { error } = await supabase.from('contact_requests').delete().eq('id', requestToDelete.id);
+    if (!error) {
+      fetchRequests();
     }
+    setRequestToDelete(null);
   };
 
   return (
@@ -62,7 +69,7 @@ const Requests = () => {
                     <FaCheck />
                   </button>
                   <button 
-                    onClick={() => handleDelete(req.id)}
+                    onClick={() => confirmDelete(req)}
                     className="p-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors"
                   >
                     <FaTrash />
@@ -78,6 +85,47 @@ const Requests = () => {
               No contact requests found.
             </div>
           )}
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {requestToDelete && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-2xl max-w-md w-full mx-4">
+            <h2 className="text-2xl font-bold text-red-500 mb-2">Delete Request?</h2>
+            <p className="text-gray-400 mb-6 text-sm leading-relaxed">
+              This action cannot be undone. You are about to permanently delete the contact request from <strong className="text-white">{requestToDelete.name}</strong>.
+            </p>
+            
+            <div className="mb-6">
+              <label className="block text-xs font-medium text-gray-500 mb-2">
+                Type <span className="font-mono text-red-400 font-bold bg-red-900/20 px-2 py-0.5 rounded">DELETE</span> to confirm
+              </label>
+              <input 
+                type="text" 
+                value={deleteConfirmationText} 
+                onChange={e => setDeleteConfirmationText(e.target.value)} 
+                placeholder="DELETE"
+                className="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-white focus:border-red-500 outline-none transition-colors"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setRequestToDelete(null)} 
+                className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={executeDelete}
+                disabled={deleteConfirmationText !== 'DELETE'}
+                className="px-6 py-2 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-all"
+              >
+                Permanently Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

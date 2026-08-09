@@ -143,7 +143,7 @@ const BillingDashboard = ({ invoices, onNavigate, onEdit, onDuplicate, onDelete,
                         <button onClick={() => onDuplicate(inv)} className="hover:text-green-400 transition-colors" title="Duplicate">
                           <FaCopy />
                         </button>
-                        <button onClick={() => onDelete(inv.id)} className="hover:text-red-400 transition-colors" title="Delete">
+                        <button onClick={() => onDelete(inv)} className="hover:text-red-400 transition-colors" title="Delete">
                           <FaTrash />
                         </button>
                       </div>
