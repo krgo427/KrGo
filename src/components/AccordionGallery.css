@@ -103,7 +103,7 @@
   width: 3px;
   height: 26px;
   border-radius: 3px;
-  background: var(--ag-accent);
+  background: #00AEEF;
   opacity: 0;
   box-shadow: 0 0 12px color-mix(in srgb, var(--ag-accent) 60%, transparent);
 }
