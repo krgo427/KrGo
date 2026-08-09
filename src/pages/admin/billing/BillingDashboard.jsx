@@ -2,7 +2,7 @@ import React from 'react';
 import { formatCurrency } from '../../../utils/currency';
 import { FaFileInvoice, FaCheckCircle, FaClock, FaExclamationCircle, FaPlus, FaEye, FaEdit, FaPrint, FaTrash, FaCopy } from 'react-icons/fa';
 
-const BillingDashboard = ({ invoices, onNavigate, onEdit, onDuplicate, onDelete, onPrint }) => {
+const BillingDashboard = ({ invoices, onNavigate, onEdit, onDuplicate, onDelete, onPrint, onStatusChange }) => {
   // Calculate Stats
   const totalInvoices = invoices.length;
   const paidInvoices = invoices.filter(i => i.status.toLowerCase() === 'paid');
@@ -14,13 +14,7 @@ const BillingDashboard = ({ invoices, onNavigate, onEdit, onDuplicate, onDelete,
     .filter(i => ['pending', 'overdue'].includes(i.status.toLowerCase()))
     .reduce((acc, inv) => acc + (inv.total_amount || 0), 0);
 
-  const getStatusBadge = (status) => {
-    const s = status.toLowerCase();
-    if (s === 'paid') return <span className="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full text-xs font-medium">Paid</span>;
-    if (s === 'overdue') return <span className="px-3 py-1 bg-red-500/10 text-red-400 border border-red-500/20 rounded-full text-xs font-medium">Overdue</span>;
-    if (s === 'draft') return <span className="px-3 py-1 bg-gray-500/10 text-gray-400 border border-gray-500/20 rounded-full text-xs font-medium">Draft</span>;
-    return <span className="px-3 py-1 bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 rounded-full text-xs font-medium">Pending</span>;
-  };
+
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -122,7 +116,21 @@ const BillingDashboard = ({ invoices, onNavigate, onEdit, onDuplicate, onDelete,
                       {formatCurrency(inv.total_amount, inv.currency)}
                     </td>
                     <td className="px-6 py-4">
-                      {getStatusBadge(inv.status)}
+                      <select 
+                        value={inv.status} 
+                        onChange={(e) => onStatusChange(inv.id, e.target.value)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium border appearance-none cursor-pointer outline-none text-center ${
+                          inv.status.toLowerCase() === 'paid' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
+                          inv.status.toLowerCase() === 'overdue' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
+                          inv.status.toLowerCase() === 'draft' ? 'bg-gray-500/10 text-gray-400 border-gray-500/20' :
+                          'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                        }`}
+                      >
+                        <option value="Draft" className="bg-gray-900 text-white">Draft</option>
+                        <option value="Pending" className="bg-gray-900 text-white">Pending</option>
+                        <option value="Paid" className="bg-gray-900 text-white">Paid</option>
+                        <option value="Overdue" className="bg-gray-900 text-white">Overdue</option>
+                      </select>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-3 text-gray-400">

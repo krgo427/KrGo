@@ -34,7 +34,7 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
 
   // Recalculate totals whenever items, discount, or tax change
   useEffect(() => {
-    const subtotal = invoice.items.reduce((acc, item) => acc + (Number(item.quantity) * Number(item.rate)), 0);
+    const subtotal = invoice.items.reduce((acc, item) => acc + ((Number(item.quantity) || 1) * Number(item.rate)), 0);
     const discount = Number(invoice.discount) || 0;
     let taxableAmount = subtotal - discount;
     let taxAmount = 0;
@@ -62,7 +62,7 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
     
     // Auto calculate line amount
     if (field === 'quantity' || field === 'rate') {
-      newItems[index].amount = Number(newItems[index].quantity) * Number(newItems[index].rate);
+      newItems[index].amount = (Number(newItems[index].quantity) || 1) * Number(newItems[index].rate);
     }
     
     setInvoice({ ...invoice, items: newItems });

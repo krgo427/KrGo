@@ -146,6 +146,18 @@ const BillingApp = () => {
     }
   };
 
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      const { error } = await supabase.from('invoices').update({ status: newStatus }).eq('id', id);
+      if (error) throw error;
+      loadData();
+    } catch (err) {
+      const newInvoices = invoices.map(i => i.id === id ? { ...i, status: newStatus } : i);
+      setInvoices(newInvoices);
+      localStorage.setItem(STORAGE_KEY_INVOICES, JSON.stringify(newInvoices));
+    }
+  };
+
   const handlePrint = (invoice) => {
     setPrintingInvoice(invoice);
     // Allow React to render the hidden component before calling print
@@ -198,6 +210,7 @@ const BillingApp = () => {
             }}
             onDelete={handleDeleteInvoice}
             onPrint={handlePrint}
+            onStatusChange={handleStatusChange}
           />
         )}
 
