@@ -32,7 +32,7 @@ export default function HelpAssistFloat() {
   return (
     <Link
       to="/contact"
-      className={`fixed bottom-6 right-6 bg-accent text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(0,174,239,0.4)] transition-all duration-300 z-50 hover:scale-110 hover:-translate-y-1 group hover:brightness-110 ${
+      className={`print:hidden fixed bottom-6 right-6 bg-accent text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(0,174,239,0.4)] transition-all duration-300 z-50 hover:scale-110 hover:-translate-y-1 group hover:brightness-110 ${
         showBorder ? 'border-2 border-white' : 'border-2 border-transparent'
       }`}
       aria-label="Get Help / Assistance"
