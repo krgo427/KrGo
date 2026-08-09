@@ -162,10 +162,7 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
                   <label className="block text-xs font-medium text-gray-400 mb-1">Phone</label>
                   <input type="text" value={invoice.client_phone} onChange={e => setInvoice({...invoice, client_phone: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" />
                 </div>
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-medium text-gray-400 mb-1">Billing Address</label>
-                  <textarea rows="2" value={invoice.client_address} onChange={e => setInvoice({...invoice, client_address: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none resize-none"></textarea>
-                </div>
+
               </div>
             </div>
 
@@ -176,13 +173,9 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
                 {invoice.items.map((item, index) => (
                   <div key={index} className="bg-gray-950/50 p-4 rounded-xl border border-gray-800">
                     <div className="grid grid-cols-12 gap-4">
-                      <div className="col-span-12 md:col-span-5">
+                      <div className="col-span-12 md:col-span-7">
                         <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Service</label>
                         <input required type="text" placeholder="e.g. Website Development" value={item.service_name} onChange={e => handleItemChange(index, 'service_name', e.target.value)} className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-1.5 text-white text-sm focus:border-[#00AEEF] outline-none" />
-                      </div>
-                      <div className="col-span-4 md:col-span-2">
-                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Qty</label>
-                        <input required type="number" min="0.01" step="0.01" value={item.quantity} onChange={e => handleItemChange(index, 'quantity', e.target.value)} className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-1.5 text-white text-sm focus:border-[#00AEEF] outline-none" />
                       </div>
                       <div className="col-span-8 md:col-span-3">
                         <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Rate ({invoice.currency})</label>

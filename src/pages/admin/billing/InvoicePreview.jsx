@@ -93,7 +93,6 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
             <div className="text-sm text-gray-800 leading-relaxed">
               <p className="font-bold text-xl text-gray-900 mb-1">{invoice.client_name || 'Client Name'}</p>
               {invoice.client_company && <p className="font-semibold text-gray-700">{invoice.client_company}</p>}
-              {invoice.client_address && <p className="whitespace-pre-wrap mt-2 text-gray-600">{invoice.client_address}</p>}
               <p className="mt-2 text-gray-600">
                 {invoice.client_email && <span>{invoice.client_email}</span>}
                 {invoice.client_phone && <span> | {invoice.client_phone}</span>}
@@ -116,8 +115,7 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b-2 border-gray-900 text-gray-900 text-xs uppercase tracking-widest">
-                  <th className="py-3 px-2 font-bold w-[50%]">Description</th>
-                  <th className="py-3 px-2 font-bold text-center w-[15%]">Qty</th>
+                  <th className="py-3 px-2 font-bold w-[65%]">Description</th>
                   <th className="py-3 px-2 font-bold text-right w-[15%]">Rate</th>
                   <th className="py-3 px-2 font-bold text-right w-[20%]">Amount</th>
                 </tr>
@@ -134,7 +132,6 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
                         <p className="font-semibold text-gray-900">{item.service_name || 'Service'}</p>
                         {item.description && <p className="text-gray-500 mt-1 text-xs whitespace-pre-wrap leading-relaxed">{item.description}</p>}
                       </td>
-                      <td className="py-4 px-2 text-center text-gray-700">{item.quantity}</td>
                       <td className="py-4 px-2 text-right text-gray-700">{formatCurrency(item.rate, invoice.currency)}</td>
                       <td className="py-4 px-2 text-right font-semibold text-gray-900">{formatCurrency(item.amount, invoice.currency)}</td>
                     </tr>
