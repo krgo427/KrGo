@@ -1,15 +1,17 @@
 import React from 'react';
-import { formatCurrency, numberToWordsIndian } from '../../../utils/currency';
-import logoUrl from '../../../assets/logo.png';
+import { formatCurrency } from '../../../utils/currency';
+import { 
+  FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaUserAlt, 
+  FaBriefcase, FaCheckCircle, FaFileAlt, FaHandshake, FaFileInvoiceDollar 
+} from 'react-icons/fa';
 
 const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
   if (!invoice) return null;
 
   const { items = [] } = invoice;
   const subtotal = invoice.subtotal || 0;
-  const discount = invoice.discount || 0;
-  const total = invoice.total_amount || 0;
   const advance = invoice.advance_payment || 0;
+  const total = invoice.total_amount || 0;
   const isPaid = invoice.status?.toLowerCase() === 'paid';
   const balance = isPaid ? 0 : (invoice.balance_due || 0);
   
@@ -18,11 +20,15 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
     if (!d) return '';
     try {
       const date = new Date(d);
-      return isNaN(date) ? d : date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      return isNaN(date) ? d : date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
     } catch {
       return d;
     }
   };
+
+  const blueBrand = '#103b9b';
+  const blueLightBorder = '#b3c0e1';
+  const blueBg = '#f0f4fc';
 
   return (
     <>
@@ -31,112 +37,163 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
           @page { margin: 0; size: A4; }
           #printable-invoice {
             width: 210mm; min-height: 297mm;
-            margin: 0; padding: 15mm; background-color: white !important;
+            margin: 0; padding: 10mm; background-color: white !important;
             color: black !important;
             box-sizing: border-box;
           }
           * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
+        .clip-tab {
+          clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%);
+        }
       `}</style>
       
       {/* Wrapper to allow preview scaling in UI */}
       <div className="bg-white shadow-2xl mx-auto print:shadow-none print:rounded-none" style={{ width: '210mm', minWidth: '210mm', minHeight: '297mm' }}>
-        <div id="printable-invoice" ref={ref} className="bg-white text-gray-900 font-sans p-[15mm] md:p-[20mm] box-border w-[210mm] min-h-[297mm] flex flex-col mx-auto relative overflow-hidden">
+        <div id="printable-invoice" ref={ref} className="bg-white text-gray-900 font-sans p-[12mm] box-border w-[210mm] min-h-[297mm] flex flex-col mx-auto relative overflow-hidden">
           
           {/* HEADER */}
-          <div className="flex justify-between items-start mb-12">
-            <div className="flex flex-col">
-              <div className="mb-6">
-                <img src={logoUrl} alt="KrGo Logo" className="h-16 w-auto max-w-[200px] object-contain" />
+          <div className="flex justify-between items-stretch mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-20 h-20 rounded-xl flex items-center justify-center text-white font-bold text-4xl" style={{ backgroundColor: blueBrand }}>
+                KG
               </div>
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900 uppercase mb-1">
-                {settings?.business_name || 'KrGo Technology Solutions'}
-              </h1>
-              <p className="text-xs font-bold text-[#00AEEF] tracking-widest uppercase mb-6">
-                Software • Data • AI • Cloud • Business Intelligence
-              </p>
-              <div className="text-sm text-gray-700 leading-relaxed">
-                {settings?.business_address && <p className="whitespace-pre-wrap">{settings.business_address}</p>}
-                <p className="mt-1">
-                  {settings?.business_email && <span>{settings.business_email}</span>}
-                  {settings?.business_phone && <span> | {settings.business_phone}</span>}
+              <div className="flex flex-col justify-center">
+                <h1 className="text-4xl font-black uppercase tracking-wide leading-none" style={{ color: blueBrand }}>
+                  KRGO
+                </h1>
+                <h2 className="text-xl font-black uppercase tracking-wide text-black mt-1">
+                  SOFTWARE SOLUTIONS
+                </h2>
+                <p className="font-semibold text-sm mt-1" style={{ color: blueBrand }}>
+                  Web Development & Digital Solutions
                 </p>
-                {settings?.business_website && <p>{settings.business_website}</p>}
               </div>
             </div>
-
-            <div className="text-right">
-              <h2 className="text-4xl font-light tracking-widest text-gray-300 uppercase mb-8">
-                Invoice
-              </h2>
-              
-              <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-gray-800 text-right">
-                <span className="font-semibold text-gray-500">Invoice No.</span>
-                <span className="font-bold">{invoice.invoice_number || 'DRAFT'}</span>
-                
-                <span className="font-semibold text-gray-500">Invoice Date</span>
-                <span className="font-medium">{formatDate(invoice.invoice_date)}</span>
-                
-
-                {invoice.terms && (
-                  <>
-                    <span className="font-semibold text-gray-500">Terms</span>
-                    <span className="font-medium">{invoice.terms}</span>
-                  </>
-                )}
-              </div>
+            
+            <div className="flex flex-col justify-center gap-3 border-l-2 pl-6" style={{ borderColor: blueLightBorder }}>
+              {settings?.business_phone && (
+                <div className="flex items-center gap-3 text-sm font-medium text-gray-800">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: blueBrand }}><FaPhoneAlt /></div>
+                  {settings.business_phone}
+                </div>
+              )}
+              {settings?.business_email && (
+                <div className="flex items-center gap-3 text-sm font-medium text-gray-800">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: blueBrand }}><FaEnvelope /></div>
+                  {settings.business_email}
+                </div>
+              )}
+              {settings?.business_address && (
+                <div className="flex items-center gap-3 text-sm font-medium text-gray-800">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: blueBrand }}><FaMapMarkerAlt /></div>
+                  {settings.business_address}
+                </div>
+              )}
             </div>
           </div>
 
-          <hr className="border-gray-200 mb-8" />
+          {/* INVOICE DIVIDER */}
+          <div className="flex items-center justify-center mb-6">
+            <div className="h-[2px] flex-1 relative" style={{ backgroundColor: blueLightBorder }}>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full" style={{ backgroundColor: blueBrand }}></div>
+            </div>
+            <h2 className="text-3xl font-extrabold px-6 tracking-wider" style={{ color: blueBrand }}>INVOICE</h2>
+            <div className="h-[2px] flex-1 relative" style={{ backgroundColor: blueLightBorder }}>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full" style={{ backgroundColor: blueBrand }}></div>
+            </div>
+          </div>
+
+          {/* INVOICE DETAILS */}
+          <div className="border rounded-lg flex mb-6" style={{ borderColor: blueLightBorder }}>
+            <div className="flex-1 p-3 pl-6">
+              <p className="font-bold text-xs" style={{ color: blueBrand }}>Invoice No.</p>
+              <p className="font-bold text-lg text-gray-900">{invoice.invoice_number || 'DRAFT'}</p>
+            </div>
+            <div className="w-[1px]" style={{ backgroundColor: blueLightBorder }}></div>
+            <div className="flex-1 p-3 pl-6">
+              <p className="font-bold text-xs" style={{ color: blueBrand }}>Date</p>
+              <p className="font-medium text-lg text-gray-900">{formatDate(invoice.invoice_date)}</p>
+            </div>
+          </div>
 
           {/* BILL TO */}
-          <div className="mb-12">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 border-b border-gray-100 pb-2">Bill To</h3>
-            <div className="text-sm text-gray-800 leading-relaxed">
-              <p className="font-bold text-xl text-gray-900 mb-1">{invoice.client_name || 'Client Name'}</p>
-              {invoice.client_company && <p className="font-semibold text-gray-700">{invoice.client_company}</p>}
-              <p className="mt-2 text-gray-600">
-                {invoice.client_email && <span>{invoice.client_email}</span>}
-                {invoice.client_phone && <span> | {invoice.client_phone}</span>}
-              </p>
+          <div className="border rounded-xl mb-8 relative overflow-hidden flex" style={{ borderColor: blueLightBorder }}>
+            <div className="absolute top-0 left-0 text-white px-6 py-1.5 font-bold text-sm rounded-br-2xl clip-tab" style={{ backgroundColor: blueBrand, width: '120px' }}>
+              BILL TO
+            </div>
+            
+            <div className="flex-1 p-6 pt-12 flex flex-col gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 text-lg shadow-sm" style={{ backgroundColor: blueBrand }}>
+                  <FaUserAlt />
+                </div>
+                <div>
+                  <p className="font-bold text-xs mb-0.5" style={{ color: blueBrand }}>Client Name</p>
+                  <p className="font-bold text-base text-gray-900">{invoice.client_name || 'Client Name'}</p>
+                </div>
+              </div>
+              
+              {invoice.project_name && (
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 text-lg shadow-sm" style={{ backgroundColor: blueBrand }}>
+                    <FaBriefcase />
+                  </div>
+                  <div>
+                    <p className="font-bold text-xs mb-0.5" style={{ color: blueBrand }}>Business Name</p>
+                    <p className="font-bold text-base text-gray-900">{invoice.project_name}</p>
+                  </div>
+                </div>
+              )}
+              
+              {invoice.client_phone && (
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 text-lg shadow-sm" style={{ backgroundColor: blueBrand }}>
+                    <FaPhoneAlt />
+                  </div>
+                  <div>
+                    <p className="font-bold text-xs mb-0.5" style={{ color: blueBrand }}>Phone</p>
+                    <p className="font-bold text-base text-gray-900">{invoice.client_phone}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="w-1/3 flex items-center justify-center p-6 relative">
+              <div className="w-full h-full max-h-32 bg-contain bg-center bg-no-repeat opacity-10 flex items-center justify-center">
+                 <FaFileInvoiceDollar size={120} style={{ color: blueBrand }} />
+              </div>
             </div>
           </div>
 
-          {/* BUSINESS NAME */}
-          {invoice.project_name && (
-            <div className="flex gap-12 mb-8 bg-gray-50 p-4 rounded-lg border border-gray-100">
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Business Name</p>
-                <p className="text-sm font-medium text-gray-900">{invoice.project_name}</p>
-              </div>
-            </div>
-          )}
-
-          {/* ITEMS TABLE */}
-          <div className="mb-8">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b-2 border-gray-900 text-gray-900 text-xs uppercase tracking-widest">
-                  <th className="py-3 px-2 font-bold w-[65%]">Description</th>
-                  <th className="py-3 px-2 font-bold text-right w-[15%]">Rate</th>
-                  <th className="py-3 px-2 font-bold text-right w-[20%]">Amount</th>
+          {/* TABLE */}
+          <div className="mb-8 rounded-lg overflow-hidden border border-collapse" style={{ borderColor: blueLightBorder }}>
+            <table className="w-full text-left">
+              <thead className="text-white text-sm" style={{ backgroundColor: blueBrand }}>
+                <tr>
+                  <th className="py-3 px-4 font-bold text-center w-16 border-r border-white/20">Sr. No.</th>
+                  <th className="py-3 px-6 font-bold border-r border-white/20">Description of Services</th>
+                  <th className="py-3 px-6 font-bold text-center w-40">Amount (Rs.)</th>
                 </tr>
               </thead>
               <tbody>
                 {items.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="py-8 text-center text-gray-400 text-sm border-b border-gray-200">No items added.</td>
+                    <td colSpan="3" className="py-6 text-center text-gray-500 font-medium border-b" style={{ borderColor: blueLightBorder }}>No items added.</td>
                   </tr>
                 ) : (
                   items.map((item, index) => (
-                    <tr key={index} className="border-b border-gray-200 text-sm">
-                      <td className="py-4 px-2">
-                        <p className="font-semibold text-gray-900">{item.service_name || 'Service'}</p>
-                        {item.description && <p className="text-gray-500 mt-1 text-xs whitespace-pre-wrap leading-relaxed">{item.description}</p>}
+                    <tr key={index} className="border-b text-sm bg-white" style={{ borderColor: blueLightBorder }}>
+                      <td className="py-4 px-4 font-bold text-gray-900 text-center border-r" style={{ borderColor: blueLightBorder }}>
+                        {index + 1}
                       </td>
-                      <td className="py-4 px-2 text-right text-gray-700">{formatCurrency(item.rate, invoice.currency)}</td>
-                      <td className="py-4 px-2 text-right font-semibold text-gray-900">{formatCurrency(item.amount, invoice.currency)}</td>
+                      <td className="py-4 px-6 border-r" style={{ borderColor: blueLightBorder }}>
+                        <p className="font-semibold text-gray-900">{item.service_name || 'Service'}</p>
+                        {item.description && <p className="text-gray-600 mt-1 text-xs">{item.description}</p>}
+                      </td>
+                      <td className="py-4 px-6 text-center font-bold text-gray-900">
+                        {formatCurrency(item.amount, invoice.currency)}
+                      </td>
                     </tr>
                   ))
                 )}
@@ -144,94 +201,107 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
             </table>
           </div>
 
-          {/* TOTALS & WORDS */}
-          <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12">
-            {/* Amount in words */}
-            <div className="w-full md:w-1/2 pt-4">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Amount in Words</p>
-              <p className="text-sm font-semibold text-gray-800 italic">
-                {numberToWordsIndian(total)}
-              </p>
+          {/* PAYMENT SUMMARY */}
+          <div className="border rounded-xl mb-8 relative overflow-hidden flex" style={{ borderColor: blueLightBorder }}>
+            <div className="absolute top-0 left-0 text-white px-6 py-2 font-bold text-sm rounded-br-2xl clip-tab" style={{ backgroundColor: blueBrand, width: '220px' }}>
+              PAYMENT SUMMARY
             </div>
-
-            {/* Totals Box */}
-            <div className="w-full md:w-[40%] bg-gray-50 rounded-lg p-6 border border-gray-200">
-              <div className="flex justify-between py-2 text-sm text-gray-600">
-                <span className="font-medium">Subtotal</span>
-                <span className="font-medium">{formatCurrency(subtotal, invoice.currency)}</span>
+            
+            <div className="flex-[2] p-6 pt-14 flex flex-col gap-3 justify-center">
+              <div className="flex justify-between items-center text-sm font-semibold text-gray-800 border-b pb-3" style={{ borderColor: blueLightBorder }}>
+                <span>Subtotal</span>
+                <span>{formatCurrency(subtotal, invoice.currency)}</span>
               </div>
-
-              {invoice.tax_amount > 0 && (
-                <div className="flex justify-between py-2 text-sm text-gray-600">
-                  <span className="font-medium">{invoice.tax_type || 'Tax'}</span>
-                  <span className="font-medium">{formatCurrency(invoice.tax_amount, invoice.currency)}</span>
-                </div>
-              )}
-              <div className="flex justify-between py-4 mt-2 text-base font-bold text-gray-900 border-t border-gray-300">
-                <span className="uppercase tracking-widest text-sm self-center">Total Amount</span>
-                <span>{formatCurrency(total, invoice.currency)}</span>
-              </div>
-
+              
               {isPaid ? (
-                <div className="flex justify-between py-2 text-sm text-gray-600">
-                  <span className="font-medium">Amount Paid</span>
-                  <span className="font-medium text-green-600">-{formatCurrency(total, invoice.currency)}</span>
+                <div className="flex justify-between items-center text-sm font-semibold text-gray-800 border-b pb-3" style={{ borderColor: blueLightBorder }}>
+                  <span>Amount Paid</span>
+                  <span>{formatCurrency(total, invoice.currency)}</span>
                 </div>
-              ) : advance > 0 && (
-                <div className="flex justify-between py-2 text-sm text-gray-600">
-                  <span className="font-medium">Advance Received</span>
-                  <span className="font-medium text-green-600">-{formatCurrency(advance, invoice.currency)}</span>
+              ) : (
+                <div className="flex justify-between items-center text-sm font-semibold text-gray-800 border-b pb-3" style={{ borderColor: blueLightBorder }}>
+                  <span>Advance Received</span>
+                  <span>{formatCurrency(advance, invoice.currency)}</span>
                 </div>
               )}
 
-              <div className="flex justify-between py-4 mt-2 text-xl font-extrabold text-[#00AEEF] border-t-2 border-[#00AEEF]">
-                <span className="uppercase tracking-widest text-sm self-center text-gray-900">Balance Due</span>
+              <div className="flex justify-between items-center font-extrabold text-[#d32f2f] pt-1 text-lg">
+                <span>Balance Amount Payable</span>
                 <span>{formatCurrency(balance, invoice.currency)}</span>
               </div>
             </div>
+            
+            <div className="flex-[1] border-l flex flex-col items-center justify-center p-6 text-center" style={{ borderColor: blueLightBorder, backgroundColor: blueBg }}>
+              <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mb-3 shadow-sm border" style={{ borderColor: blueLightBorder }}>
+                <FaFileInvoiceDollar className="text-2xl" style={{ color: blueBrand }} />
+              </div>
+              <p className="font-bold text-xs mb-1" style={{ color: blueBrand }}>Payment Status</p>
+              <h3 className="font-black text-lg tracking-wider uppercase" style={{ color: blueBrand }}>
+                {isPaid ? 'PAID' : (advance > 0 ? 'PARTIALLY PAID' : 'PENDING')}
+              </h3>
+            </div>
           </div>
 
-          <hr className="border-gray-200 mb-8" />
+          {/* NOTES & TERMS */}
+          <div className="grid grid-cols-2 gap-6 mb-8 mt-auto">
+            <div className="border rounded-xl p-5" style={{ borderColor: blueLightBorder }}>
+              <div className="flex items-center gap-2 font-bold text-sm mb-3 uppercase tracking-wide" style={{ color: blueBrand }}>
+                <FaCheckCircle className="text-lg" /> INCLUDED IN PACKAGE
+              </div>
+              <ul className="text-xs text-gray-800 font-medium space-y-2 leading-relaxed">
+                {invoice.terms ? (
+                  invoice.terms.split('\n').map((term, i) => term.trim() && (
+                    <li key={i} className="flex items-start gap-2">
+                      <FaCheckCircle className="shrink-0 mt-0.5" style={{ color: blueBrand }} /> {term}
+                    </li>
+                  ))
+                ) : (
+                  <li className="flex items-start gap-2">
+                    <FaCheckCircle className="shrink-0 mt-0.5" style={{ color: blueBrand }} /> As per agreed scope of work
+                  </li>
+                )}
+              </ul>
+            </div>
+            
+            <div className="border rounded-xl p-5" style={{ borderColor: blueLightBorder }}>
+              <div className="flex items-center gap-2 font-bold text-sm mb-3 uppercase tracking-wide" style={{ color: blueBrand }}>
+                <FaFileAlt className="text-lg" /> NOTES
+              </div>
+              <ul className="text-xs text-gray-800 font-medium space-y-2 leading-relaxed list-disc pl-4">
+                {invoice.notes ? (
+                  invoice.notes.split('\n').map((note, i) => note.trim() && (
+                    <li key={i}>{note}</li>
+                  ))
+                ) : (
+                  <li>Thank you for choosing KrGo Technology Solutions.</li>
+                )}
+              </ul>
+            </div>
+          </div>
 
-          {/* PAYMENT & NOTES */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-sm text-gray-600 mb-12">
-            <div>
-              <h3 className="font-bold text-gray-900 mb-3 uppercase tracking-widest text-xs border-b border-gray-200 pb-2">Payment Details</h3>
-              <div className="space-y-1.5 mt-4">
-                {settings?.bank_name && <p><span className="font-semibold text-gray-800">Bank:</span> {settings.bank_name}</p>}
-                {settings?.account_holder && <p><span className="font-semibold text-gray-800">Account Name:</span> {settings.account_holder}</p>}
-                {settings?.account_number && <p><span className="font-semibold text-gray-800">Account No:</span> {settings.account_number}</p>}
-                {settings?.ifsc_code && <p><span className="font-semibold text-gray-800">IFSC Code:</span> {settings.ifsc_code}</p>}
-                {settings?.upi_id && <p className="mt-2 pt-2 border-t border-gray-100"><span className="font-semibold text-gray-800">UPI ID:</span> {settings.upi_id}</p>}
+          {/* FOOTER */}
+          <div className="border-t-[3px] pt-4 flex justify-between items-end mt-auto" style={{ borderColor: blueLightBorder }}>
+            <div className="flex items-center gap-4 pl-2">
+              <div className="w-14 h-14 rounded-full flex items-center justify-center text-white text-3xl shadow-md" style={{ backgroundColor: blueBrand }}>
+                <FaHandshake />
+              </div>
+              <div className="flex flex-col">
+                <h3 className="font-bold italic text-2xl" style={{ color: blueBrand, fontFamily: "Georgia, serif" }}>Thank you</h3>
+                <p className="font-bold text-sm text-gray-800">for your business!</p>
               </div>
             </div>
-
-            <div>
-              {invoice.notes && (
-                <div className="mb-6">
-                  <h3 className="font-bold text-gray-900 mb-3 uppercase tracking-widest text-xs border-b border-gray-200 pb-2">Notes</h3>
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed mt-4">{invoice.notes}</p>
-                </div>
-              )}
-              {invoice.terms && (
-                <div>
-                  <h3 className="font-bold text-gray-900 mb-3 uppercase tracking-widest text-xs border-b border-gray-200 pb-2">Terms & Conditions</h3>
-                  <p className="whitespace-pre-wrap text-xs text-gray-500 leading-relaxed mt-4">{invoice.terms}</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* FOOTER SIGNATURE - Pushed to bottom naturally without overlap */}
-          <div className="mt-auto pt-16 flex justify-end">
-            <div className="w-64 text-center">
-               {/* Signature Image (Loaded from public folder) */}
-               <img src="/signature.png" alt="Signature" className="h-16 w-full object-contain mx-auto mb-2" />
-               <div className="w-full border-t border-gray-300 pt-3 text-[10px] font-bold text-gray-900 uppercase tracking-widest">
-                 For {settings?.business_name || 'KrGo Technology Solutions'}
-                 <br />
-                 <span className="font-medium text-gray-500">Authorized Signatory</span>
-               </div>
+            
+            <div className="text-right flex gap-8 items-end pr-2">
+              <div className="text-left">
+                <p className="font-bold text-xs" style={{ color: blueBrand }}>Prepared By</p>
+                <p className="font-bold text-sm text-gray-900">{settings?.business_name || 'KRGO Software Solutions'}</p>
+              </div>
+              <div className="w-40 text-center flex flex-col items-center border-l pl-8" style={{ borderColor: blueLightBorder }}>
+                 <img src="/signature.png" alt="Signature" className="h-10 w-full object-contain mx-auto mb-1 opacity-80" />
+                 <div className="w-full border-t border-gray-400 pt-1 text-[10px] font-bold text-gray-800 uppercase tracking-widest">
+                   Authorized Signature
+                 </div>
+              </div>
             </div>
           </div>
 
@@ -242,3 +312,4 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
 });
 
 export default InvoicePreview;
+
