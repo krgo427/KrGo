@@ -10,7 +10,8 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
   const discount = invoice.discount || 0;
   const total = invoice.total_amount || 0;
   const advance = invoice.advance_payment || 0;
-  const balance = invoice.balance_due || 0;
+  const isPaid = invoice.status?.toLowerCase() === 'paid';
+  const balance = isPaid ? 0 : (invoice.balance_due || 0);
   
   // Format dates safely
   const formatDate = (d) => {
@@ -171,7 +172,12 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
                 <span>{formatCurrency(total, invoice.currency)}</span>
               </div>
 
-              {advance > 0 && (
+              {isPaid ? (
+                <div className="flex justify-between py-2 text-sm text-gray-600">
+                  <span className="font-medium">Amount Paid</span>
+                  <span className="font-medium text-green-600">-{formatCurrency(total, invoice.currency)}</span>
+                </div>
+              ) : advance > 0 && (
                 <div className="flex justify-between py-2 text-sm text-gray-600">
                   <span className="font-medium">Advance Received</span>
                   <span className="font-medium text-green-600">-{formatCurrency(advance, invoice.currency)}</span>

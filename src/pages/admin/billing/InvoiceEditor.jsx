@@ -50,7 +50,7 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
 
     const total = taxableAmount + taxAmount;
     const advance = Number(invoice.advance_payment) || 0;
-    const balance = total - advance;
+    const balance = invoice.status?.toLowerCase() === 'paid' ? 0 : (total - advance);
 
     setInvoice(prev => ({
       ...prev,
@@ -59,7 +59,7 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
       total_amount: total,
       balance_due: balance
     }));
-  }, [invoice.items, invoice.discount, invoice.tax_rate, invoice.advance_payment, settings?.gst_enabled]);
+  }, [invoice.items, invoice.discount, invoice.tax_rate, invoice.advance_payment, invoice.status, settings?.gst_enabled]);
 
   const handleItemChange = (index, field, value) => {
     const newItems = [...invoice.items];
@@ -245,14 +245,6 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
                 <div className="flex justify-between items-center text-sm text-gray-400 pt-2 border-t border-gray-800">
                   <div className="flex items-center gap-2">
                     <span>Advance Payment</span>
-                    <button 
-                      type="button" 
-                      onClick={() => setInvoice({...invoice, advance_payment: (invoice.total_amount * 0.3).toFixed(2)})}
-                      className="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-xs text-gray-300 rounded transition-colors"
-                      title="Set to 30% of Total Amount"
-                    >
-                      30%
-                    </button>
                   </div>
                   <input 
                     type="number" 
