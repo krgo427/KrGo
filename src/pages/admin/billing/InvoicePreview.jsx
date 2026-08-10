@@ -9,6 +9,8 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
   const subtotal = invoice.subtotal || 0;
   const discount = invoice.discount || 0;
   const total = invoice.total_amount || 0;
+  const advance = invoice.advance_payment || 0;
+  const balance = invoice.balance_due || 0;
   
   // Format dates safely
   const formatDate = (d) => {
@@ -164,9 +166,21 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
                   <span className="font-medium">{formatCurrency(invoice.tax_amount, invoice.currency)}</span>
                 </div>
               )}
-              <div className="flex justify-between py-4 mt-2 text-lg font-bold text-gray-900 border-t-2 border-gray-900">
+              <div className="flex justify-between py-4 mt-2 text-base font-bold text-gray-900 border-t border-gray-300">
                 <span className="uppercase tracking-widest text-sm self-center">Total Amount</span>
                 <span>{formatCurrency(total, invoice.currency)}</span>
+              </div>
+
+              {advance > 0 && (
+                <div className="flex justify-between py-2 text-sm text-gray-600">
+                  <span className="font-medium">Advance Received</span>
+                  <span className="font-medium text-green-600">-{formatCurrency(advance, invoice.currency)}</span>
+                </div>
+              )}
+
+              <div className="flex justify-between py-4 mt-2 text-xl font-extrabold text-[#00AEEF] border-t-2 border-[#00AEEF]">
+                <span className="uppercase tracking-widest text-sm self-center text-gray-900">Balance Due</span>
+                <span>{formatCurrency(balance, invoice.currency)}</span>
               </div>
             </div>
           </div>

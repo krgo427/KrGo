@@ -3,7 +3,7 @@ import { API_BASE_URL, LEADS_API_PATH } from '../config/siteConfig'
 import { supabase } from '../config/supabaseClient'
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: '', phone: '', projectType: '', callRequestTime: '', message: '' })
+  const [form, setForm] = useState({ name: '', phone: '', projectType: '', callRequestDate: '', callRequestTime: '', message: '' })
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -18,8 +18,8 @@ export default function Contact() {
     if (!form.projectType.trim()) {
       errs.projectType = 'Please specify the project type.'
     }
-    if (!form.callRequestTime) {
-      errs.callRequestTime = 'Please select a preferred call time.'
+    if (!form.callRequestDate || !form.callRequestTime) {
+      errs.callRequestTime = 'Please select a preferred call date and time.'
     }
     return errs
   }
@@ -46,7 +46,7 @@ export default function Contact() {
         name: form.name.trim(),
         email: null,
         phone: form.phone.trim(),
-        message: `Project Type: ${form.projectType}\nCall Time: ${form.callRequestTime}\nMessage: ${form.message.trim()}`
+        message: `Project Type: ${form.projectType}\nCall Time: ${form.callRequestDate} at ${form.callRequestTime}\nMessage: ${form.message.trim()}`
       }]);
       
       if (sbError) {
@@ -66,7 +66,7 @@ export default function Contact() {
             Name: form.name.trim(),
             Phone: form.phone.trim(),
             ProjectType: form.projectType.trim(),
-            CallRequestTime: form.callRequestTime,
+            CallRequestTime: `${form.callRequestDate} at ${form.callRequestTime}`,
             Message: form.message.trim() || "No message provided."
           })
         });
@@ -144,7 +144,7 @@ export default function Contact() {
               <button
                 onClick={() => {
                   setSubmitted(false)
-                  setForm({ name: '', phone: '', projectType: '', callRequestTime: '', message: '' })
+                  setForm({ name: '', phone: '', projectType: '', callRequestDate: '', callRequestTime: '', message: '' })
                 }}
                 className="text-primary font-medium hover:underline"
               >
@@ -219,19 +219,35 @@ export default function Contact() {
 
                 {/* Call Request Time */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-1" htmlFor="callRequestTime">
+                  <label className="block text-sm font-medium text-secondary mb-1">
                     Call Request Time <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    id="callRequestTime"
-                    name="callRequestTime"
-                    type="datetime-local"
-                    value={form.callRequestTime}
-                    onChange={handleChange}
-                    className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition ${
-                      errors.callRequestTime ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-bg'
-                    }`}
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      id="callRequestDate"
+                      name="callRequestDate"
+                      type="date"
+                      value={form.callRequestDate}
+                      onChange={handleChange}
+                      onMouseEnter={(e) => { try { e.target.showPicker() } catch(err) {} }}
+                      onClick={(e) => { try { e.target.showPicker() } catch(err) {} }}
+                      className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition cursor-pointer ${
+                        errors.callRequestTime ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-bg'
+                      }`}
+                    />
+                    <input
+                      id="callRequestTime"
+                      name="callRequestTime"
+                      type="time"
+                      value={form.callRequestTime}
+                      onChange={handleChange}
+                      onMouseEnter={(e) => { try { e.target.showPicker() } catch(err) {} }}
+                      onClick={(e) => { try { e.target.showPicker() } catch(err) {} }}
+                      className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition cursor-pointer ${
+                        errors.callRequestTime ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-bg'
+                      }`}
+                    />
+                  </div>
                   {errors.callRequestTime && <p className="text-red-500 text-xs mt-1">{errors.callRequestTime}</p>}
                 </div>
               </div>

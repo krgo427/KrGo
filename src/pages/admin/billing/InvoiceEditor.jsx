@@ -23,6 +23,8 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
     subtotal: 0,
     discount: 0,
     total_amount: 0,
+    advance_payment: 0,
+    balance_due: 0,
     tax_type: '',
     tax_rate: 0,
     tax_amount: 0,
@@ -47,14 +49,17 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
     }
 
     const total = taxableAmount + taxAmount;
+    const advance = Number(invoice.advance_payment) || 0;
+    const balance = total - advance;
 
     setInvoice(prev => ({
       ...prev,
       subtotal,
       tax_amount: taxAmount,
-      total_amount: total
+      total_amount: total,
+      balance_due: balance
     }));
-  }, [invoice.items, invoice.discount, invoice.tax_rate, settings?.gst_enabled]);
+  }, [invoice.items, invoice.discount, invoice.tax_rate, invoice.advance_payment, settings?.gst_enabled]);
 
   const handleItemChange = (index, field, value) => {
     const newItems = [...invoice.items];
@@ -234,7 +239,34 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
 
                 <div className="flex justify-between text-base font-bold text-white pt-2 border-t border-gray-800">
                   <span>Total Amount</span>
-                  <span className="text-[#00AEEF]">{formatCurrency(invoice.total_amount, invoice.currency)}</span>
+                  <span className="text-white">{formatCurrency(invoice.total_amount, invoice.currency)}</span>
+                </div>
+
+                <div className="flex justify-between items-center text-sm text-gray-400 pt-2 border-t border-gray-800">
+                  <div className="flex items-center gap-2">
+                    <span>Advance Payment</span>
+                    <button 
+                      type="button" 
+                      onClick={() => setInvoice({...invoice, advance_payment: (invoice.total_amount * 0.3).toFixed(2)})}
+                      className="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-xs text-gray-300 rounded transition-colors"
+                      title="Set to 30% of Total Amount"
+                    >
+                      30%
+                    </button>
+                  </div>
+                  <input 
+                    type="number" 
+                    min="0" 
+                    step="0.01" 
+                    value={invoice.advance_payment} 
+                    onChange={e => setInvoice({...invoice, advance_payment: Number(e.target.value)})} 
+                    className="w-24 bg-gray-950 border border-gray-800 rounded px-2 py-1 text-white text-right text-xs focus:border-[#00AEEF] outline-none" 
+                  />
+                </div>
+
+                <div className="flex justify-between text-lg font-bold text-[#00AEEF] pt-2 border-t border-gray-800">
+                  <span>Balance Due</span>
+                  <span>{formatCurrency(invoice.balance_due, invoice.currency)}</span>
                 </div>
               </div>
             </div>

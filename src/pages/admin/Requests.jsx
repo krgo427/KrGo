@@ -23,9 +23,34 @@ const Requests = () => {
     setLoading(false);
   };
 
-  const handleMarkRead = async (id, currentStatus) => {
-    const { error } = await supabase.from('contact_requests').update({ status: currentStatus === 'read' ? 'unread' : 'read' }).eq('id', id);
+  const handleAcceptRequest = async (req) => {
+    const isCurrentlyUnread = req.status !== 'read';
+    const newStatus = isCurrentlyUnread ? 'read' : 'unread';
+    
+    const { error } = await supabase.from('contact_requests').update({ status: newStatus }).eq('id', req.id);
     if (!error) {
+      if (isCurrentlyUnread) {
+        let companyName = 'Website Lead';
+        if (req.message && req.message.includes('Project Type:')) {
+           const match = req.message.match(/Project Type:\s*([^\n]*)/);
+           if (match && match[1]) companyName = match[1].trim();
+        }
+
+        const { data: existing } = await supabase
+          .from('clients')
+          .select('id')
+          .eq('name', req.name || '')
+          .eq('phone', req.phone || '');
+          
+        if (!existing || existing.length === 0) {
+          await supabase.from('clients').insert([{
+            name: req.name || 'Unknown',
+            email: req.email || '',
+            phone: req.phone || '',
+            company: companyName
+          }]);
+        }
+      }
       fetchRequests();
     }
   };
@@ -62,9 +87,9 @@ const Requests = () => {
                 </div>
                 <div className="flex gap-2">
                   <button 
-                    onClick={() => handleMarkRead(req.id, req.status)}
+                    onClick={() => handleAcceptRequest(req)}
                     className={`p-2 rounded-lg transition-colors ${req.status === 'read' ? 'bg-gray-800 text-gray-400 hover:text-white' : 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'}`}
-                    title={req.status === 'read' ? 'Mark as Unread' : 'Mark as Read'}
+                    title={req.status === 'read' ? 'Un-accept Request' : 'Accept & Add to Clients'}
                   >
                     <FaCheck />
                   </button>

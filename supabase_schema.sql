@@ -25,6 +25,8 @@ CREATE TABLE IF NOT EXISTS public.invoices (
     subtotal DECIMAL(12,2) DEFAULT 0,
     discount DECIMAL(12,2) DEFAULT 0,
     total_amount DECIMAL(12,2) DEFAULT 0,
+    advance_payment DECIMAL(12,2) DEFAULT 0,
+    balance_due DECIMAL(12,2) DEFAULT 0,
     
     -- Tax (For future proofing, currently disabled in UI)
     tax_type VARCHAR(50),
