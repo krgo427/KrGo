@@ -26,9 +26,10 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
     }
   };
 
-  const blueBrand = '#103b9b';
-  const blueLightBorder = '#b3c0e1';
-  const blueBg = '#f0f4fc';
+  // Brand Colors aligned with KrGo #00AEEF
+  const blueBrand = '#00AEEF'; // KrGo Cyan
+  const blueLightBorder = '#bce6f8'; // Light cyan for borders
+  const blueBg = '#eef9fe'; // Very light cyan background
 
   return (
     <>
