@@ -63,14 +63,14 @@ export default function Industries() {
   }))
 
   return (
-    <section id="industries" className="py-16 md:py-24 bg-white overflow-hidden relative min-h-[600px] flex items-center">
+    <section id="industries" className="py-16 md:py-24 bg-white dark:bg-slate-900 dark:border-t dark:border-white/5 overflow-hidden relative min-h-[600px] flex items-center transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full relative z-10">
         
         {/* Header Text Centered */}
         <div className="max-w-2xl mx-auto mb-16 relative z-20 text-center">
           <p className="text-primary font-bold text-sm uppercase tracking-[0.2em] mb-3">Industries</p>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-secondary mb-6 tracking-tight">Who We Serve</h2>
-          <p className="text-base md:text-lg text-gray-500 font-light leading-relaxed">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-secondary dark:text-white mb-6 tracking-tight transition-colors duration-300">Who We Serve</h2>
+          <p className="text-base md:text-lg text-gray-500 dark:text-slate-400 font-light leading-relaxed transition-colors duration-300">
             We deliver tailor-made technology solutions across a wide range of industries. Watch our capabilities expand.
           </p>
         </div>

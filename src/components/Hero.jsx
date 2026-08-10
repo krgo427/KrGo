@@ -22,7 +22,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="min-h-screen bg-gradient-to-br from-bg via-white to-blue-50 pt-24 pb-16 flex items-center relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-bg via-white to-blue-50 dark:bg-slate-950 dark:bg-none pt-24 pb-16 flex items-center relative overflow-hidden transition-colors duration-300"
     >
       {/* Abstract Background Elements */}
       <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -31,7 +31,7 @@ export default function Hero() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 grid md:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
         {/* Text Content */}
         <div className="md:col-span-7 flex flex-col text-center md:text-left">
-          <div className="inline-flex max-w-[90%] mx-auto md:max-w-none md:mx-0 items-center justify-center gap-2 bg-blue-50/80 backdrop-blur-sm border border-blue-100 text-primary text-xs font-semibold px-4 py-2 rounded-full mb-8 mt-4 md:mt-0 shadow-sm">
+          <div className="inline-flex max-w-[90%] mx-auto md:max-w-none md:mx-0 items-center justify-center gap-2 bg-blue-50/80 dark:bg-white/5 backdrop-blur-sm border border-blue-100 dark:border-white/10 text-primary dark:text-white text-xs font-semibold px-4 py-2 rounded-full mb-8 mt-4 md:mt-0 shadow-sm transition-colors duration-300">
             <span className="relative flex h-2.5 w-2.5 mr-1">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
@@ -39,11 +39,11 @@ export default function Hero() {
             Building Software. Driving Decisions with Data.
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-extrabold text-secondary leading-[1.1] mb-6 mx-auto md:mx-0">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-extrabold text-secondary dark:text-white leading-[1.1] mb-6 mx-auto md:mx-0 transition-colors duration-300">
             Build. <span className="text-primary">Analyze.</span> Automate.
           </h1>
 
-          <p className="text-lg md:text-xl text-gray-500 mb-10 leading-relaxed max-w-2xl mx-auto md:mx-0">
+          <p className="text-lg md:text-xl text-gray-500 dark:text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto md:mx-0 transition-colors duration-300">
             KrGo Technology Solutions helps businesses grow through Software Development, Data Analytics, AI Automation, Cloud Technologies, and Business Intelligence.
           </p>
 
@@ -51,7 +51,7 @@ export default function Hero() {
             <Link to="/contact" className="btn-primary text-base px-8 py-4 shadow-xl shadow-primary/20 hover:-translate-y-1 w-full sm:w-auto">
               Get Started
             </Link>
-            <a href="#services" className="btn-outline text-base px-8 py-4 bg-white/50 backdrop-blur-sm hover:-translate-y-1 w-full sm:w-auto">
+            <a href="#services" className="btn-outline text-base px-8 py-4 bg-white/50 dark:bg-white/5 backdrop-blur-sm dark:border-white/10 dark:text-white hover:bg-white hover:dark:bg-white/10 hover:-translate-y-1 w-full sm:w-auto transition-colors duration-300">
               Explore Services
             </a>
           </div>
@@ -59,7 +59,7 @@ export default function Hero() {
           {/* Stats / Tech Tags */}
           <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 opacity-80">
             {['Software Development', 'Data Analytics', 'AI & ML', 'Cloud Native'].map((tag) => (
-              <span key={tag} className="px-3 py-1 bg-white border border-gray-200 text-gray-600 text-xs sm:text-sm font-medium rounded-md shadow-sm">
+              <span key={tag} className="px-3 py-1 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-slate-300 text-xs sm:text-sm font-medium rounded-md shadow-sm transition-colors duration-300">
                 {tag}
               </span>
             ))}
@@ -81,16 +81,16 @@ export default function Hero() {
             ))}
 
             {/* Floating Element - Example Data Viz */}
-            <div className="absolute -bottom-8 -left-8 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 z-20 animate-bounce" style={{ animationDuration: '3s' }}>
+            <div className="absolute -bottom-8 -left-8 bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-xl dark:shadow-2xl dark:shadow-primary/20 border border-gray-100 dark:border-white/10 z-20 animate-bounce transition-colors duration-300" style={{ animationDuration: '3s' }}>
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="w-8 h-8 rounded-full bg-accent/20 dark:bg-primary/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-accent dark:text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                   </svg>
                 </div>
-                <div className="text-xs font-bold text-secondary">Performance</div>
+                <div className="text-xs font-bold text-secondary dark:text-white transition-colors duration-300">Performance</div>
               </div>
-              <div className="text-2xl font-extrabold text-secondary">+124%</div>
+              <div className="text-2xl font-extrabold text-secondary dark:text-white transition-colors duration-300">+124%</div>
             </div>
 
             {/* Floating Element - Example Code */}

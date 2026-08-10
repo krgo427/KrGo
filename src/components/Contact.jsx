@@ -84,61 +84,61 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="py-12 md:py-16 bg-white">
+    <section id="contact" className="py-12 md:py-16 bg-white dark:bg-slate-950 transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-12 items-start">
         {/* Left: Info */}
         <div>
           <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-2">Get In Touch</p>
-          <h2 className="section-title text-left">Ready to Transform Your Business?</h2>
-          <p className="text-gray-500 mb-8 leading-relaxed">
+          <h2 className="section-title text-left text-secondary dark:text-white transition-colors duration-300">Ready to Transform Your Business?</h2>
+          <p className="text-gray-500 dark:text-slate-400 mb-8 leading-relaxed transition-colors duration-300">
             Fill in the form and we'll get back to you within a few hours. Let's discuss how our technology solutions can accelerate your growth.
           </p>
 
           <div className="space-y-6 mt-8 hidden md:block">
-            <h3 className="text-secondary font-bold text-lg">What happens next?</h3>
+            <h3 className="text-secondary dark:text-white font-bold text-lg transition-colors duration-300">What happens next?</h3>
             <div className="flex gap-4 items-start">
-              <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors duration-300">
                 <span className="text-primary font-bold text-sm">1</span>
               </div>
               <div>
-                <h4 className="text-secondary font-semibold">We schedule a call</h4>
-                <p className="text-sm text-gray-500 mt-1">We'll reach out at your requested time to understand your exact needs.</p>
+                <h4 className="text-secondary dark:text-white font-semibold transition-colors duration-300">We schedule a call</h4>
+                <p className="text-sm text-gray-500 dark:text-slate-400 mt-1 transition-colors duration-300">We'll reach out at your requested time to understand your exact needs.</p>
               </div>
             </div>
             
             <div className="flex gap-4 items-start">
-              <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors duration-300">
                 <span className="text-primary font-bold text-sm">2</span>
               </div>
               <div>
-                <h4 className="text-secondary font-semibold">Get a custom strategy</h4>
-                <p className="text-sm text-gray-500 mt-1">We'll provide a free proposal and a clear timeline for your project.</p>
+                <h4 className="text-secondary dark:text-white font-semibold transition-colors duration-300">Get a custom strategy</h4>
+                <p className="text-sm text-gray-500 dark:text-slate-400 mt-1 transition-colors duration-300">We'll provide a free proposal and a clear timeline for your project.</p>
               </div>
             </div>
 
             <div className="flex gap-4 items-start">
-              <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors duration-300">
                 <span className="text-primary font-bold text-sm">3</span>
               </div>
               <div>
-                <h4 className="text-secondary font-semibold">Launch & Scale</h4>
-                <p className="text-sm text-gray-500 mt-1">We build your solution and help your business grow effortlessly.</p>
+                <h4 className="text-secondary dark:text-white font-semibold transition-colors duration-300">Launch & Scale</h4>
+                <p className="text-sm text-gray-500 dark:text-slate-400 mt-1 transition-colors duration-300">We build your solution and help your business grow effortlessly.</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Right: Form */}
-        <div className="card">
+        <div className="card bg-white dark:bg-slate-900 border border-transparent dark:border-white/10 shadow-xl transition-colors duration-300">
           {submitted ? (
             <div className="text-center py-8">
-              <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-green-50 dark:bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
+                <svg className="w-8 h-8 text-accent dark:text-emerald-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-secondary mb-2">Success!</h3>
-              <p className="text-gray-500 mb-4">
+              <h3 className="text-xl font-bold text-secondary dark:text-white mb-2 transition-colors duration-300">Success!</h3>
+              <p className="text-gray-500 dark:text-slate-400 mb-4 transition-colors duration-300">
                 Your request has been sent successfully. We will contact you soon.
               </p>
               <button
@@ -153,13 +153,13 @@ export default function Contact() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate className="space-y-5">
-              <h3 className="text-xl font-bold text-secondary mb-1">Get a Free Consultation</h3>
-              <p className="text-gray-400 text-sm mb-4">We'll call you back within 2 hours.</p>
+              <h3 className="text-xl font-bold text-secondary dark:text-white mb-1 transition-colors duration-300">Get a Free Consultation</h3>
+              <p className="text-gray-400 dark:text-slate-400 text-sm mb-4 transition-colors duration-300">We'll call you back within 2 hours.</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {/* Name */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-1" htmlFor="name">
+                  <label className="block text-sm font-medium text-secondary dark:text-slate-300 mb-1 transition-colors duration-300" htmlFor="name">
                     Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -169,8 +169,8 @@ export default function Contact() {
                     value={form.name}
                     onChange={handleChange}
                     placeholder="e.g. Ramesh Sharma"
-                    className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition ${
-                      errors.name ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-bg'
+                    className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition text-secondary dark:text-white ${
+                      errors.name ? 'border-red-400 bg-red-50 dark:border-red-400/50 dark:bg-red-900/20' : 'border-gray-200 bg-bg dark:border-white/10 dark:bg-slate-950'
                     }`}
                   />
                   {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
@@ -178,7 +178,7 @@ export default function Contact() {
 
                 {/* Phone */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-1" htmlFor="phone">
+                  <label className="block text-sm font-medium text-secondary dark:text-slate-300 mb-1 transition-colors duration-300" htmlFor="phone">
                     Phone Number <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -189,8 +189,8 @@ export default function Contact() {
                     onChange={handleChange}
                     placeholder="e.g. 9876543210"
                     maxLength={10}
-                    className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition ${
-                      errors.phone ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-bg'
+                    className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition text-secondary dark:text-white ${
+                      errors.phone ? 'border-red-400 bg-red-50 dark:border-red-400/50 dark:bg-red-900/20' : 'border-gray-200 bg-bg dark:border-white/10 dark:bg-slate-950'
                     }`}
                   />
                   {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
@@ -200,7 +200,7 @@ export default function Contact() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {/* Project Type */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-1" htmlFor="projectType">
+                  <label className="block text-sm font-medium text-secondary dark:text-slate-300 mb-1 transition-colors duration-300" htmlFor="projectType">
                     Project Type <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -210,8 +210,8 @@ export default function Contact() {
                     value={form.projectType}
                     onChange={handleChange}
                     placeholder="e.g. Custom ERP, AI Chatbot, Website"
-                    className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition ${
-                      errors.projectType ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-bg'
+                    className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition text-secondary dark:text-white ${
+                      errors.projectType ? 'border-red-400 bg-red-50 dark:border-red-400/50 dark:bg-red-900/20' : 'border-gray-200 bg-bg dark:border-white/10 dark:bg-slate-950'
                     }`}
                   />
                   {errors.projectType && <p className="text-red-500 text-xs mt-1">{errors.projectType}</p>}
@@ -219,7 +219,7 @@ export default function Contact() {
 
                 {/* Call Request Time */}
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-1">
+                  <label className="block text-sm font-medium text-secondary dark:text-slate-300 mb-1 transition-colors duration-300">
                     Call Request Time <span className="text-red-500">*</span>
                   </label>
                   <div className="flex gap-2">
@@ -231,8 +231,8 @@ export default function Contact() {
                       onChange={handleChange}
                       onMouseEnter={(e) => { try { e.target.showPicker() } catch(err) {} }}
                       onClick={(e) => { try { e.target.showPicker() } catch(err) {} }}
-                      className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition cursor-pointer ${
-                        errors.callRequestTime ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-bg'
+                      className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition cursor-pointer text-secondary dark:text-white dark:color-scheme-dark ${
+                        errors.callRequestTime ? 'border-red-400 bg-red-50 dark:border-red-400/50 dark:bg-red-900/20' : 'border-gray-200 bg-bg dark:border-white/10 dark:bg-slate-950'
                       }`}
                     />
                     <input
@@ -243,8 +243,8 @@ export default function Contact() {
                       onChange={handleChange}
                       onMouseEnter={(e) => { try { e.target.showPicker() } catch(err) {} }}
                       onClick={(e) => { try { e.target.showPicker() } catch(err) {} }}
-                      className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition cursor-pointer ${
-                        errors.callRequestTime ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-bg'
+                      className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition cursor-pointer text-secondary dark:text-white dark:color-scheme-dark ${
+                        errors.callRequestTime ? 'border-red-400 bg-red-50 dark:border-red-400/50 dark:bg-red-900/20' : 'border-gray-200 bg-bg dark:border-white/10 dark:bg-slate-950'
                       }`}
                     />
                   </div>
@@ -253,7 +253,7 @@ export default function Contact() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary mb-1" htmlFor="message">
+                <label className="block text-sm font-medium text-secondary dark:text-slate-300 mb-1 transition-colors duration-300" htmlFor="message">
                   Message (Optional)
                 </label>
                 <textarea
@@ -263,7 +263,7 @@ export default function Contact() {
                   onChange={handleChange}
                   placeholder="Tell us about your project requirements..."
                   rows={3}
-                  className="w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition border-gray-200 bg-bg"
+                  className="w-full border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition border-gray-200 bg-bg dark:border-white/10 dark:bg-slate-950 text-secondary dark:text-white"
                 />
               </div>
 
@@ -274,7 +274,7 @@ export default function Contact() {
               <button type="submit" disabled={submitting} className="btn-primary w-full justify-center text-base py-3.5 disabled:opacity-60 disabled:cursor-not-allowed">
                 {submitting ? 'Submitting...' : 'Send My Request →'}
               </button>
-              <p className="text-center text-xs text-gray-400">
+              <p className="text-center text-xs text-gray-400 dark:text-slate-400 transition-colors duration-300">
                 No spam. We'll only contact you regarding your inquiry.
               </p>
             </form>

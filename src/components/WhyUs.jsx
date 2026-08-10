@@ -58,25 +58,25 @@ const reasons = [
 ]
 
 const ReasonCard = ({ r }) => (
-  <div className="flex flex-col h-full bg-white border border-gray-100 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-    <div className="w-14 h-14 rounded-xl bg-blue-50 text-primary flex items-center justify-center mb-6">
+  <div className="flex flex-col h-full bg-white dark:bg-slate-900 border border-gray-100 dark:border-white/10 rounded-2xl p-8 hover:shadow-xl dark:hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-2">
+    <div className="w-14 h-14 rounded-xl bg-blue-50 dark:bg-primary/20 text-primary flex items-center justify-center mb-6 transition-colors duration-300">
       {r.icon}
     </div>
-    <h3 className="text-xl font-bold text-secondary mb-3">{r.title}</h3>
-    <p className="text-gray-500 text-base leading-relaxed flex-grow">{r.description}</p>
+    <h3 className="text-xl font-bold text-secondary dark:text-white mb-3 transition-colors duration-300">{r.title}</h3>
+    <p className="text-gray-500 dark:text-slate-400 text-base leading-relaxed flex-grow transition-colors duration-300">{r.description}</p>
   </div>
 );
 
 export default function WhyUs() {
   return (
-    <section id="why-us" className="py-16 md:py-24 bg-gray-50">
+    <section id="why-us" className="py-16 md:py-24 bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16 md:mb-20">
           <p className="text-primary font-bold text-sm uppercase tracking-[0.2em] mb-3">Why KrGo</p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-secondary mb-6 tracking-tight">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-secondary dark:text-white mb-6 tracking-tight transition-colors duration-300">
             The Right Technology Partner
           </h2>
-          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-500 dark:text-slate-400 max-w-2xl mx-auto transition-colors duration-300">
             We don't just write code; we deliver strategic technology solutions that solve real business problems and drive growth.
           </p>
         </div>
