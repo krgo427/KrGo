@@ -222,7 +222,7 @@ export default function Contact() {
                   <label className="block text-sm font-medium text-secondary dark:text-slate-300 mb-1 transition-colors duration-300">
                     Call Request Time <span className="text-red-500">*</span>
                   </label>
-                  <div className="flex gap-2">
+                  <div className="grid grid-cols-2 gap-2">
                     <input
                       id="callRequestDate"
                       name="callRequestDate"
