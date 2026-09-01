@@ -1,5 +1,6 @@
 import React from 'react'
 import AccordionGallery from './AccordionGallery'
+import AutoHorizontalSlider from './AutoHorizontalSlider'
 import educationBg from '../assets/education.png'
 
 const industries = [
@@ -59,24 +60,25 @@ export default function Industries() {
     label: ind.name,
     desc: ind.desc,
     icon: ind.icon,
-    link: '#'
+    link: '#contact',
+    ctaText: 'Get Started'
   }))
 
   return (
-    <section id="industries" className="py-16 md:py-24 bg-white dark:bg-slate-900 dark:border-t dark:border-white/5 overflow-hidden relative min-h-[600px] flex items-center transition-colors duration-300">
+    <section id="industries" className="py-16 md:py-24 bg-white overflow-hidden relative min-h-[550px] flex items-center">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full relative z-10">
         
         {/* Header Text Centered */}
-        <div className="max-w-2xl mx-auto mb-16 relative z-20 text-center">
+        <div className="max-w-2xl mx-auto mb-10 md:mb-16 relative z-20 text-center">
           <p className="text-primary font-bold text-sm uppercase tracking-[0.2em] mb-3">Industries</p>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-secondary dark:text-white mb-6 tracking-tight transition-colors duration-300">Who We Serve</h2>
-          <p className="text-base md:text-lg text-gray-500 dark:text-slate-400 font-light leading-relaxed transition-colors duration-300">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-secondary mb-6 tracking-tight">Who We Serve</h2>
+          <p className="text-base md:text-lg text-gray-500 font-light leading-relaxed">
             We deliver tailor-made technology solutions across a wide range of industries. Watch our capabilities expand.
           </p>
         </div>
 
-        {/* Accordion Gallery Section */}
-        <div className="w-full relative z-10 pt-4">
+        {/* Desktop Accordion Gallery Section (hidden md:block) */}
+        <div className="hidden md:block w-full relative z-10 pt-4">
           <AccordionGallery 
             items={galleryItems} 
             height={460} 
@@ -86,6 +88,48 @@ export default function Industries() {
             grayscale={false} 
             trigger="hover" 
           />
+        </div>
+
+        {/* Mobile Automatic Horizontal Slider (md:hidden) */}
+        <div className="md:hidden w-full">
+          <AutoHorizontalSlider interval={3000}>
+            {industries.map((ind, idx) => (
+              <div 
+                key={idx} 
+                className="bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-xl flex flex-col h-[380px] relative group"
+              >
+                {/* Background Image */}
+                <div className="h-44 w-full relative overflow-hidden">
+                  <img 
+                    src={ind.image} 
+                    alt={ind.name} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+                  <div className="absolute top-3 left-3 w-8 h-8 rounded-lg bg-primary/95 flex items-center justify-center shadow">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={ind.icon} />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-5 flex flex-col flex-1 justify-between text-left">
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-2">{ind.name}</h3>
+                    <p className="text-xs text-slate-300 font-light leading-relaxed mb-4">{ind.desc}</p>
+                  </div>
+
+                  <a 
+                    href="#contact" 
+                    className="inline-flex items-center justify-center gap-2 text-xs font-bold text-white uppercase tracking-wider bg-primary px-4 py-2.5 rounded-lg shadow hover:bg-blue-600 transition-colors w-full text-center"
+                  >
+                    Get Started &rarr;
+                  </a>
+                </div>
+              </div>
+            ))}
+          </AutoHorizontalSlider>
         </div>
 
       </div>
