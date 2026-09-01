@@ -126,24 +126,6 @@ export default function Portfolio() {
 
         {/* Desktop Split Layout (hidden lg:flex) */}
         <div className="hidden lg:flex flex-col gap-6 mb-16">
-          {/* Project Tabs Header for Quick Direct Switching */}
-          <div className="flex items-center justify-center gap-3 mb-4">
-            {allProjects.map((p, idx) => (
-              <button
-                key={p.id}
-                onClick={() => setActiveIndex(idx)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2 border ${
-                  activeIndex === idx
-                    ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-105'
-                    : 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/10 hover:text-white'
-                }`}
-              >
-                <span>{p.title}</span>
-                <span className={`w-2 h-2 rounded-full ${activeIndex === idx ? 'bg-white' : 'bg-slate-500'}`}></span>
-              </button>
-            ))}
-          </div>
-
           <div className="flex items-center justify-between gap-16 min-h-[480px]">
             {/* Left Side: Active Project Details (5/12 width) */}
             <div className="w-5/12 text-left flex flex-col justify-center min-h-[380px]">
