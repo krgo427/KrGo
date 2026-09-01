@@ -27,10 +27,10 @@ export default function Services() {
     <div 
       key={keyStr} 
       onClick={() => openServiceDetails(svc.slug)}
-      className="card bg-white border border-gray-100 group flex flex-col transition-all duration-300 cursor-pointer text-left hover:-translate-y-2 hover:shadow-xl h-full p-6 md:p-8"
+      className="card bg-slate-900/80 backdrop-blur-sm border border-white/10 hover:border-primary/50 group flex flex-col transition-all duration-300 cursor-pointer text-left hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 h-full p-6 md:p-8 rounded-2xl"
     >
       <div
-        className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:scale-110 transition-all duration-300"
+        className="w-16 h-16 rounded-2xl bg-primary/15 border border-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:border-primary group-hover:scale-110 transition-all duration-300"
       >
         <div className="group-hover:[&_svg]:text-white">
           {serviceIcons[svc.slug] || (
@@ -40,11 +40,11 @@ export default function Services() {
           )}
         </div>
       </div>
-      <h3 className="text-xl md:text-2xl font-bold text-secondary mb-3 transition-colors duration-300">{svc.title}</h3>
-      <p className="text-gray-500 text-sm md:text-base leading-relaxed mb-6 flex-grow transition-colors duration-300">{svc.shortDescription}</p>
+      <h3 className="text-xl md:text-2xl font-bold text-white mb-3 transition-colors duration-300">{svc.title}</h3>
+      <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-6 flex-grow font-light transition-colors duration-300">{svc.shortDescription}</p>
       
       <span 
-        className="text-primary font-bold text-xs md:text-sm group-hover:text-blue-700 mt-auto flex items-center gap-2 group-hover:gap-3 transition-all uppercase tracking-wider"
+        className="text-primary font-bold text-xs md:text-sm group-hover:text-cyan-300 mt-auto flex items-center gap-2 group-hover:gap-3 transition-all uppercase tracking-wider"
       >
         Learn More <span aria-hidden="true" className="text-lg">→</span>
       </span>
@@ -52,13 +52,18 @@ export default function Services() {
   )
 
   return (
-    <section id="services" className="py-16 md:py-24 bg-white relative transition-colors duration-300">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+    <section id="services" className="py-16 md:py-24 bg-[#080B11] relative text-white border-t border-white/5 transition-colors duration-300 overflow-hidden">
+      {/* Subtle grid background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
+      
+      {/* Decorative Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[140px] pointer-events-none"></div>
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
         <div className="text-center mb-10 md:mb-20">
           <p className="text-primary font-bold text-sm uppercase tracking-[0.2em] mb-3">Enterprise Solutions</p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-secondary mb-6 tracking-tight transition-colors duration-300">Complete Technology Solutions</h2>
-          <p className="text-base md:text-lg text-gray-500 max-w-2xl mx-auto transition-colors duration-300">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-6 tracking-tight">Complete Technology Solutions</h2>
+          <p className="text-base md:text-lg text-slate-400 max-w-2xl mx-auto font-light">
             From custom software development to advanced AI integrations, we provide end-to-end technical expertise to accelerate your business.
           </p>
         </div>
@@ -72,7 +77,7 @@ export default function Services() {
         <div className="md:hidden">
           <AutoHorizontalSlider interval={3200}>
             {services.map(svc => (
-              <div key={svc.slug} className="h-[340px]">
+              <div key={svc.slug} className="h-[350px]">
                 {renderCard(svc, `mobile-${svc.slug}`)}
               </div>
             ))}

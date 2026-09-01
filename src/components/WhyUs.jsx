@@ -59,25 +59,25 @@ const reasons = [
 ]
 
 const ReasonCard = ({ r }) => (
-  <div className="flex flex-col h-full bg-white border border-gray-100 rounded-2xl p-6 md:p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 text-left">
-    <div className="w-14 h-14 rounded-xl bg-blue-50 text-primary flex items-center justify-center mb-6 transition-colors duration-300">
+  <div className="flex flex-col h-full bg-slate-900/80 backdrop-blur-sm border border-white/10 rounded-2xl p-6 md:p-8 hover:border-primary/40 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 text-left">
+    <div className="w-14 h-14 rounded-xl bg-primary/15 border border-primary/20 text-primary flex items-center justify-center mb-6 transition-colors duration-300">
       {r.icon}
     </div>
-    <h3 className="text-xl font-bold text-secondary mb-3 transition-colors duration-300">{r.title}</h3>
-    <p className="text-gray-500 text-sm md:text-base leading-relaxed flex-grow transition-colors duration-300">{r.description}</p>
+    <h3 className="text-xl font-bold text-white mb-3 transition-colors duration-300">{r.title}</h3>
+    <p className="text-slate-300 text-sm md:text-base leading-relaxed flex-grow font-light transition-colors duration-300">{r.description}</p>
   </div>
 );
 
 export default function WhyUs() {
   return (
-    <section id="why-us" className="py-16 md:py-24 bg-gray-50 transition-colors duration-300">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+    <section id="why-us" className="py-16 md:py-24 bg-[#090C13] text-white border-t border-white/5 relative overflow-hidden transition-colors duration-300">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
         <div className="text-center mb-10 md:mb-20">
           <p className="text-primary font-bold text-sm uppercase tracking-[0.2em] mb-3">Why KrGo</p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-secondary mb-6 tracking-tight transition-colors duration-300">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-6 tracking-tight transition-colors duration-300">
             The Right Technology Partner
           </h2>
-          <p className="text-base md:text-lg text-gray-500 max-w-2xl mx-auto transition-colors duration-300">
+          <p className="text-base md:text-lg text-slate-400 max-w-2xl mx-auto font-light transition-colors duration-300">
             We don't just write code; we deliver strategic technology solutions that solve real business problems and drive growth.
           </p>
         </div>
