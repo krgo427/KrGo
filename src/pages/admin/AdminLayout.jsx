@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { FaChartPie, FaUsers, FaEnvelope, FaFileInvoiceDollar, FaBars, FaTimes } from 'react-icons/fa';
+import { FaChartPie, FaUsers, FaEnvelope, FaFileInvoiceDollar, FaBars, FaTimes, FaTrash } from 'react-icons/fa';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -35,6 +35,7 @@ const AdminLayout = () => {
     { name: 'Clients', path: '/admin/clients', icon: <FaUsers /> },
     { name: 'Requests', path: '/admin/requests', icon: <FaEnvelope /> },
     { name: 'Bill Generator', path: '/admin/billing', icon: <FaFileInvoiceDollar /> },
+    { name: 'Trash Bin', path: '/admin/trash', icon: <FaTrash /> },
   ];
 
   if (!isAuthenticated) {

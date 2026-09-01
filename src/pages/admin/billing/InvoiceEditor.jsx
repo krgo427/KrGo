@@ -1,10 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlus, FaTrash, FaSave, FaEye, FaArrowLeft } from 'react-icons/fa';
+import { FaPlus, FaTrash, FaSave, FaEye, FaArrowLeft, FaUserCheck } from 'react-icons/fa';
 import InvoicePreview from './InvoicePreview';
 import { formatCurrency } from '../../../utils/currency';
+import { supabase } from '../../../config/supabaseClient';
 
 const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
   const [isPreview, setIsPreview] = useState(false);
+  const [savedClients, setSavedClients] = useState([]);
+  const [selectedClientId, setSelectedClientId] = useState('');
+
+  useEffect(() => {
+    fetchSavedClients();
+  }, []);
+
+  const fetchSavedClients = async () => {
+    const { data, error } = await supabase
+      .from('clients')
+      .select('*')
+      .or('is_deleted.is.null,is_deleted.eq.false')
+      .order('name', { ascending: true });
+
+    if (!error && data) {
+      setSavedClients(data);
+    }
+  };
+
+  const handleSelectClient = (clientId) => {
+    setSelectedClientId(clientId);
+    if (!clientId) return;
+
+    const found = savedClients.find(c => c.id === clientId);
+    if (found) {
+      const fullAddressParts = [
+        found.address,
+        found.city,
+        [found.state, found.pincode].filter(Boolean).join(' '),
+        found.gstin ? `GSTIN: ${found.gstin}` : null
+      ].filter(Boolean);
+
+      setInvoice(prev => ({
+        ...prev,
+        client_name: found.name || '',
+        client_company: found.company || '',
+        client_email: found.email || '',
+        client_phone: found.phone || '',
+        client_address: fullAddressParts.join('\n')
+      }));
+    }
+  };
   
   const defaultInvoiceData = {
     invoice_number: settings?.invoice_prefix + Date.now().toString().slice(-4),
@@ -168,21 +211,54 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
 
             {/* Client Info */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4 border-b border-gray-800 pb-2">Client Details</h3>
+              <div className="flex justify-between items-center mb-4 border-b border-gray-800 pb-2">
+                <h3 className="text-lg font-semibold text-white">Client Details</h3>
+                <div className="flex items-center gap-2">
+                  <FaUserCheck className="text-[#00AEEF] text-xs" />
+                  <span className="text-xs text-gray-400 font-medium">Select Saved Client:</span>
+                </div>
+              </div>
+
+              {/* Saved Client Quick-Select Dropdown */}
+              <div className="mb-4 bg-gray-950/80 p-3 rounded-xl border border-[#00AEEF]/30">
+                <select 
+                  value={selectedClientId}
+                  onChange={e => handleSelectClient(e.target.value)}
+                  className="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-white text-xs focus:border-[#00AEEF] outline-none"
+                >
+                  <option value="">-- Choose Saved Client (Auto-fill) --</option>
+                  {savedClients.map(c => (
+                    <option key={c.id} value={c.id}>
+                      {c.name} {c.company ? `(${c.company})` : ''} {c.phone ? `- ${c.phone}` : ''}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-gray-500 mt-1">
+                  Selecting a client will automatically fill the fields below. All fields remain fully editable.
+                </p>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2">
+                <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1">Client Name *</label>
-                  <input type="text" value={invoice.client_name} onChange={e => setInvoice({...invoice, client_name: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" />
+                  <input type="text" value={invoice.client_name} onChange={e => setInvoice({...invoice, client_name: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" placeholder="e.g. Ramesh Sharma" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1">Company Name</label>
+                  <input type="text" value={invoice.client_company} onChange={e => setInvoice({...invoice, client_company: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" placeholder="e.g. Sharma Pvt Ltd" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1">Email</label>
-                  <input type="email" value={invoice.client_email} onChange={e => setInvoice({...invoice, client_email: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" />
+                  <input type="email" value={invoice.client_email} onChange={e => setInvoice({...invoice, client_email: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" placeholder="client@example.com" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1">Phone</label>
-                  <input type="text" value={invoice.client_phone} onChange={e => setInvoice({...invoice, client_phone: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" />
+                  <input type="text" value={invoice.client_phone} onChange={e => setInvoice({...invoice, client_phone: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" placeholder="+91 9876543210" />
                 </div>
-
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-medium text-gray-400 mb-1">Billing Address</label>
+                  <textarea rows="2" value={invoice.client_address || ''} onChange={e => setInvoice({...invoice, client_address: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-xs focus:border-[#00AEEF] outline-none resize-none" placeholder="Street, City, State, Pincode, GSTIN" />
+                </div>
               </div>
             </div>
 

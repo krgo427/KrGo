@@ -12,10 +12,9 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      // In a real scenario, you would fetch actual counts from Supabase tables
-      const { count: clientsCount } = await supabase.from('clients').select('*', { count: 'exact', head: true });
-      const { count: requestsCount } = await supabase.from('contact_requests').select('*', { count: 'exact', head: true });
-      const { count: billsCount } = await supabase.from('bills').select('*', { count: 'exact', head: true });
+      const { count: clientsCount } = await supabase.from('clients').select('*', { count: 'exact', head: true }).or('is_deleted.is.null,is_deleted.eq.false');
+      const { count: requestsCount } = await supabase.from('contact_requests').select('*', { count: 'exact', head: true }).or('is_deleted.is.null,is_deleted.eq.false');
+      const { count: billsCount } = await supabase.from('invoices').select('*', { count: 'exact', head: true }).or('is_deleted.is.null,is_deleted.eq.false');
 
       setStats({
         clients: clientsCount || 0,

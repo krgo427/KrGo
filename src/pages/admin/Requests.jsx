@@ -14,7 +14,12 @@ const Requests = () => {
 
   const fetchRequests = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('contact_requests').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabase
+      .from('contact_requests')
+      .select('*')
+      .or('is_deleted.is.null,is_deleted.eq.false')
+      .order('created_at', { ascending: false });
+      
     if (error) {
       console.error("Error fetching requests:", error);
     } else {
@@ -47,7 +52,9 @@ const Requests = () => {
             name: req.name || 'Unknown',
             email: req.email || '',
             phone: req.phone || '',
-            company: companyName
+            company: companyName,
+            notes: req.message || '',
+            is_deleted: false
           }]);
         }
       }
@@ -62,7 +69,12 @@ const Requests = () => {
 
   const executeDelete = async () => {
     if (!requestToDelete) return;
-    const { error } = await supabase.from('contact_requests').delete().eq('id', requestToDelete.id);
+    // Perform Soft Delete to move item to Trash
+    const { error } = await supabase
+      .from('contact_requests')
+      .update({ is_deleted: true })
+      .eq('id', requestToDelete.id);
+      
     if (!error) {
       fetchRequests();
     }
@@ -117,23 +129,10 @@ const Requests = () => {
       {requestToDelete && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
           <div className="bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-2xl max-w-md w-full mx-4">
-            <h2 className="text-2xl font-bold text-red-500 mb-2">Delete Request?</h2>
+            <h2 className="text-2xl font-bold text-amber-400 mb-2">Move to Trash?</h2>
             <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-              This action cannot be undone. You are about to permanently delete the contact request from <strong className="text-white">{requestToDelete.name}</strong>.
+              Move contact request from <strong className="text-white">{requestToDelete.name}</strong> to Trash? You can restore it anytime from the Admin Trash Bin.
             </p>
-            
-            <div className="mb-6">
-              <label className="block text-xs font-medium text-gray-500 mb-2">
-                Type <span className="font-mono text-red-400 font-bold bg-red-900/20 px-2 py-0.5 rounded">DELETE</span> to confirm
-              </label>
-              <input 
-                type="text" 
-                value={deleteConfirmationText} 
-                onChange={e => setDeleteConfirmationText(e.target.value)} 
-                placeholder="DELETE"
-                className="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-white focus:border-red-500 outline-none transition-colors"
-              />
-            </div>
 
             <div className="flex justify-end gap-3">
               <button 
@@ -144,10 +143,9 @@ const Requests = () => {
               </button>
               <button 
                 onClick={executeDelete}
-                disabled={deleteConfirmationText !== 'DELETE'}
-                className="px-6 py-2 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-all"
+                className="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium transition-all"
               >
-                Permanently Delete
+                Move to Trash
               </button>
             </div>
           </div>

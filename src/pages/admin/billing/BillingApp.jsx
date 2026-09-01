@@ -48,7 +48,12 @@ const BillingApp = () => {
 
     // Load Invoices (try DB first, then local storage)
     try {
-      const { data, error } = await supabase.from('invoices').select('*, invoice_items(*)').order('created_at', { ascending: false });
+      const { data, error } = await supabase
+        .from('invoices')
+        .select('*, invoice_items(*)')
+        .or('is_deleted.is.null,is_deleted.eq.false')
+        .order('created_at', { ascending: false });
+        
       if (data && !error) {
         setInvoices(data);
       } else {
@@ -148,7 +153,7 @@ const BillingApp = () => {
   const executeDeleteInvoice = async () => {
     if (!invoiceToDelete) return;
     try {
-      const { error } = await supabase.from('invoices').delete().eq('id', invoiceToDelete.id);
+      const { error } = await supabase.from('invoices').update({ is_deleted: true }).eq('id', invoiceToDelete.id);
       if (error) throw error;
       loadData();
     } catch (err) {
@@ -253,23 +258,10 @@ const BillingApp = () => {
       {invoiceToDelete && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in print:hidden">
           <div className="bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-2xl max-w-md w-full mx-4">
-            <h2 className="text-2xl font-bold text-red-500 mb-2">Delete Invoice?</h2>
+            <h2 className="text-2xl font-bold text-amber-400 mb-2">Move Invoice to Trash?</h2>
             <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-              This action cannot be undone. You are about to permanently delete invoice <strong className="text-white">{invoiceToDelete.invoice_number}</strong>.
+              Move invoice <strong className="text-white">{invoiceToDelete.invoice_number}</strong> to Trash? You can restore it anytime from the Admin Trash Bin.
             </p>
-            
-            <div className="mb-6">
-              <label className="block text-xs font-medium text-gray-500 mb-2">
-                Type <span className="font-mono text-red-400 font-bold bg-red-900/20 px-2 py-0.5 rounded">DELETE</span> to confirm
-              </label>
-              <input 
-                type="text" 
-                value={deleteConfirmationText} 
-                onChange={e => setDeleteConfirmationText(e.target.value)} 
-                placeholder="DELETE"
-                className="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-white focus:border-red-500 outline-none transition-colors"
-              />
-            </div>
 
             <div className="flex justify-end gap-3">
               <button 
@@ -280,10 +272,9 @@ const BillingApp = () => {
               </button>
               <button 
                 onClick={executeDeleteInvoice}
-                disabled={deleteConfirmationText !== 'DELETE'}
-                className="px-6 py-2 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-all"
+                className="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium transition-all"
               >
-                Permanently Delete
+                Move to Trash
               </button>
             </div>
           </div>

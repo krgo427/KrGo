@@ -18,6 +18,7 @@ import Dashboard from './pages/admin/Dashboard'
 import Clients from './pages/admin/Clients'
 import Requests from './pages/admin/Requests'
 import Billing from './pages/admin/Billing'
+import Trash from './pages/admin/Trash'
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -58,6 +59,7 @@ function App() {
           <Route path="clients" element={<Clients />} />
           <Route path="requests" element={<Requests />} />
           <Route path="billing" element={<Billing />} />
+          <Route path="trash" element={<Trash />} />
         </Route>
       </Routes>
       <HelpAssistFloat />
