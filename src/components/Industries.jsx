@@ -1,5 +1,6 @@
 import React from 'react'
 import AccordionGallery from './AccordionGallery'
+import AutoHorizontalSlider from './AutoHorizontalSlider'
 import educationBg from '../assets/education.png'
 
 const industries = [
@@ -25,7 +26,7 @@ const industries = [
     name: 'Restaurants', 
     desc: 'Streamlined POS systems and delivery integrations.',
     image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=800',
-    icon: 'M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z' 
+    icon: 'M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z' 
   },
   { 
     name: 'Manufacturing', 
@@ -59,33 +60,79 @@ export default function Industries() {
     label: ind.name,
     desc: ind.desc,
     icon: ind.icon,
-    link: '#'
+    link: '#contact',
+    ctaText: 'Get Started'
   }))
 
   return (
-    <section id="industries" className="py-16 md:py-24 bg-white overflow-hidden relative min-h-[600px] flex items-center">
+    <section id="industries" className="py-16 md:py-24 bg-[#0A0D14] text-white border-t border-white/5 overflow-hidden relative min-h-[550px] flex items-center">
+      {/* Glow */}
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none"></div>
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full relative z-10">
         
         {/* Header Text Centered */}
-        <div className="max-w-2xl mx-auto mb-16 relative z-20 text-center">
+        <div className="max-w-2xl mx-auto mb-10 md:mb-16 relative z-20 text-center">
           <p className="text-primary font-bold text-sm uppercase tracking-[0.2em] mb-3">Industries</p>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-secondary mb-6 tracking-tight">Who We Serve</h2>
-          <p className="text-base md:text-lg text-gray-500 font-light leading-relaxed">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">Who We Serve</h2>
+          <p className="text-base md:text-lg text-slate-400 font-light leading-relaxed">
             We deliver tailor-made technology solutions across a wide range of industries. Watch our capabilities expand.
           </p>
         </div>
 
-        {/* Accordion Gallery Section */}
-        <div className="w-full relative z-10 pt-4">
+        {/* Desktop Accordion Gallery Section (hidden md:block) */}
+        <div className="hidden md:block w-full relative z-10 pt-4">
           <AccordionGallery 
             items={galleryItems} 
             height={460} 
             gap={12} 
             radius={20} 
-            accentColor="#a855f7" 
+            accentColor="#00AEEF" 
             grayscale={false} 
             trigger="hover" 
           />
+        </div>
+
+        {/* Mobile Automatic Horizontal Slider (md:hidden) */}
+        <div className="md:hidden w-full">
+          <AutoHorizontalSlider interval={3000}>
+            {industries.map((ind, idx) => (
+              <div 
+                key={idx} 
+                className="bg-slate-900/90 rounded-2xl overflow-hidden border border-white/10 shadow-xl flex flex-col h-[380px] relative group"
+              >
+                {/* Background Image */}
+                <div className="h-44 w-full relative overflow-hidden">
+                  <img 
+                    src={ind.image} 
+                    alt={ind.name} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+                  <div className="absolute top-3 left-3 w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={ind.icon} />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-5 flex flex-col flex-1 justify-between text-left">
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-2">{ind.name}</h3>
+                    <p className="text-xs text-slate-300 font-light leading-relaxed mb-4">{ind.desc}</p>
+                  </div>
+
+                  <a 
+                    href="#contact" 
+                    className="inline-flex items-center justify-center gap-2 text-xs font-bold text-white uppercase tracking-wider bg-primary px-4 py-2.5 rounded-lg shadow hover:bg-blue-600 transition-colors w-full text-center"
+                  >
+                    Get Started &rarr;
+                  </a>
+                </div>
+              </div>
+            ))}
+          </AutoHorizontalSlider>
         </div>
 
       </div>

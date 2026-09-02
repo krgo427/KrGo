@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useTheme } from '../context/ThemeContext'
 import logoImg from '../assets/logo.png'
 
 const navLinks = [
@@ -15,6 +16,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
+  const { theme, toggleTheme } = useTheme()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -28,13 +30,13 @@ export default function Navbar() {
         scrolled ? 'bg-secondary shadow-lg' : 'bg-secondary/95 backdrop-blur-sm'
       }`}
     >
-      <nav className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+      <nav className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-1 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
           <img 
             src={logoImg} 
             alt="KrGo Tech Logo" 
-            className="h-16 md:h-20 w-auto object-contain transform group-hover:scale-105 transition-transform"
+            className="h-8 md:h-10 w-auto object-contain transform group-hover:scale-105 transition-transform"
             onError={(e) => {
               // Fallback to old logo if image is not found
               e.target.onerror = null; 
@@ -45,8 +47,8 @@ export default function Navbar() {
           <div className="hidden w-10 h-10 bg-gradient-to-br from-primary to-blue-700 rounded-xl items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform">
             <span className="text-white font-bold text-lg">KG</span>
           </div>
-          <div className="flex flex-col">
-            <span className="text-2xl font-extrabold tracking-tight leading-tight">
+          <div className="flex flex-col justify-center">
+            <span className="text-xl md:text-2xl font-extrabold tracking-tight leading-none">
               <span className="text-white">Kr</span><span className="text-primary">Go</span> <span className="text-white font-bold">Tech</span>
             </span>
             <span className="text-[10px] text-slate-400 font-medium tracking-widest uppercase">
@@ -82,7 +84,7 @@ export default function Navbar() {
         </ul>
 
         {/* CTA */}
-        <div className="hidden lg:flex items-center">
+        <div className="hidden lg:flex items-center gap-4">
           <Link to="/contact" className="btn-primary text-sm px-5 py-2 min-h-0 shadow-lg shadow-primary/20">
             Get a Proposal
           </Link>
@@ -130,7 +132,7 @@ export default function Navbar() {
               </Link>
             )
           ))}
-          <div className="pt-4 mt-2 border-t border-white/10">
+          <div className="pt-2 mt-2 border-t border-white/10 flex flex-col gap-4">
             <Link 
               to="/contact" 
               className="btn-primary w-full text-center"

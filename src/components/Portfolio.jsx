@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import clgScreenshot from '../assets/clg.jpg'
 import schoolScreenshot from '../assets/school.png'
 import CardSwap, { Card } from './CardSwap'
+import AutoHorizontalSlider from './AutoHorizontalSlider'
 
 const allProjects = [
   {
@@ -61,7 +62,7 @@ export default function Portfolio() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-        <div className="text-center mb-12">
+        <div className="text-center mb-10 md:mb-12">
           <h2 className="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-200 to-slate-400">
             Case Studies
           </h2>
@@ -70,129 +71,136 @@ export default function Portfolio() {
           </p>
         </div>
 
-        {/* Mobile/Tablet Grid Layout (lg:hidden) */}
-        <div className="grid md:grid-cols-2 lg:hidden gap-6 mb-16">
-          {allProjects.map((p) => (
-            <div 
-              key={p.id} 
-              className="group bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-5 md:p-6 flex flex-col h-full transition-all duration-300 hover:-translate-y-1 hover:bg-white/10 hover:border-white/20 hover:shadow-xl hover:shadow-blue-900/20"
-            >
-              {/* Preview Image */}
-              <div className="mb-6 w-full h-52 overflow-hidden rounded-xl border border-white/10 relative">
-                <img 
-                  src={p.image} 
-                  alt={p.title} 
-                  className="w-full h-full object-cover object-top opacity-90 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" 
-                />
-              </div>
+        {/* Mobile Automatic Horizontal Slider (lg:hidden) */}
+        <div className="lg:hidden mb-12">
+          <AutoHorizontalSlider interval={3500}>
+            {allProjects.map((p) => (
+              <div 
+                key={p.id} 
+                className="group bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-5 flex flex-col h-[460px] transition-all duration-300 shadow-xl text-left"
+              >
+                {/* Preview Image */}
+                <div className="mb-4 w-full h-44 overflow-hidden rounded-xl border border-white/10 relative bg-slate-950 flex items-center justify-center">
+                  <img 
+                    src={p.image} 
+                    alt={p.title} 
+                    className="w-full h-full object-contain opacity-95 group-hover:scale-105 transition-transform duration-500" 
+                  />
+                </div>
 
-              {/* Tags */}
-              <div className="flex items-center gap-3 mb-4">
-                <StatusBadge status={p.status} />
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{p.industry}</span>
+                {/* Tags */}
+                <div className="flex items-center gap-2 mb-3">
+                  <StatusBadge status={p.status} />
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{p.industry}</span>
+                </div>
+                
+                {/* Content */}
+                <h3 className="text-lg font-bold text-white mb-2">{p.title}</h3>
+                <p className="text-slate-300 text-xs leading-relaxed mb-4 flex-1 font-light line-clamp-3">
+                  {p.description}
+                </p>
+                
+                {/* Footer / CTA */}
+                <div className="mt-auto pt-4 border-t border-white/10 flex items-center justify-between">
+                  <Link 
+                    to={p.caseStudyLink || p.liveLink} 
+                    className="inline-flex items-center gap-1.5 text-blue-400 text-xs font-semibold hover:text-blue-300 transition-colors"
+                  >
+                    {p.caseStudyLink ? 'Read Case Study' : 'View Demo'}
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </Link>
+                  {p.technologies && (
+                    <div className="flex flex-wrap gap-1 justify-end max-w-[50%]">
+                      {p.technologies.slice(0, 3).map(t => (
+                        <span key={t} className="text-[9px] px-1.5 py-0.5 bg-white/10 rounded text-slate-300 whitespace-nowrap">{t}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-              
-              {/* Content */}
-              <h3 className="text-xl font-bold text-white mb-3">{p.title}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-6 flex-1 font-light">
-                {p.description}
-              </p>
-              
-              {/* Footer / CTA */}
-              <div className="mt-auto pt-5 border-t border-white/10 flex items-center justify-between">
-                <Link to={p.caseStudyLink || p.liveLink} className="inline-flex items-center gap-2 text-blue-400 text-sm font-semibold hover:text-blue-300 transition-colors">
-                  {p.caseStudyLink ? 'Read Case Study' : 'View Demo'}
-                  <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </Link>
-                {p.technologies && (
-                  <div className="flex flex-wrap gap-1 justify-end max-w-[50%]">
-                    {p.technologies.map(t => (
-                      <span key={t} className="text-[9px] px-1.5 py-0.5 bg-white/10 rounded-sm text-slate-300 whitespace-nowrap">{t}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
+            ))}
+          </AutoHorizontalSlider>
         </div>
 
         {/* Desktop Split Layout (hidden lg:flex) */}
-        <div className="hidden lg:flex items-center justify-between gap-16 mb-16 min-h-[480px]">
-          {/* Left Side: Active Project Details (5/12 width) */}
-          <div className="w-5/12 text-left flex flex-col justify-center min-h-[380px]">
-            <div key={activeIndex} className="animate-fade-in">
-              <div className="flex items-center gap-3 mb-5">
-                <StatusBadge status={activeProject.status} />
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{activeProject.industry}</span>
-              </div>
-              
-              <h3 className="text-4xl font-extrabold text-white mb-4 tracking-tight leading-tight">
-                {activeProject.title}
-              </h3>
-              
-              <p className="text-slate-350 text-base leading-relaxed mb-8 font-light">
-                {activeProject.description}
-              </p>
-              
-              {activeProject.technologies && (
-                <div className="flex flex-wrap gap-2 mb-8">
-                  {activeProject.technologies.map(t => (
-                    <span key={t} className="text-xs px-3 py-1 bg-white/10 rounded-md text-slate-300 font-medium tracking-wide">
-                      {t}
-                    </span>
-                  ))}
+        <div className="hidden lg:flex flex-col gap-6 mb-16">
+          <div className="flex items-center justify-between gap-16 min-h-[480px]">
+            {/* Left Side: Active Project Details (5/12 width) */}
+            <div className="w-5/12 text-left flex flex-col justify-center min-h-[380px]">
+              <div key={activeIndex} className="animate-fade-in">
+                <div className="flex items-center gap-3 mb-5">
+                  <StatusBadge status={activeProject.status} />
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{activeProject.industry}</span>
                 </div>
-              )}
-              
-              <Link 
-                to={activeProject.caseStudyLink || activeProject.liveLink} 
-                className="inline-flex items-center gap-2.5 text-primary hover:text-white font-bold text-base uppercase tracking-wider transition-colors duration-200"
-              >
-                {activeProject.caseStudyLink ? 'Read Case Study' : 'View Live Demo'}
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </Link>
+                
+                <h3 className="text-4xl font-extrabold text-white mb-4 tracking-tight leading-tight">
+                  {activeProject.title}
+                </h3>
+                
+                <p className="text-slate-350 text-base leading-relaxed mb-8 font-light">
+                  {activeProject.description}
+                </p>
+                
+                {activeProject.technologies && (
+                  <div className="flex flex-wrap gap-2 mb-8">
+                    {activeProject.technologies.map(t => (
+                      <span key={t} className="text-xs px-3 py-1 bg-white/10 rounded-md text-slate-300 font-medium tracking-wide">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                
+                <Link 
+                  to={activeProject.caseStudyLink || activeProject.liveLink} 
+                  className="inline-flex items-center gap-2.5 text-primary hover:text-white font-bold text-base uppercase tracking-wider transition-colors duration-200"
+                >
+                  {activeProject.caseStudyLink ? 'Read Case Study' : 'View Live Demo'}
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
+              </div>
             </div>
-          </div>
 
-          {/* Right Side: CardSwap Screenshot Stack (7/12 width) */}
-          <div className="w-7/12 flex items-center justify-center relative min-h-[450px]">
-            <div className="relative pt-6 pr-6">
-              <CardSwap 
-                width={560} 
-                height={350} 
-                cardDistance={30} 
-                verticalDistance={25} 
-                delay={3500} 
-                pauseOnHover={true}
-                onActiveIndexChange={setActiveIndex}
-              >
-                {allProjects.map((p) => (
-                  <Card 
-                    key={p.id} 
-                    className="w-full h-full flex flex-col bg-slate-900 border border-white/10 shadow-2xl overflow-hidden text-left"
-                  >
-                    {/* Browser Mockup Header */}
-                    <div className="h-6 bg-slate-900 border-b border-white/5 flex items-center px-3 gap-1.5 flex-shrink-0 select-none">
-                      <div className="w-2 h-2 rounded-full bg-rose-500/80"></div>
-                      <div className="w-2 h-2 rounded-full bg-amber-500/80"></div>
-                      <div className="w-2 h-2 rounded-full bg-emerald-500/80"></div>
-                    </div>
-                    {/* Full Screenshot Container (Contain fitting, no cropping) */}
-                    <div className="flex-1 w-full overflow-hidden relative bg-slate-950 flex items-center justify-center">
-                      <img 
-                        src={p.image} 
-                        alt={p.title} 
-                        className="w-full h-full object-contain opacity-95" 
-                        draggable={false}
-                      />
-                    </div>
-                  </Card>
-                ))}
-              </CardSwap>
+            {/* Right Side: CardSwap Screenshot Stack (7/12 width) */}
+            <div className="w-7/12 flex items-center justify-center relative min-h-[450px]">
+              <div className="relative pt-6 pr-6">
+                <CardSwap 
+                  width={560} 
+                  height={350} 
+                  cardDistance={30} 
+                  verticalDistance={25} 
+                  delay={3500} 
+                  pauseOnHover={true}
+                  onActiveIndexChange={setActiveIndex}
+                >
+                  {allProjects.map((p) => (
+                    <Card 
+                      key={p.id} 
+                      className="w-full h-full flex flex-col bg-slate-900 border border-white/10 shadow-2xl overflow-hidden text-left"
+                    >
+                      {/* Browser Mockup Header */}
+                      <div className="h-6 bg-slate-900 border-b border-white/5 flex items-center px-3 gap-1.5 flex-shrink-0 select-none">
+                        <div className="w-2 h-2 rounded-full bg-rose-500/80"></div>
+                        <div className="w-2 h-2 rounded-full bg-amber-500/80"></div>
+                        <div className="w-2 h-2 rounded-full bg-emerald-500/80"></div>
+                      </div>
+                      {/* Full Screenshot Container */}
+                      <div className="flex-1 w-full overflow-hidden relative bg-slate-950 flex items-center justify-center">
+                        <img 
+                          src={p.image} 
+                          alt={p.title} 
+                          className="w-full h-full object-contain opacity-95" 
+                          draggable={false}
+                        />
+                      </div>
+                    </Card>
+                  ))}
+                </CardSwap>
+              </div>
             </div>
           </div>
         </div>

@@ -44,20 +44,20 @@ const CardSwap = ({
   const config =
     easing === 'elastic'
       ? {
-          ease: 'elastic.out(0.6,0.9)',
-          durDrop: 2,
-          durMove: 2,
-          durReturn: 2,
-          promoteOverlap: 0.9,
-          returnDelay: 0.05
+          ease: 'power2.inOut',
+          durDrop: 0.6,
+          durMove: 0.6,
+          durReturn: 0.6,
+          promoteOverlap: 0.5,
+          returnDelay: 0.1
         }
       : {
-          ease: 'power1.inOut',
-          durDrop: 0.8,
-          durMove: 0.8,
-          durReturn: 0.8,
+          ease: 'power2.inOut',
+          durDrop: 0.6,
+          durMove: 0.6,
+          durReturn: 0.6,
           promoteOverlap: 0.45,
-          returnDelay: 0.2
+          returnDelay: 0.1
         };
 
   const childArr = useMemo(() => Children.toArray(children), [children]);
@@ -80,6 +80,9 @@ const CardSwap = ({
 
     const swap = () => {
       if (order.current.length < 2) return;
+      if (tlRef.current && tlRef.current.isActive()) {
+        tlRef.current.kill();
+      }
 
       const [front, ...rest] = order.current;
       onActiveIndexChange?.(rest[0]);

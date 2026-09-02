@@ -13,7 +13,7 @@ const DEFAULT_ITEMS = [
 const AccordionGallery = ({
   items = DEFAULT_ITEMS,
   defaultIndex = 2,
-  accentColor = '#ffffff',
+  accentColor = '#00AEEF',
   overlayColor = '#060010',
   textColor = '#ffffff',
   height = 460,
@@ -253,9 +253,12 @@ const AccordionGallery = ({
                     <p className="text-xs text-slate-200 font-light leading-relaxed mb-3">
                       {item.desc}
                     </p>
-                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-white uppercase tracking-wider bg-primary/95 px-2.5 py-1 rounded-full shadow border border-white/10 hover:bg-white hover:text-black transition-colors duration-200">
-                      Explore <span>&rarr;</span>
-                    </span>
+                    <a 
+                      href={item.link || '#contact'} 
+                      className="inline-flex items-center gap-1.5 text-[10px] font-bold text-white uppercase tracking-wider bg-primary/95 px-3 py-1 rounded-full shadow border border-white/10 hover:bg-white hover:text-black transition-colors duration-200"
+                    >
+                      {item.ctaText || 'Get Started'} <span>&rarr;</span>
+                    </a>
                   </div>
                 )}
               </span>
