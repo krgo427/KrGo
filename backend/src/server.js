@@ -3,6 +3,9 @@ import app from "./app.js";
 
 dotenv.config();
 
+import { initDb } from "./db.js";
+initDb();
+
 const PORT = process.env.PORT || 5000;
 
 // Global error handlers to prevent server crashes from unhandled issues (e.g. Render Chromium lacking)

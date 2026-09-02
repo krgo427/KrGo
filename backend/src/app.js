@@ -4,6 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import pool from "./db.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,25 +26,40 @@ app.post("/webhook", (req, res) => {
   res.status(200).json({ success: true });
 });
 
-// App Leads route: forwards contact form details to Google Sheets Webhook
+// App Leads route: forwards contact form details to Google Sheets Webhook and saves to DB
 app.post("/api/leads", async (req, res) => {
   try {
-    const sheetWebhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
-    if (!sheetWebhookUrl) {
-      console.error("GOOGLE_SHEETS_WEBHOOK_URL is not set");
-      return res.status(500).json({ success: false, message: "Server misconfiguration" });
-    }
-    
-    const response = await fetch(sheetWebhookUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(req.body)
-    });
+    const { Name, Phone, WebsiteType, TimeSlot, DateLabel, Timestamp } = req.body;
 
-    if (!response.ok) {
-        throw new Error("Failed to forward to Google Sheets");
+    // 1. Save to PostgreSQL Database
+    try {
+      await pool.query(
+        `INSERT INTO leads (name, phone, website_type, time_slot, date_label, timestamp)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [Name, Phone, WebsiteType, TimeSlot, DateLabel, Timestamp]
+      );
+      console.log("Lead saved to Supabase database successfully");
+    } catch (dbError) {
+      console.error("Failed to save lead to database:", dbError);
+      // We log but don't fail the request completely to still attempt sheet sync
+    }
+
+    // 2. Forward to Google Sheets Webhook
+    const sheetWebhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
+    if (sheetWebhookUrl) {
+      const response = await fetch(sheetWebhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(req.body)
+      });
+
+      if (!response.ok) {
+          console.error("Failed to forward to Google Sheets");
+      }
+    } else {
+      console.error("GOOGLE_SHEETS_WEBHOOK_URL is not set");
     }
 
     // Send confirmation emails
