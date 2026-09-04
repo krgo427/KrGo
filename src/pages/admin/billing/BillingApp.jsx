@@ -5,7 +5,7 @@ import InvoiceEditor from './InvoiceEditor';
 import BillingSettings from './BillingSettings';
 import InvoicePreview from './InvoicePreview';
 import { FaFileInvoice, FaCog, FaChartBar } from 'react-icons/fa';
-import { getCachedData, setCachedData, invalidateCacheKey } from '../../../utils/adminCache';
+import { getCachedData, setCachedData, invalidateCacheKey, safeSupabaseQuery } from '../../../utils/adminCache';
 
 const STORAGE_KEY_INVOICES = 'krgo_invoices_fallback';
 const STORAGE_KEY_SETTINGS = 'krgo_billing_settings';
@@ -36,34 +36,30 @@ const BillingApp = () => {
     if (!cachedInvoices || !cachedSettings) setIsLoading(true);
     
     try {
-      const [settingsRes, invoicesRes] = await Promise.allSettled([
-        supabase.from('billing_settings').select('*').limit(1).single(),
-        supabase.from('invoices').select('*, invoice_items(*)').or('is_deleted.is.null,is_deleted.eq.false').order('created_at', { ascending: false })
-      ]);
+      const result = await safeSupabaseQuery(() =>
+        Promise.all([
+          supabase.from('billing_settings').select('*').limit(1).single(),
+          supabase.from('invoices').select('*, invoice_items(*)').or('is_deleted.is.null,is_deleted.eq.false').order('created_at', { ascending: false })
+        ]),
+        800
+      );
 
-      let loadedSettings = null;
-      if (settingsRes.status === 'fulfilled' && settingsRes.value.data && !settingsRes.value.error) {
-        loadedSettings = settingsRes.value.data;
-      } else {
-        const local = localStorage.getItem(STORAGE_KEY_SETTINGS);
-        if (local) loadedSettings = JSON.parse(local);
-      }
-
-      const finalSettings = loadedSettings || getDefaultSettings();
-      setSettings(finalSettings);
-      setCachedData('billing_settings', finalSettings);
-
-      if (invoicesRes.status === 'fulfilled' && invoicesRes.value.data && !invoicesRes.value.error) {
-        const loadedInvoices = invoicesRes.value.data;
-        setInvoices(loadedInvoices);
-        setCachedData('invoices', loadedInvoices);
-      } else {
-        const local = localStorage.getItem(STORAGE_KEY_INVOICES);
-        if (local) {
-          const parsed = JSON.parse(local);
-          setInvoices(parsed);
-          setCachedData('invoices', parsed);
+      if (result.data) {
+        const [settingsRes, invoicesRes] = result.data;
+        if (settingsRes?.data) {
+          setSettings(settingsRes.data);
+          setCachedData('billing_settings', settingsRes.data);
         }
+        if (invoicesRes?.data) {
+          setInvoices(invoicesRes.data);
+          setCachedData('invoices', invoicesRes.data);
+        }
+      } else {
+        const localSettings = getCachedData('billing_settings') || getDefaultSettings();
+        setSettings(localSettings);
+
+        const localInvoices = getCachedData('invoices') || [];
+        setInvoices(localInvoices);
       }
     } catch (err) {
       console.error("Error loading billing data:", err);

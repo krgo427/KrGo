@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../config/supabaseClient';
 import { FaTrash, FaCheck } from 'react-icons/fa';
-import { getCachedData, setCachedData, invalidateCacheKey } from '../../utils/adminCache';
+import { getCachedData, setCachedData, invalidateCacheKey, safeSupabaseQuery } from '../../utils/adminCache';
 
 const Requests = () => {
   const cachedRequests = getCachedData('requests');
@@ -16,18 +16,20 @@ const Requests = () => {
 
   const fetchRequests = async () => {
     if (!cachedRequests) setLoading(true);
-    const { data, error } = await supabase
-      .from('contact_requests')
-      .select('*')
-      .or('is_deleted.is.null,is_deleted.eq.false')
-      .order('created_at', { ascending: false });
+    const { data, error } = await safeSupabaseQuery(() =>
+      supabase
+        .from('contact_requests')
+        .select('*')
+        .or('is_deleted.is.null,is_deleted.eq.false')
+        .order('created_at', { ascending: false }),
+      800
+    );
       
     if (error) {
-      console.error("Error fetching requests:", error);
-    } else {
-      const freshData = data || [];
-      setRequests(freshData);
-      setCachedData('requests', freshData);
+      console.warn("Using offline requests data due to network status:", error.message);
+    } else if (data) {
+      setRequests(data);
+      setCachedData('requests', data);
     }
     setLoading(false);
   };

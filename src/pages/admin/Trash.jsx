@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../config/supabaseClient';
 import { FaTrash, FaUndo, FaLock, FaExclamationTriangle, FaShieldAlt } from 'react-icons/fa';
-import { getCachedData, setCachedData, invalidateCacheKey } from '../../utils/adminCache';
+import { getCachedData, setCachedData, invalidateCacheKey, safeSupabaseQuery } from '../../utils/adminCache';
 
 const Trash = () => {
   const cachedTrash = getCachedData('trash');
@@ -26,21 +26,26 @@ const Trash = () => {
     if (!cachedTrash) setLoading(true);
 
     try {
-      const [reqsRes, clsRes, invsRes] = await Promise.all([
-        supabase.from('contact_requests').select('*').eq('is_deleted', true).order('created_at', { ascending: false }),
-        supabase.from('clients').select('*').eq('is_deleted', true).order('created_at', { ascending: false }),
-        supabase.from('invoices').select('*').eq('is_deleted', true).order('created_at', { ascending: false })
-      ]);
+      const result = await safeSupabaseQuery(() =>
+        Promise.all([
+          supabase.from('contact_requests').select('*').eq('is_deleted', true).order('created_at', { ascending: false }),
+          supabase.from('clients').select('*').eq('is_deleted', true).order('created_at', { ascending: false }),
+          supabase.from('invoices').select('*').eq('is_deleted', true).order('created_at', { ascending: false })
+        ]),
+        800
+      );
 
-      const reqs = reqsRes.data || [];
-      const cls = clsRes.data || [];
-      const invs = invsRes.data || [];
+      if (result.data) {
+        const [reqsRes, clsRes, invsRes] = result.data;
+        const reqs = reqsRes.data || [];
+        const cls = clsRes.data || [];
+        const invs = invsRes.data || [];
 
-      setDeletedRequests(reqs);
-      setDeletedClients(cls);
-      setDeletedInvoices(invs);
-
-      setCachedData('trash', { requests: reqs, clients: cls, invoices: invs });
+        setDeletedRequests(reqs);
+        setDeletedClients(cls);
+        setDeletedInvoices(invs);
+        setCachedData('trash', { requests: reqs, clients: cls, invoices: invs });
+      }
     } catch (error) {
       console.error("Error fetching trash data:", error);
     } finally {

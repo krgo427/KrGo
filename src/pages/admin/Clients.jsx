@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../config/supabaseClient';
 import { FaPlus, FaTrash, FaEdit, FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
-import { getCachedData, setCachedData, invalidateCacheKey } from '../../utils/adminCache';
+import { getCachedData, setCachedData, invalidateCacheKey, safeSupabaseQuery } from '../../utils/adminCache';
 
 const Clients = () => {
   const cachedClients = getCachedData('clients');
@@ -32,18 +32,20 @@ const Clients = () => {
 
   const fetchClients = async () => {
     if (!cachedClients) setLoading(true);
-    const { data, error } = await supabase
-      .from('clients')
-      .select('*')
-      .or('is_deleted.is.null,is_deleted.eq.false')
-      .order('created_at', { ascending: false });
+    const { data, error } = await safeSupabaseQuery(() =>
+      supabase
+        .from('clients')
+        .select('*')
+        .or('is_deleted.is.null,is_deleted.eq.false')
+        .order('created_at', { ascending: false }),
+      800
+    );
 
     if (error) {
-      console.error("Error fetching clients:", error);
-    } else {
-      const freshData = data || [];
-      setClients(freshData);
-      setCachedData('clients', freshData);
+      console.warn("Using offline clients data due to network/Supabase status:", error.message);
+    } else if (data) {
+      setClients(data);
+      setCachedData('clients', data);
     }
     setLoading(false);
   };
