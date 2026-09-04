@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../config/supabaseClient';
 import { FaPlus, FaTrash, FaEdit, FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
+import { getCachedData, setCachedData, invalidateCacheKey } from '../../utils/adminCache';
 
 const Clients = () => {
-  const [clients, setClients] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const cachedClients = getCachedData('clients');
+  const [clients, setClients] = useState(cachedClients || []);
+  const [loading, setLoading] = useState(!cachedClients);
   const [showModal, setShowModal] = useState(false);
   const [editingClient, setEditingClient] = useState(null);
 
@@ -29,7 +31,7 @@ const Clients = () => {
   }, []);
 
   const fetchClients = async () => {
-    setLoading(true);
+    if (!cachedClients) setLoading(true);
     const { data, error } = await supabase
       .from('clients')
       .select('*')
@@ -39,7 +41,9 @@ const Clients = () => {
     if (error) {
       console.error("Error fetching clients:", error);
     } else {
-      setClients(data || []);
+      const freshData = data || [];
+      setClients(freshData);
+      setCachedData('clients', freshData);
     }
     setLoading(false);
   };
@@ -71,7 +75,12 @@ const Clients = () => {
     e.preventDefault();
     
     if (editingClient) {
-      // Update Client
+      // Optimistic update
+      const updatedClients = clients.map(c => c.id === editingClient.id ? { ...c, ...formData } : c);
+      setClients(updatedClients);
+      setCachedData('clients', updatedClients);
+      setShowModal(false);
+
       const { error } = await supabase
         .from('clients')
         .update(formData)
@@ -80,24 +89,28 @@ const Clients = () => {
       if (error) {
         console.error("Error updating client:", error);
         alert("Failed to update client profile.");
-      } else {
-        setShowModal(false);
         fetchClients();
       }
     } else {
       // Add New Client
-      const { error } = await supabase
+      setShowModal(false);
+      const { data, error } = await supabase
         .from('clients')
-        .insert([{ ...formData, is_deleted: false }]);
+        .insert([{ ...formData, is_deleted: false }])
+        .select()
+        .single();
 
       if (error) {
         console.error("Error adding client:", error);
         alert("Failed to add client. Check console or Supabase setup.");
-      } else {
-        setShowModal(false);
         fetchClients();
+      } else if (data) {
+        const updatedClients = [data, ...clients];
+        setClients(updatedClients);
+        setCachedData('clients', updatedClients);
       }
     }
+    invalidateCacheKey('dashboard_stats');
   };
 
   const confirmDelete = (client) => {
@@ -107,16 +120,23 @@ const Clients = () => {
   const handleSoftDelete = async () => {
     if (!clientToDelete) return;
     
+    const targetId = clientToDelete.id;
+    // Optimistic removal
+    const updatedClients = clients.filter(c => c.id !== targetId);
+    setClients(updatedClients);
+    setCachedData('clients', updatedClients);
+    invalidateCacheKey('trash');
+    invalidateCacheKey('dashboard_stats');
+    setClientToDelete(null);
+
     const { error } = await supabase
       .from('clients')
       .update({ is_deleted: true })
-      .eq('id', clientToDelete.id);
+      .eq('id', targetId);
 
     if (error) {
       console.error("Error deleting client:", error);
       alert("Failed to move client to Trash.");
-    } else {
-      setClientToDelete(null);
       fetchClients();
     }
   };

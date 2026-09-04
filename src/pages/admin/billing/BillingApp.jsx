@@ -5,16 +5,20 @@ import InvoiceEditor from './InvoiceEditor';
 import BillingSettings from './BillingSettings';
 import InvoicePreview from './InvoicePreview';
 import { FaFileInvoice, FaCog, FaChartBar } from 'react-icons/fa';
+import { getCachedData, setCachedData, invalidateCacheKey } from '../../../utils/adminCache';
 
 const STORAGE_KEY_INVOICES = 'krgo_invoices_fallback';
 const STORAGE_KEY_SETTINGS = 'krgo_billing_settings';
 
 const BillingApp = () => {
+  const cachedInvoices = getCachedData('invoices');
+  const cachedSettings = getCachedData('billing_settings');
+
   const [activeTab, setActiveTab] = useState('dashboard'); // dashboard, create, edit, settings
-  const [invoices, setInvoices] = useState([]);
-  const [settings, setSettings] = useState(null);
+  const [invoices, setInvoices] = useState(cachedInvoices || []);
+  const [settings, setSettings] = useState(cachedSettings || null);
   const [editingInvoice, setEditingInvoice] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!cachedInvoices || !cachedSettings);
   
   // Ref for hidden printing
   const printRef = useRef(null);
@@ -29,42 +33,43 @@ const BillingApp = () => {
   }, []);
 
   const loadData = async () => {
-    setIsLoading(true);
+    if (!cachedInvoices || !cachedSettings) setIsLoading(true);
     
-    // Load Settings (try DB first, then local storage)
-    let loadedSettings = null;
     try {
-      const { data, error } = await supabase.from('billing_settings').select('*').limit(1).single();
-      if (data && !error) {
-        loadedSettings = data;
-      } else {
-        throw new Error("Table doesn't exist or empty");
-      }
-    } catch (err) {
-      const local = localStorage.getItem(STORAGE_KEY_SETTINGS);
-      if (local) loadedSettings = JSON.parse(local);
-    }
-    setSettings(loadedSettings || getDefaultSettings());
+      const [settingsRes, invoicesRes] = await Promise.allSettled([
+        supabase.from('billing_settings').select('*').limit(1).single(),
+        supabase.from('invoices').select('*, invoice_items(*)').or('is_deleted.is.null,is_deleted.eq.false').order('created_at', { ascending: false })
+      ]);
 
-    // Load Invoices (try DB first, then local storage)
-    try {
-      const { data, error } = await supabase
-        .from('invoices')
-        .select('*, invoice_items(*)')
-        .or('is_deleted.is.null,is_deleted.eq.false')
-        .order('created_at', { ascending: false });
-        
-      if (data && !error) {
-        setInvoices(data);
+      let loadedSettings = null;
+      if (settingsRes.status === 'fulfilled' && settingsRes.value.data && !settingsRes.value.error) {
+        loadedSettings = settingsRes.value.data;
       } else {
-        throw new Error("Table doesn't exist");
+        const local = localStorage.getItem(STORAGE_KEY_SETTINGS);
+        if (local) loadedSettings = JSON.parse(local);
+      }
+
+      const finalSettings = loadedSettings || getDefaultSettings();
+      setSettings(finalSettings);
+      setCachedData('billing_settings', finalSettings);
+
+      if (invoicesRes.status === 'fulfilled' && invoicesRes.value.data && !invoicesRes.value.error) {
+        const loadedInvoices = invoicesRes.value.data;
+        setInvoices(loadedInvoices);
+        setCachedData('invoices', loadedInvoices);
+      } else {
+        const local = localStorage.getItem(STORAGE_KEY_INVOICES);
+        if (local) {
+          const parsed = JSON.parse(local);
+          setInvoices(parsed);
+          setCachedData('invoices', parsed);
+        }
       }
     } catch (err) {
-      const local = localStorage.getItem(STORAGE_KEY_INVOICES);
-      if (local) setInvoices(JSON.parse(local));
+      console.error("Error loading billing data:", err);
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   const getDefaultSettings = () => ({
@@ -80,69 +85,64 @@ const BillingApp = () => {
   });
 
   const handleSaveSettings = async (newSettings) => {
+    setSettings(newSettings);
+    setCachedData('billing_settings', newSettings);
     try {
       const { error } = await supabase.from('billing_settings').upsert(newSettings);
       if (error) throw error;
     } catch (err) {
-      // Fallback to local
       localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(newSettings));
     }
-    setSettings(newSettings);
     alert('Settings saved successfully!');
   };
 
   const handleSaveInvoice = async (invoiceData) => {
     let savedInvoice = { ...invoiceData };
     
-    // 1. Try to save to Supabase
+    // Optimistically update state
+    if (!savedInvoice.id) {
+      savedInvoice.id = 'temp_' + Date.now();
+      const newInvoices = [savedInvoice, ...invoices];
+      setInvoices(newInvoices);
+      setCachedData('invoices', newInvoices);
+    } else {
+      const newInvoices = invoices.map(i => i.id === savedInvoice.id ? savedInvoice : i);
+      setInvoices(newInvoices);
+      setCachedData('invoices', newInvoices);
+    }
+
+    setActiveTab('dashboard');
+    setEditingInvoice(null);
+    invalidateCacheKey('dashboard_stats');
+    
+    // Save to Supabase in background
     try {
-      if (!savedInvoice.id) {
-        // Create new
+      if (savedInvoice.id.toString().startsWith('temp_')) {
         const { items, ...invoiceMeta } = savedInvoice;
+        delete invoiceMeta.id;
         const { data: insertedInv, error: err1 } = await supabase.from('invoices').insert([invoiceMeta]).select().single();
         if (err1) throw err1;
-        
-        savedInvoice.id = insertedInv.id;
         
         if (items && items.length > 0) {
           const itemsToInsert = items.map(item => ({ ...item, invoice_id: insertedInv.id }));
           await supabase.from('invoice_items').insert(itemsToInsert);
         }
       } else {
-        // Update existing
         const { items, ...invoiceMeta } = savedInvoice;
         const { error: updateErr } = await supabase.from('invoices').update(invoiceMeta).eq('id', invoiceMeta.id);
         if (updateErr) throw updateErr;
         
-        // Very basic replace items strategy for simple updates
-        const { error: delErr } = await supabase.from('invoice_items').delete().eq('invoice_id', invoiceMeta.id);
-        if (delErr) throw delErr;
-
+        await supabase.from('invoice_items').delete().eq('invoice_id', invoiceMeta.id);
         if (items && items.length > 0) {
            const itemsToInsert = items.map(item => ({ ...item, invoice_id: invoiceMeta.id, id: undefined }));
-           const { error: insErr } = await supabase.from('invoice_items').insert(itemsToInsert);
-           if (insErr) throw insErr;
+           await supabase.from('invoice_items').insert(itemsToInsert);
         }
       }
-      // Re-fetch all data to ensure sync
       loadData();
     } catch (err) {
       console.log('Falling back to local storage for invoices.', err.message);
-      // Fallback: update local state & local storage
-      if (!savedInvoice.id) {
-        savedInvoice.id = Date.now().toString(); // Generate fake UUID for local
-        const newInvoices = [savedInvoice, ...invoices];
-        setInvoices(newInvoices);
-        localStorage.setItem(STORAGE_KEY_INVOICES, JSON.stringify(newInvoices));
-      } else {
-        const newInvoices = invoices.map(i => i.id === savedInvoice.id ? savedInvoice : i);
-        setInvoices(newInvoices);
-        localStorage.setItem(STORAGE_KEY_INVOICES, JSON.stringify(newInvoices));
-      }
+      localStorage.setItem(STORAGE_KEY_INVOICES, JSON.stringify(invoices));
     }
-
-    setActiveTab('dashboard');
-    setEditingInvoice(null);
   };
 
   const handleDeleteInvoice = (invoice) => {
@@ -152,26 +152,34 @@ const BillingApp = () => {
 
   const executeDeleteInvoice = async () => {
     if (!invoiceToDelete) return;
+
+    const targetId = invoiceToDelete.id;
+    // Optimistic delete
+    const newInvoices = invoices.filter(i => i.id !== targetId);
+    setInvoices(newInvoices);
+    setCachedData('invoices', newInvoices);
+    invalidateCacheKey('trash');
+    invalidateCacheKey('dashboard_stats');
+    setInvoiceToDelete(null);
+
     try {
-      const { error } = await supabase.from('invoices').update({ is_deleted: true }).eq('id', invoiceToDelete.id);
+      const { error } = await supabase.from('invoices').update({ is_deleted: true }).eq('id', targetId);
       if (error) throw error;
-      loadData();
     } catch (err) {
-      const newInvoices = invoices.filter(i => i.id !== invoiceToDelete.id);
-      setInvoices(newInvoices);
       localStorage.setItem(STORAGE_KEY_INVOICES, JSON.stringify(newInvoices));
     }
-    setInvoiceToDelete(null);
   };
 
   const handleStatusChange = async (id, newStatus) => {
+    // Optimistic status update
+    const newInvoices = invoices.map(i => i.id === id ? { ...i, status: newStatus } : i);
+    setInvoices(newInvoices);
+    setCachedData('invoices', newInvoices);
+
     try {
       const { error } = await supabase.from('invoices').update({ status: newStatus }).eq('id', id);
       if (error) throw error;
-      loadData();
     } catch (err) {
-      const newInvoices = invoices.map(i => i.id === id ? { ...i, status: newStatus } : i);
-      setInvoices(newInvoices);
       localStorage.setItem(STORAGE_KEY_INVOICES, JSON.stringify(newInvoices));
     }
   };

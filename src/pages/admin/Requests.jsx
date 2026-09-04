@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../config/supabaseClient';
 import { FaTrash, FaCheck } from 'react-icons/fa';
+import { getCachedData, setCachedData, invalidateCacheKey } from '../../utils/adminCache';
 
 const Requests = () => {
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const cachedRequests = getCachedData('requests');
+  const [requests, setRequests] = useState(cachedRequests || []);
+  const [loading, setLoading] = useState(!cachedRequests);
   const [requestToDelete, setRequestToDelete] = useState(null);
   const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
 
@@ -13,7 +15,7 @@ const Requests = () => {
   }, []);
 
   const fetchRequests = async () => {
-    setLoading(true);
+    if (!cachedRequests) setLoading(true);
     const { data, error } = await supabase
       .from('contact_requests')
       .select('*')
@@ -23,7 +25,9 @@ const Requests = () => {
     if (error) {
       console.error("Error fetching requests:", error);
     } else {
-      setRequests(data || []);
+      const freshData = data || [];
+      setRequests(freshData);
+      setCachedData('requests', freshData);
     }
     setLoading(false);
   };
@@ -32,32 +36,38 @@ const Requests = () => {
     const isCurrentlyUnread = req.status !== 'read';
     const newStatus = isCurrentlyUnread ? 'read' : 'unread';
     
-    const { error } = await supabase.from('contact_requests').update({ status: newStatus }).eq('id', req.id);
-    if (!error) {
-      if (isCurrentlyUnread) {
-        let companyName = 'Website Lead';
-        if (req.message && req.message.includes('Project Type:')) {
-           const match = req.message.match(/Project Type:\s*([^\n]*)/);
-           if (match && match[1]) companyName = match[1].trim();
-        }
+    // Optimistic state update
+    const updatedRequests = requests.map(r => r.id === req.id ? { ...r, status: newStatus } : r);
+    setRequests(updatedRequests);
+    setCachedData('requests', updatedRequests);
 
-        const { data: existing } = await supabase
-          .from('clients')
-          .select('id')
-          .eq('name', req.name || '')
-          .eq('phone', req.phone || '');
-          
-        if (!existing || existing.length === 0) {
-          await supabase.from('clients').insert([{
-            name: req.name || 'Unknown',
-            email: req.email || '',
-            phone: req.phone || '',
-            company: companyName,
-            notes: req.message || '',
-            is_deleted: false
-          }]);
-        }
+    const { error } = await supabase.from('contact_requests').update({ status: newStatus }).eq('id', req.id);
+    if (!error && isCurrentlyUnread) {
+      let companyName = 'Website Lead';
+      if (req.message && req.message.includes('Project Type:')) {
+         const match = req.message.match(/Project Type:\s*([^\n]*)/);
+         if (match && match[1]) companyName = match[1].trim();
       }
+
+      const { data: existing } = await supabase
+        .from('clients')
+        .select('id')
+        .eq('name', req.name || '')
+        .eq('phone', req.phone || '');
+        
+      if (!existing || existing.length === 0) {
+        await supabase.from('clients').insert([{
+          name: req.name || 'Unknown',
+          email: req.email || '',
+          phone: req.phone || '',
+          company: companyName,
+          notes: req.message || '',
+          is_deleted: false
+        }]);
+        invalidateCacheKey('clients');
+      }
+    } else if (error) {
+      // Revert if error
       fetchRequests();
     }
   };
@@ -69,16 +79,25 @@ const Requests = () => {
 
   const executeDelete = async () => {
     if (!requestToDelete) return;
-    // Perform Soft Delete to move item to Trash
+
+    const targetId = requestToDelete.id;
+    // Optimistic removal
+    const updatedRequests = requests.filter(r => r.id !== targetId);
+    setRequests(updatedRequests);
+    setCachedData('requests', updatedRequests);
+    invalidateCacheKey('trash');
+    setRequestToDelete(null);
+
+    // Perform Soft Delete in DB
     const { error } = await supabase
       .from('contact_requests')
       .update({ is_deleted: true })
-      .eq('id', requestToDelete.id);
+      .eq('id', targetId);
       
-    if (!error) {
+    if (error) {
+      console.error("Error deleting request:", error);
       fetchRequests();
     }
-    setRequestToDelete(null);
   };
 
   return (
