@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { API_BASE_URL, LEADS_API_PATH } from '../config/siteConfig'
 import { supabase } from '../config/supabaseClient'
+import { safeSupabaseQuery, getCachedData, setCachedData, invalidateCacheKey } from '../utils/adminCache'
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', phone: '', projectType: '', callRequestDate: '', callRequestTime: '', message: '' })
@@ -41,16 +42,31 @@ export default function Contact() {
     try {
       setSubmitting(true)
 
-      // 1. Send to Supabase (so it appears in the Admin Portal)
-      const { error: sbError } = await supabase.from('contact_requests').insert([{
+      const formattedMessage = `Project Type: ${form.projectType}\nCall Time: ${form.callRequestDate} at ${form.callRequestTime}\nMessage: ${form.message.trim()}`;
+
+      // 1. Send to Supabase with timeout guard & local fallback
+      const { error: sbError } = await safeSupabaseQuery(() => supabase.from('contact_requests').insert([{
         name: form.name.trim(),
         email: null,
         phone: form.phone.trim(),
-        message: `Project Type: ${form.projectType}\nCall Time: ${form.callRequestDate} at ${form.callRequestTime}\nMessage: ${form.message.trim()}`
-      }]);
+        message: formattedMessage
+      }]), 1000);
       
       if (sbError) {
-        throw new Error(`Database Error: ${sbError.message || 'Unknown error'}`);
+        console.warn("Supabase insert failed/timed out, saving request locally:", sbError.message);
+        const newRequest = {
+          id: 'req_' + Date.now(),
+          name: form.name.trim(),
+          email: null,
+          phone: form.phone.trim(),
+          message: formattedMessage,
+          status: 'unread',
+          created_at: new Date().toISOString()
+        };
+        const existingRequests = getCachedData('requests') || [];
+        const updatedRequests = [newRequest, ...existingRequests];
+        setCachedData('requests', updatedRequests);
+        invalidateCacheKey('dashboard_stats');
       }
 
       // 2. Send Email to krgo427@gmail.com via FormSubmit
@@ -71,7 +87,7 @@ export default function Contact() {
           })
         });
       } catch (emailError) {
-        console.warn("Failed to send email notification, but saved to DB:", emailError);
+        console.warn("Failed to send email notification:", emailError);
       }
 
       setSubmitted(true)

@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../config/supabaseClient';
 import { FaTrash, FaUndo, FaLock, FaExclamationTriangle, FaShieldAlt } from 'react-icons/fa';
+import { getCachedData, setCachedData, invalidateCacheKey, safeSupabaseQuery } from '../../utils/adminCache';
 
 const Trash = () => {
+  const cachedTrash = getCachedData('trash');
   const [activeSubTab, setActiveSubTab] = useState('requests'); // 'requests', 'clients', 'invoices'
-  const [deletedRequests, setDeletedRequests] = useState([]);
-  const [deletedClients, setDeletedClients] = useState([]);
-  const [deletedInvoices, setDeletedInvoices] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [deletedRequests, setDeletedRequests] = useState(cachedTrash?.requests || []);
+  const [deletedClients, setDeletedClients] = useState(cachedTrash?.clients || []);
+  const [deletedInvoices, setDeletedInvoices] = useState(cachedTrash?.invoices || []);
+  const [loading, setLoading] = useState(!cachedTrash);
 
   // Security Auth Modal State
   const [itemToPurge, setItemToPurge] = useState(null); // { type: 'request'|'client'|'invoice', item: obj }
@@ -21,41 +23,58 @@ const Trash = () => {
   }, []);
 
   const fetchTrashData = async () => {
-    setLoading(true);
+    if (!cachedTrash) setLoading(true);
 
-    // 1. Fetch Trashed Requests
-    const { data: reqs } = await supabase
-      .from('contact_requests')
-      .select('*')
-      .eq('is_deleted', true)
-      .order('created_at', { ascending: false });
-    setDeletedRequests(reqs || []);
+    try {
+      const result = await safeSupabaseQuery(() =>
+        Promise.all([
+          supabase.from('contact_requests').select('*').eq('is_deleted', true).order('created_at', { ascending: false }),
+          supabase.from('clients').select('*').eq('is_deleted', true).order('created_at', { ascending: false }),
+          supabase.from('invoices').select('*').eq('is_deleted', true).order('created_at', { ascending: false })
+        ]),
+        800
+      );
 
-    // 2. Fetch Trashed Clients
-    const { data: cls } = await supabase
-      .from('clients')
-      .select('*')
-      .eq('is_deleted', true)
-      .order('created_at', { ascending: false });
-    setDeletedClients(cls || []);
+      if (result.data) {
+        const [reqsRes, clsRes, invsRes] = result.data;
+        const reqs = reqsRes.data || [];
+        const cls = clsRes.data || [];
+        const invs = invsRes.data || [];
 
-    // 3. Fetch Trashed Invoices
-    const { data: invs } = await supabase
-      .from('invoices')
-      .select('*')
-      .eq('is_deleted', true)
-      .order('created_at', { ascending: false });
-    setDeletedInvoices(invs || []);
-
-    setLoading(false);
+        setDeletedRequests(reqs);
+        setDeletedClients(cls);
+        setDeletedInvoices(invs);
+        setCachedData('trash', { requests: reqs, clients: cls, invoices: invs });
+      }
+    } catch (error) {
+      console.error("Error fetching trash data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // RESTORE ACTION
   const handleRestore = async (type, item) => {
     let tableName = '';
-    if (type === 'request') tableName = 'contact_requests';
-    if (type === 'client') tableName = 'clients';
-    if (type === 'invoice') tableName = 'invoices';
+    if (type === 'request') {
+      tableName = 'contact_requests';
+      const updated = deletedRequests.filter(r => r.id !== item.id);
+      setDeletedRequests(updated);
+      invalidateCacheKey('requests');
+    }
+    if (type === 'client') {
+      tableName = 'clients';
+      const updated = deletedClients.filter(c => c.id !== item.id);
+      setDeletedClients(updated);
+      invalidateCacheKey('clients');
+    }
+    if (type === 'invoice') {
+      tableName = 'invoices';
+      const updated = deletedInvoices.filter(i => i.id !== item.id);
+      setDeletedInvoices(updated);
+      invalidateCacheKey('invoices');
+    }
+    invalidateCacheKey('dashboard_stats');
 
     const { error } = await supabase
       .from(tableName)
@@ -64,7 +83,6 @@ const Trash = () => {
 
     if (error) {
       alert(`Failed to restore ${type}: ${error.message}`);
-    } else {
       fetchTrashData();
     }
   };
@@ -85,9 +103,19 @@ const Trash = () => {
 
     const { type, item } = itemToPurge;
     let tableName = '';
-    if (type === 'request') tableName = 'contact_requests';
-    if (type === 'client') tableName = 'clients';
-    if (type === 'invoice') tableName = 'invoices';
+    if (type === 'request') {
+      tableName = 'contact_requests';
+      setDeletedRequests(deletedRequests.filter(r => r.id !== item.id));
+    }
+    if (type === 'client') {
+      tableName = 'clients';
+      setDeletedClients(deletedClients.filter(c => c.id !== item.id));
+    }
+    if (type === 'invoice') {
+      tableName = 'invoices';
+      setDeletedInvoices(deletedInvoices.filter(i => i.id !== item.id));
+    }
+    setItemToPurge(null);
 
     const { error } = await supabase
       .from(tableName)
@@ -96,8 +124,6 @@ const Trash = () => {
 
     if (error) {
       alert(`Failed to permanently delete: ${error.message}`);
-    } else {
-      setItemToPurge(null);
       fetchTrashData();
     }
   };

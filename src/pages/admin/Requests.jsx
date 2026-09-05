@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../config/supabaseClient';
 import { FaTrash, FaCheck } from 'react-icons/fa';
+import { getCachedData, setCachedData, invalidateCacheKey, safeSupabaseQuery } from '../../utils/adminCache';
 
 const Requests = () => {
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const cachedRequests = getCachedData('requests');
+  const [requests, setRequests] = useState(cachedRequests || []);
+  const [loading, setLoading] = useState(!cachedRequests);
   const [requestToDelete, setRequestToDelete] = useState(null);
   const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
 
@@ -13,23 +15,32 @@ const Requests = () => {
   }, []);
 
   const fetchRequests = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('contact_requests')
-      .select('*')
-      .or('is_deleted.is.null,is_deleted.eq.false')
-      .order('created_at', { ascending: false });
+    if (!cachedRequests) setLoading(true);
+    const { data, error } = await safeSupabaseQuery(() =>
+      supabase
+        .from('contact_requests')
+        .select('*')
+        .or('is_deleted.is.null,is_deleted.eq.false')
+        .order('created_at', { ascending: false }),
+      800
+    );
       
     if (error) {
-      console.error("Error fetching requests:", error);
-    } else {
-      setRequests(data || []);
+      console.warn("Using offline requests data due to network status:", error.message);
+    } else if (data) {
+      setRequests(data);
+      setCachedData('requests', data);
     }
     setLoading(false);
   };
 
   const handleAcceptRequest = async (req) => {
     if (req.status === 'read') return;
+
+    // Optimistic state update
+    const updatedRequests = requests.map(r => r.id === req.id ? { ...r, status: 'read' } : r);
+    setRequests(updatedRequests);
+    setCachedData('requests', updatedRequests);
 
     const { error } = await supabase.from('contact_requests').update({ status: 'read' }).eq('id', req.id);
     if (!error) {
@@ -54,7 +65,10 @@ const Requests = () => {
           notes: req.message || '',
           is_deleted: false
         }]);
+        invalidateCacheKey('clients');
       }
+    } else if (error) {
+      // Revert if error
       fetchRequests();
     }
   };
@@ -66,16 +80,25 @@ const Requests = () => {
 
   const executeDelete = async () => {
     if (!requestToDelete) return;
-    // Perform Soft Delete to move item to Trash
+
+    const targetId = requestToDelete.id;
+    // Optimistic removal
+    const updatedRequests = requests.filter(r => r.id !== targetId);
+    setRequests(updatedRequests);
+    setCachedData('requests', updatedRequests);
+    invalidateCacheKey('trash');
+    setRequestToDelete(null);
+
+    // Perform Soft Delete in DB
     const { error } = await supabase
       .from('contact_requests')
       .update({ is_deleted: true })
-      .eq('id', requestToDelete.id);
+      .eq('id', targetId);
       
-    if (!error) {
+    if (error) {
+      console.error("Error deleting request:", error);
       fetchRequests();
     }
-    setRequestToDelete(null);
   };
 
   return (

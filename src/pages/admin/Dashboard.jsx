@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../config/supabaseClient';
 import { FaUsers, FaEnvelope, FaFileInvoiceDollar } from 'react-icons/fa';
+import { getCachedData, setCachedData, safeSupabaseQuery } from '../../utils/adminCache';
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({ clients: 0, requests: 0, bills: 0 });
-  const [loading, setLoading] = useState(true);
+  const cachedStats = getCachedData('dashboard_stats');
+  const [stats, setStats] = useState(cachedStats || { clients: 0, requests: 0, bills: 0 });
+  const [loading, setLoading] = useState(!cachedStats);
 
   useEffect(() => {
     fetchStats();
@@ -12,15 +14,35 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const { count: clientsCount } = await supabase.from('clients').select('*', { count: 'exact', head: true }).or('is_deleted.is.null,is_deleted.eq.false');
-      const { count: requestsCount } = await supabase.from('contact_requests').select('*', { count: 'exact', head: true }).or('is_deleted.is.null,is_deleted.eq.false');
-      const { count: billsCount } = await supabase.from('invoices').select('*', { count: 'exact', head: true }).or('is_deleted.is.null,is_deleted.eq.false');
+      const filter = 'is_deleted.is.null,is_deleted.eq.false';
+      const result = await safeSupabaseQuery(() => Promise.all([
+        supabase.from('clients').select('*', { count: 'exact', head: true }).or(filter),
+        supabase.from('contact_requests').select('*', { count: 'exact', head: true }).or(filter),
+        supabase.from('invoices').select('*', { count: 'exact', head: true }).or(filter)
+      ]), 800);
 
-      setStats({
-        clients: clientsCount || 0,
-        requests: requestsCount || 0,
-        bills: billsCount || 0
-      });
+      if (result.data) {
+        const [clientsRes, requestsRes, billsRes] = result.data;
+        const newStats = {
+          clients: clientsRes.count || 0,
+          requests: requestsRes.count || 0,
+          bills: billsRes.count || 0
+        };
+        setStats(newStats);
+        setCachedData('dashboard_stats', newStats);
+      } else {
+        // Fallback calculation from local cached data
+        const localClients = getCachedData('clients') || [];
+        const localRequests = getCachedData('requests') || [];
+        const localInvoices = getCachedData('invoices') || [];
+        const fallbackStats = {
+          clients: localClients.length,
+          requests: localRequests.length,
+          bills: localInvoices.length
+        };
+        setStats(fallbackStats);
+        setCachedData('dashboard_stats', fallbackStats);
+      }
     } catch (error) {
       console.error("Error fetching stats:", error);
     } finally {
