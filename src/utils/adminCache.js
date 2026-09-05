@@ -43,18 +43,17 @@ export const clearAdminCache = () => {
  * Fast-timeout wrapper for Supabase queries.
  * Prevents DNS lookup/network hangs from freezing the UI for seconds when Supabase is unreachable.
  */
-export const safeSupabaseQuery = async (queryPromiseBuilder, timeoutMs = 800) => {
+export const safeSupabaseQuery = async (queryPromiseBuilder, timeoutMs = 8000) => {
   // If Supabase was recently detected offline, fail fast in 0ms to avoid network lag
   if (isSupabaseOffline && (Date.now() - lastOfflineCheckTime < OFFLINE_COOLDOWN_MS)) {
-    return { data: null, error: { message: 'Supabase unreachable (offline mode)' } };
+    // try to proceed anyway instead of failing fast to allow recovery
+    isSupabaseOffline = false; 
   }
 
   let timerId;
   const timeoutPromise = new Promise((resolve) => {
     timerId = setTimeout(() => {
-      isSupabaseOffline = true;
-      lastOfflineCheckTime = Date.now();
-      resolve({ data: null, error: { message: 'Network timeout (800ms limit reached)' } });
+      resolve({ data: null, error: { message: 'Network timeout (8000ms limit reached)' } });
     }, timeoutMs);
   });
 
@@ -63,7 +62,7 @@ export const safeSupabaseQuery = async (queryPromiseBuilder, timeoutMs = 800) =>
     clearTimeout(timerId);
     if (!result.error) {
       isSupabaseOffline = false; // Connection healthy
-    } else {
+    } else if (result.error.message.includes('timeout')) {
       isSupabaseOffline = true;
       lastOfflineCheckTime = Date.now();
     }
