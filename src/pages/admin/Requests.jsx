@@ -29,34 +29,31 @@ const Requests = () => {
   };
 
   const handleAcceptRequest = async (req) => {
-    const isCurrentlyUnread = req.status !== 'read';
-    const newStatus = isCurrentlyUnread ? 'read' : 'unread';
-    
-    const { error } = await supabase.from('contact_requests').update({ status: newStatus }).eq('id', req.id);
-    if (!error) {
-      if (isCurrentlyUnread) {
-        let companyName = 'Website Lead';
-        if (req.message && req.message.includes('Project Type:')) {
-           const match = req.message.match(/Project Type:\s*([^\n]*)/);
-           if (match && match[1]) companyName = match[1].trim();
-        }
+    if (req.status === 'read') return;
 
-        const { data: existing } = await supabase
-          .from('clients')
-          .select('id')
-          .eq('name', req.name || '')
-          .eq('phone', req.phone || '');
-          
-        if (!existing || existing.length === 0) {
-          await supabase.from('clients').insert([{
-            name: req.name || 'Unknown',
-            email: req.email || '',
-            phone: req.phone || '',
-            company: companyName,
-            notes: req.message || '',
-            is_deleted: false
-          }]);
-        }
+    const { error } = await supabase.from('contact_requests').update({ status: 'read' }).eq('id', req.id);
+    if (!error) {
+      let companyName = 'Website Lead';
+      if (req.message && req.message.includes('Project Type:')) {
+         const match = req.message.match(/Project Type:\s*([^\n]*)/);
+         if (match && match[1]) companyName = match[1].trim();
+      }
+
+      const { data: existing } = await supabase
+        .from('clients')
+        .select('id')
+        .eq('name', req.name || '')
+        .eq('phone', req.phone || '');
+        
+      if (!existing || existing.length === 0) {
+        await supabase.from('clients').insert([{
+          name: req.name || 'Unknown',
+          email: req.email || '',
+          phone: req.phone || '',
+          company: companyName,
+          notes: req.message || '',
+          is_deleted: false
+        }]);
       }
       fetchRequests();
     }
@@ -100,8 +97,9 @@ const Requests = () => {
                 <div className="flex gap-2">
                   <button 
                     onClick={() => handleAcceptRequest(req)}
-                    className={`p-2 rounded-lg transition-colors ${req.status === 'read' ? 'bg-gray-800 text-gray-400 hover:text-white' : 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'}`}
-                    title={req.status === 'read' ? 'Un-accept Request' : 'Accept & Add to Clients'}
+                    disabled={req.status === 'read'}
+                    className={`p-2 rounded-lg transition-colors ${req.status === 'read' ? 'bg-gray-800 text-emerald-500 cursor-not-allowed opacity-50' : 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'}`}
+                    title={req.status === 'read' ? 'Accepted' : 'Accept & Add to Clients'}
                   >
                     <FaCheck />
                   </button>
