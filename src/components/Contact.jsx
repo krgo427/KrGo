@@ -47,7 +47,7 @@ export default function Contact() {
       // 1. Send to Supabase with timeout guard & local fallback
       const { error: sbError } = await safeSupabaseQuery(() => supabase.from('contact_requests').insert([{
         name: form.name.trim(),
-        email: null,
+        email: 'Not Provided',
         phone: form.phone.trim(),
         message: formattedMessage
       }]), 1000);
