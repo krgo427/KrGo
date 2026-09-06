@@ -1,16 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.join(__dirname, '../../.env') });
-
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = 'https://ldjqaxhjpoxdshulwnsv.supabase.co';
+const supabaseKey = 'sb_publishable_TcuRRpIFBgCa8o9XIwsULw_AEEMn0F7';
 console.log("URL:", supabaseUrl ? "Found" : "Missing");
 
 const supabase = createClient(supabaseUrl, supabaseKey);

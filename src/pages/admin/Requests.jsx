@@ -38,6 +38,9 @@ const Requests = () => {
   const handleAcceptRequest = async (req) => {
     if (req.status === 'read') return;
 
+    // Save previous state for rollback
+    const previousRequests = [...requests];
+
     // Optimistic state update (Remove from requests view)
     const updatedRequests = requests.filter(r => r.id !== req.id);
     setRequests(updatedRequests);
@@ -68,9 +71,12 @@ const Requests = () => {
         }]);
         invalidateCacheKey('clients');
       }
-    } else if (error) {
-      // Revert if error
-      fetchRequests();
+    } else {
+      // Revert if error - use the previous state directly since fetchRequests might fail offline
+      console.error("Failed to accept request, reverting...", error);
+      setRequests(previousRequests);
+      setCachedData('requests', previousRequests);
+      alert("Failed to accept request. Please check your internet connection.");
     }
   };
 
@@ -83,6 +89,9 @@ const Requests = () => {
     if (!requestToDelete) return;
 
     const targetId = requestToDelete.id;
+    // Save previous state
+    const previousRequests = [...requests];
+
     // Optimistic removal
     const updatedRequests = requests.filter(r => r.id !== targetId);
     setRequests(updatedRequests);
@@ -98,7 +107,9 @@ const Requests = () => {
       
     if (error) {
       console.error("Error deleting request:", error);
-      fetchRequests();
+      setRequests(previousRequests);
+      setCachedData('requests', previousRequests);
+      alert("Failed to delete request. Please check your internet connection.");
     }
   };
 
