@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom'
 import TextSlider from './TextSlider'
 
 const heroImages = [
-  { src: '/hero-slider/portfolio.jpg', alt: 'Web Design Portfolio' },
-  { src: '/hero-slider/ai_automation.jpg', alt: 'AI Automation Visualization' },
-  { src: '/hero-slider/data_analytics.jpg', alt: 'Data Analytics Dashboard' }
+  { src: '/hero-slider/software_dev.jpg', alt: 'Software Development' },
+  { src: '/hero-slider/data_analytics.jpg', alt: 'Data Analytics' },
+  { src: '/hero-slider/ai_automation.jpg', alt: 'AI & ML' },
+  { src: '/hero-slider/cloud_native.jpg', alt: 'Cloud Native' }
 ]
 
 export default function Hero() {
