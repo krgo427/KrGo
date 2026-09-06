@@ -28,8 +28,9 @@ const Requests = () => {
     if (error) {
       console.warn("Using offline requests data due to network status:", error.message);
     } else if (data) {
-      setRequests(data);
-      setCachedData('requests', data);
+      const activeRequests = data.filter(r => r.status !== 'read');
+      setRequests(activeRequests);
+      setCachedData('requests', activeRequests);
     }
     setLoading(false);
   };
@@ -37,8 +38,8 @@ const Requests = () => {
   const handleAcceptRequest = async (req) => {
     if (req.status === 'read') return;
 
-    // Optimistic state update
-    const updatedRequests = requests.map(r => r.id === req.id ? { ...r, status: 'read' } : r);
+    // Optimistic state update (Remove from requests view)
+    const updatedRequests = requests.filter(r => r.id !== req.id);
     setRequests(updatedRequests);
     setCachedData('requests', updatedRequests);
 
