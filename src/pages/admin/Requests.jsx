@@ -46,6 +46,12 @@ const Requests = () => {
     setRequests(updatedRequests);
     setCachedData('requests', updatedRequests);
 
+    // If this is a legacy mock request (id starts with req_), do not hit Supabase, just insert to client (optional) or just remove
+    if (typeof req.id === 'string' && req.id.startsWith('req_')) {
+      console.log("Accepted offline mock request, skipped Supabase update");
+      return; // It's just a local mock item, accepting it removes it locally.
+    }
+
     const { error } = await supabase.from('contact_requests').update({ status: 'read' }).eq('id', req.id);
     if (!error) {
       let companyName = 'Website Lead';
@@ -99,6 +105,12 @@ const Requests = () => {
     invalidateCacheKey('trash');
     setRequestToDelete(null);
 
+    // If this is a legacy mock request (id starts with req_), do not hit Supabase
+    if (typeof targetId === 'string' && targetId.startsWith('req_')) {
+      console.log("Deleted offline mock request, skipped Supabase update");
+      return;
+    }
+
     // Perform Soft Delete in DB
     const { error } = await supabase
       .from('contact_requests')
@@ -109,7 +121,7 @@ const Requests = () => {
       console.error("Error deleting request:", error);
       setRequests(previousRequests);
       setCachedData('requests', previousRequests);
-      alert("Failed to delete request. Please check your internet connection.");
+      alert(`Failed to delete request: ${error.message || 'Unknown error'}. Please check your database connection.`);
     }
   };
 
