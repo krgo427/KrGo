@@ -76,7 +76,7 @@ export default function Hero() {
           onMouseLeave={() => setIsHovered(false)}
         >
           <div className="relative w-full max-w-lg aspect-square rounded-3xl z-10 shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-blue-300/20 rounded-3xl transform rotate-3 scale-105 transition-transform duration-700 ease-in-out hover:rotate-1 hover:scale-100 z-10 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-blue-300/20 rounded-3xl transform rotate-3 scale-105 transition-transform duration-700 ease-in-out hover:rotate-1 hover:scale-100 -z-20 pointer-events-none"></div>
             
             {heroMockups.map((MockupObj, index) => {
               const MockupComponent = MockupObj.component;

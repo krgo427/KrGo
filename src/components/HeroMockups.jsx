@@ -127,7 +127,7 @@ export const AnalyticsMockup = () => {
           ].map((stat, i) => (
             <div key={i} className="bg-white dark:bg-[#1e293b] p-3 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm flex flex-col justify-center">
               <div className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mb-1 sm:mb-2 font-medium truncate">{stat.label}</div>
-              <div className="text-sm sm:text-lg lg:text-xl font-black dark:text-white mb-1">{stat.value}</div>
+              <div className="text-sm sm:text-base font-bold dark:text-white mb-1">{stat.value}</div>
               <div className={`text-[10px] sm:text-xs font-bold ${stat.color}`}>{stat.trend}</div>
             </div>
           ))}
@@ -265,7 +265,7 @@ export const CloudMockup = () => {
          ].map((stat, i) => (
            <div key={i} className="bg-[#111827] p-3 rounded-xl border border-[#1e293b] hover:border-indigo-500/30 transition-colors group cursor-default">
               <div className="text-slate-400 text-[10px] mb-1 truncate">{stat.label}</div>
-              <div className="text-sm sm:text-lg font-black text-white">{stat.val}</div>
+              <div className="text-xs sm:text-sm font-bold text-white">{stat.val}</div>
               <div className="w-full h-1 bg-slate-800 rounded-full mt-2 overflow-hidden">
                  <div className={`h-full ${stat.color} group-hover:brightness-125 transition-all`} style={{ width: stat.val.includes('%') ? stat.val : '100%' }}></div>
               </div>
