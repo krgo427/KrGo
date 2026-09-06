@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import heroMain from '../assets/hero_main.jpg'
 import TextSlider from './TextSlider'
 
+const heroImages = [
+  { src: '/hero-slider/portfolio.jpg', alt: 'Web Design Portfolio' },
+  { src: '/hero-slider/ai_automation.jpg', alt: 'AI Automation Visualization' },
+  { src: '/hero-slider/data_analytics.jpg', alt: 'Data Analytics Dashboard' }
+]
+
 export default function Hero() {
+  const [currentImgIndex, setCurrentImgIndex] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImgIndex((prev) => (prev + 1) % heroImages.length)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <section
@@ -55,12 +68,18 @@ export default function Hero() {
         {/* Image / Graphic Area */}
         <div className="hidden md:flex md:col-span-5 justify-center relative">
           <div className="relative w-full max-w-lg aspect-[4/5] rounded-3xl z-10">
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-blue-300/20 rounded-3xl transform rotate-6 scale-105 transition-transform duration-700 ease-in-out hover:rotate-2 hover:scale-100"></div>
-            <img
-              src={heroMain}
-              alt="KrGo Technology Solutions Abstract"
-              className="absolute inset-0 w-full h-full object-cover rounded-3xl shadow-2xl transition-all duration-1000 ease-in-out"
-            />
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-blue-300/20 rounded-3xl transform rotate-6 scale-105 transition-transform duration-700 ease-in-out hover:rotate-2 hover:scale-100 z-10"></div>
+            
+            {heroImages.map((img, index) => (
+              <img
+                key={index}
+                src={img.src}
+                alt={img.alt}
+                className={`absolute inset-0 w-full h-full object-cover rounded-3xl shadow-2xl transition-opacity duration-1000 ease-in-out ${
+                  index === currentImgIndex ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
+            ))}
 
             {/* Floating Element - Example Data Viz */}
             <div className="absolute -bottom-8 -left-8 bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-xl dark:shadow-2xl dark:shadow-primary/20 border border-gray-100 dark:border-white/10 z-20 animate-bounce transition-colors duration-300" style={{ animationDuration: '3s' }}>
