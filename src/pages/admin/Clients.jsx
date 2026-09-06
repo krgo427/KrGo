@@ -20,7 +20,8 @@ const Clients = () => {
     state: '',
     pincode: '',
     gstin: '',
-    notes: ''
+    notes: '',
+    client_type: 'Company'
   };
 
   const [formData, setFormData] = useState(initialForm);
@@ -68,7 +69,8 @@ const Clients = () => {
       state: client.state || '',
       pincode: client.pincode || '',
       gstin: client.gstin || '',
-      notes: client.notes || ''
+      notes: client.notes || '',
+      client_type: client.client_type || 'Company'
     });
     setShowModal(true);
   };
@@ -185,6 +187,9 @@ const Clients = () => {
                         <FaBuilding className="text-[#00AEEF] text-xs" />
                         <span>{client.company || 'N/A'}</span>
                       </div>
+                      {client.client_type && (
+                        <div className="text-[10px] bg-gray-800 text-gray-400 px-1.5 py-0.5 rounded inline-block mt-1.5 uppercase tracking-wider">{client.client_type}</div>
+                      )}
                     </td>
                     <td className="p-4 text-gray-400 text-sm space-y-0.5">
                       {client.email && (
@@ -266,6 +271,20 @@ const Clients = () => {
                     placeholder="e.g. Ramesh Sharma" 
                     className="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#00AEEF]" 
                   />
+                </div>
+
+                <div>
+                  <label className="block text-gray-400 text-xs font-medium mb-1">Client Type</label>
+                  <select 
+                    value={formData.client_type} 
+                    onChange={e => setFormData({...formData, client_type: e.target.value})} 
+                    className="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#00AEEF]"
+                  >
+                    <option value="Company">Company / Business</option>
+                    <option value="Student">Student</option>
+                    <option value="Individual">Individual</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
 
                 <div>

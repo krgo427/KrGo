@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { FaChartPie, FaUsers, FaEnvelope, FaFileInvoiceDollar, FaBars, FaTimes, FaTrash } from 'react-icons/fa';
+import logoImg from '../../assets/logo.png';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -78,7 +79,15 @@ const AdminLayout = () => {
         }`}
       >
         <div className="h-20 flex items-center justify-between px-6 border-b border-gray-800">
-          {sidebarOpen && <span className="text-2xl font-bold text-white tracking-wider">Kr<span className="text-[#00AEEF]">Go</span><span className="text-sm text-gray-400 ml-2">Admin</span></span>}
+          {sidebarOpen && (
+            <div className="flex items-center gap-2">
+              <img src={logoImg} alt="KrGo Logo" className="h-8 w-auto object-contain" />
+              <span className="text-xl font-black text-white tracking-tighter" style={{ fontFamily: 'Inter, sans-serif' }}>
+                Kr<span className="text-[#00AEEF]">Go</span>
+                <span className="text-xs text-gray-400 ml-1.5 font-semibold tracking-widest uppercase">Admin</span>
+              </span>
+            </div>
+          )}
           <button 
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800"

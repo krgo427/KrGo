@@ -5,7 +5,6 @@ import Home from './pages/Home'
 import About from './pages/About'
 import PortfolioPage from './pages/PortfolioPage'
 import IndustriesPage from './pages/IndustriesPage'
-import Blog from './pages/Blog'
 import ContactPage from './pages/ContactPage'
 import ServiceDetailsPage from './pages/ServiceDetailsPage'
 import CaseStudyMateshwari from './pages/CaseStudyMateshwari'
@@ -48,7 +47,6 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
         <Route path="/industries" element={<IndustriesPage />} />
-        <Route path="/blog" element={<Blog />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/services/:slug" element={<ServiceDetailsPage />} />
         <Route path="/case-studies/mateshwari-industries" element={<CaseStudyMateshwari />} />

@@ -47,7 +47,6 @@ export default function Footer() {
             {[
               { label: 'About Us', href: '/about' },
               { label: 'Portfolio', href: '/portfolio' },
-              { label: 'Blog', href: '/blog' },
               { label: 'Contact', href: '/contact' },
             ].map((l) => (
               <li key={l.href}>
@@ -64,7 +63,7 @@ export default function Footer() {
           <h4 className="font-semibold text-white mb-6 text-sm uppercase tracking-widest">Services</h4>
           <ul className="space-y-4">
             {[
-              { label: 'Data Science', href: '/services/data-science' },
+              { label: 'Data Analytics', href: '/services/data-analytics' },
               { label: 'Automation & AI', href: '/services/automation-ai' },
               { label: 'Software & Website Development', href: '/services/software-website-development' },
             ].map((l) => (
@@ -82,9 +81,9 @@ export default function Footer() {
           <h4 className="font-semibold text-white mb-6 text-sm uppercase tracking-widest">Resources</h4>
           <ul className="space-y-4 mb-8">
             {[
-              { label: 'FAQs', href: '/#faq' },
-              { label: 'Privacy Policy', href: '#' },
-              { label: 'Terms & Conditions', href: '#' },
+              { label: 'FAQs', href: '/contact#faq' },
+              { label: 'Privacy Policy', href: '/contact#privacy-policy' },
+              { label: 'Terms & Conditions', href: '/contact#terms' },
             ].map((l) => (
               <li key={l.label}>
                 <a href={l.href} className="text-slate-400 hover:text-white hover:pl-1 text-sm transition-all duration-200">

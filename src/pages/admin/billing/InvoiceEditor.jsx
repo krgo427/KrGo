@@ -61,6 +61,7 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
     client_address: '',
     project_name: '',
     reference_number: '',
+    invoice_type: 'Initial Payment',
     currency: settings?.default_currency || 'INR',
     items: [{ service_name: '', description: '', quantity: 1, rate: 0, amount: 0 }],
     subtotal: 0,
@@ -202,9 +203,18 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
                   <input type="date" value={invoice.invoice_date} onChange={e => setInvoice({...invoice, invoice_date: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" style={{ colorScheme: 'dark' }} />
                 </div>
 
-                <div className="md:col-span-2">
+                <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1">Business Name</label>
                   <input type="text" value={invoice.project_name} onChange={e => setInvoice({...invoice, project_name: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1">Invoice Type</label>
+                  <select value={invoice.invoice_type || 'Standard'} onChange={e => setInvoice({...invoice, invoice_type: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:border-[#00AEEF] outline-none">
+                    <option value="Standard">Standard</option>
+                    <option value="Initial Payment">Initial Payment</option>
+                    <option value="Partial Payment">Partial Payment</option>
+                    <option value="Final Payment">Final Payment</option>
+                  </select>
                 </div>
               </div>
             </div>

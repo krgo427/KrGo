@@ -2,7 +2,7 @@ import React from 'react';
 import { formatCurrency } from '../../../utils/currency';
 import { 
   FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaUserAlt, 
-  FaBriefcase, FaCheckCircle, FaFileAlt, FaHandshake, FaFileInvoiceDollar 
+  FaBriefcase, FaCheckCircle, FaFileAlt, FaHandshake, FaFileInvoiceDollar, FaGlobe 
 } from 'react-icons/fa';
 
 const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
@@ -60,19 +60,23 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
                 KG
               </div>
               <div className="flex flex-col justify-center">
-                <h1 className="text-4xl font-black uppercase tracking-wide leading-none" style={{ color: blueBrand }}>
-                  KRGO
+                <h1 className="text-4xl font-black tracking-wide leading-none" style={{ color: blueBrand }}>
+                  KrGo
                 </h1>
                 <h2 className="text-xl font-black uppercase tracking-wide text-black mt-1">
                   SOFTWARE SOLUTIONS
                 </h2>
                 <p className="font-semibold text-sm mt-1" style={{ color: blueBrand }}>
-                  Web Development & Digital Solutions
+                  Tech Solutions
                 </p>
               </div>
             </div>
             
-            <div className="flex flex-col justify-center gap-3 border-l-2 pl-6" style={{ borderColor: blueLightBorder }}>
+            <div className="flex flex-col justify-center gap-2.5 border-l-2 pl-6" style={{ borderColor: blueLightBorder }}>
+              <div className="flex items-center gap-3 text-sm font-medium text-gray-800">
+                <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: blueBrand }}><FaGlobe /></div>
+                krgo.in
+              </div>
               {settings?.business_phone && (
                 <div className="flex items-center gap-3 text-sm font-medium text-gray-800">
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: blueBrand }}><FaPhoneAlt /></div>
@@ -99,7 +103,9 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
             <div className="h-[2px] flex-1 relative" style={{ backgroundColor: blueLightBorder }}>
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full" style={{ backgroundColor: blueBrand }}></div>
             </div>
-            <h2 className="text-3xl font-extrabold px-6 tracking-wider" style={{ color: blueBrand }}>INVOICE</h2>
+            <h2 className="text-2xl md:text-3xl font-extrabold px-6 tracking-wider text-center" style={{ color: blueBrand }}>
+              {invoice.invoice_type && invoice.invoice_type !== 'Standard' ? `${invoice.invoice_type.toUpperCase()} INVOICE` : 'INVOICE'}
+            </h2>
             <div className="h-[2px] flex-1 relative" style={{ backgroundColor: blueLightBorder }}>
               <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full" style={{ backgroundColor: blueBrand }}></div>
             </div>
@@ -172,9 +178,9 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
             <table className="w-full text-left">
               <thead className="text-white text-sm" style={{ backgroundColor: blueBrand }}>
                 <tr>
-                  <th className="py-3 px-4 font-bold text-center w-16 border-r border-white/20">Sr. No.</th>
-                  <th className="py-3 px-6 font-bold border-r border-white/20">Description of Services</th>
-                  <th className="py-3 px-6 font-bold text-center w-40">Amount (Rs.)</th>
+                  <th className="py-2 px-2 font-bold text-center w-14 border-r border-white/20 whitespace-nowrap">Sr. No.</th>
+                  <th className="py-2 px-6 font-bold border-r border-white/20">Description of Services</th>
+                  <th className="py-2 px-6 font-bold text-center w-40">Amount (Rs.)</th>
                 </tr>
               </thead>
               <tbody>

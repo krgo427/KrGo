@@ -1,28 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import hero1 from '../assets/hero1.png'
-import hero2 from '../assets/hero2.png'
-import hero3 from '../assets/hero3.png'
-import hero4 from '../assets/hero4.png'
-import hero5 from '../assets/hero5.png'
+import heroMain from '../assets/hero_main.jpg'
 import TextSlider from './TextSlider'
 
-const heroImages = [hero1, hero2, hero3, hero4, hero5]
-
 export default function Hero() {
-  const [currentImgIdx, setCurrentImgIdx] = useState(0)
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentImgIdx((prev) => (prev + 1) % heroImages.length)
-    }, 8000)
-    return () => clearInterval(timer)
-  }, [])
 
   return (
     <section
       id="hero"
-      className="min-h-screen bg-gradient-to-br from-bg via-white to-blue-50 dark:bg-slate-950 dark:bg-none pt-24 pb-16 flex items-center relative overflow-hidden transition-colors duration-300"
+      className="min-h-screen bg-gradient-to-br from-bg via-white to-blue-50 dark:bg-slate-950 dark:bg-none pt-32 md:pt-24 lg:pt-32 pb-16 flex items-center relative overflow-hidden transition-colors duration-300"
     >
       {/* Abstract Background Elements */}
       <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -70,15 +56,11 @@ export default function Hero() {
         <div className="hidden md:flex md:col-span-5 justify-center relative">
           <div className="relative w-full max-w-lg aspect-[4/5] rounded-3xl z-10">
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-blue-300/20 rounded-3xl transform rotate-6 scale-105 transition-transform duration-700 ease-in-out hover:rotate-2 hover:scale-100"></div>
-            {heroImages.map((img, idx) => (
-              <img
-                key={idx}
-                src={img}
-                alt={`KrGo Technology Solutions Concept ${idx + 1}`}
-                className={`absolute inset-0 w-full h-full object-cover rounded-3xl shadow-2xl transition-all duration-1000 ease-in-out ${idx === currentImgIdx ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'
-                  }`}
-              />
-            ))}
+            <img
+              src={heroMain}
+              alt="KrGo Technology Solutions Abstract"
+              className="absolute inset-0 w-full h-full object-cover rounded-3xl shadow-2xl transition-all duration-1000 ease-in-out"
+            />
 
             {/* Floating Element - Example Data Viz */}
             <div className="absolute -bottom-8 -left-8 bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-xl dark:shadow-2xl dark:shadow-primary/20 border border-gray-100 dark:border-white/10 z-20 animate-bounce transition-colors duration-300" style={{ animationDuration: '3s' }}>
