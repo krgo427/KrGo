@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import TextSlider from './TextSlider'
+import { SoftwareMockup, AnalyticsMockup, AIMockup, CloudMockup } from './HeroMockups'
 
-const heroImages = [
-  { src: '/hero-slider/software_dev.jpg', alt: 'Software Development' },
-  { src: '/hero-slider/data_analytics.jpg', alt: 'Data Analytics' },
-  { src: '/hero-slider/ai_automation.jpg', alt: 'AI & ML' },
-  { src: '/hero-slider/cloud_native.jpg', alt: 'Cloud Native' }
+const heroMockups = [
+  { component: SoftwareMockup, alt: 'Software Development' },
+  { component: AnalyticsMockup, alt: 'Data Analytics' },
+  { component: AIMockup, alt: 'AI & ML' },
+  { component: CloudMockup, alt: 'Cloud Native' }
 ]
 
 export default function Hero() {
@@ -14,7 +15,7 @@ export default function Hero() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImgIndex((prev) => (prev + 1) % heroImages.length)
+      setCurrentImgIndex((prev) => (prev + 1) % heroMockups.length)
     }, 4000)
     return () => clearInterval(interval)
   }, [])
@@ -30,7 +31,7 @@ export default function Hero() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 grid md:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
         {/* Text Content */}
-        <div className="md:col-span-7 flex flex-col text-center md:text-left">
+        <div className="md:col-span-6 flex flex-col text-center md:text-left">
           <div className="inline-flex max-w-[90%] mx-auto md:max-w-none md:mx-0 items-center justify-center gap-2 bg-blue-50/80 dark:bg-white/5 backdrop-blur-sm border border-blue-100 dark:border-white/10 text-primary dark:text-white text-xs font-semibold px-4 py-2 rounded-full mb-8 mt-4 md:mt-0 shadow-sm transition-colors duration-300">
             <span className="relative flex h-2.5 w-2.5 mr-1">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
@@ -67,20 +68,23 @@ export default function Hero() {
         </div>
 
         {/* Image / Graphic Area */}
-        <div className="hidden md:flex md:col-span-5 justify-center relative">
-          <div className="relative w-full max-w-lg aspect-[4/5] rounded-3xl z-10">
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-blue-300/20 rounded-3xl transform rotate-6 scale-105 transition-transform duration-700 ease-in-out hover:rotate-2 hover:scale-100 z-10"></div>
+        <div className="hidden md:flex md:col-span-6 justify-center relative items-center">
+          <div className="relative w-full max-w-2xl aspect-video rounded-3xl z-10 shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-blue-300/20 rounded-3xl transform rotate-3 scale-105 transition-transform duration-700 ease-in-out hover:rotate-1 hover:scale-100 z-10 pointer-events-none"></div>
             
-            {heroImages.map((img, index) => (
-              <img
-                key={index}
-                src={img.src}
-                alt={img.alt}
-                className={`absolute inset-0 w-full h-full object-cover rounded-3xl shadow-2xl transition-opacity duration-1000 ease-in-out ${
-                  index === currentImgIndex ? 'opacity-100' : 'opacity-0'
-                }`}
-              />
-            ))}
+            {heroMockups.map((MockupObj, index) => {
+              const MockupComponent = MockupObj.component;
+              return (
+                <div
+                  key={index}
+                  className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
+                    index === currentImgIndex ? 'opacity-100 z-0' : 'opacity-0 -z-10'
+                  }`}
+                >
+                  <MockupComponent />
+                </div>
+              );
+            })}
 
             {/* Floating Element - Example Data Viz */}
             <div className="absolute -bottom-8 -left-8 bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-xl dark:shadow-2xl dark:shadow-primary/20 border border-gray-100 dark:border-white/10 z-20 animate-bounce transition-colors duration-300" style={{ animationDuration: '3s' }}>
