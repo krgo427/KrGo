@@ -76,7 +76,7 @@ const Requests = () => {
       console.error("Failed to accept request, reverting...", error);
       setRequests(previousRequests);
       setCachedData('requests', previousRequests);
-      alert("Failed to accept request. Please check your internet connection.");
+      alert(`Failed to accept request: ${error.message || 'Unknown error'}. Please check your database connection.`);
     }
   };
 
