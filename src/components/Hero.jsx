@@ -85,32 +85,6 @@ export default function Hero() {
                 </div>
               );
             })}
-
-            {/* Floating Element - Example Data Viz */}
-            <div className="absolute -bottom-8 -left-8 bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-xl dark:shadow-2xl dark:shadow-primary/20 border border-gray-100 dark:border-white/10 z-20 animate-bounce transition-colors duration-300" style={{ animationDuration: '3s' }}>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 rounded-full bg-accent/20 dark:bg-primary/20 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-accent dark:text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                </div>
-                <div className="text-xs font-bold text-secondary dark:text-white transition-colors duration-300">Performance</div>
-              </div>
-              <div className="text-2xl font-extrabold text-secondary dark:text-white transition-colors duration-300">+124%</div>
-            </div>
-
-            {/* Floating Element - Example Code */}
-            <div className="absolute -top-6 -right-6 bg-secondary p-4 rounded-xl shadow-xl border border-gray-700 z-20 opacity-90 hidden lg:block">
-              <pre className="text-[10px] text-green-400 font-mono">
-                <code>
-                  const optimize = async () =&gt; {'{\n'}
-                  {'  '}await analyzeData();{'\n'}
-                  {'  '}return scale();{'\n'}
-                  {'}'}
-                </code>
-              </pre>
-            </div>
-
           </div>
         </div>
       </div>
