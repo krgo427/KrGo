@@ -12,13 +12,15 @@ const heroMockups = [
 
 export default function Hero() {
   const [currentImgIndex, setCurrentImgIndex] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
 
   useEffect(() => {
+    if (isHovered) return;
     const interval = setInterval(() => {
       setCurrentImgIndex((prev) => (prev + 1) % heroMockups.length)
     }, 4000)
     return () => clearInterval(interval)
-  }, [])
+  }, [isHovered])
 
   return (
     <section
@@ -68,7 +70,11 @@ export default function Hero() {
         </div>
 
         {/* Image / Graphic Area */}
-        <div className="hidden md:flex md:col-span-6 justify-center relative items-center">
+        <div 
+          className="hidden md:flex md:col-span-6 justify-center relative items-center"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
           <div className="relative w-full max-w-lg aspect-square rounded-3xl z-10 shadow-2xl">
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-blue-300/20 rounded-3xl transform rotate-3 scale-105 transition-transform duration-700 ease-in-out hover:rotate-1 hover:scale-100 z-10 pointer-events-none"></div>
             
