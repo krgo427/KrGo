@@ -35,7 +35,7 @@ export default function Navbar() {
           <img 
             src={logoImg} 
             alt="KrGo Tech Logo" 
-            className="h-10 sm:h-12 md:h-12 w-auto object-contain transform group-hover:scale-105 transition-transform"
+            className="h-14 sm:h-16 md:h-16 w-auto object-contain transform group-hover:scale-105 transition-transform"
             onError={(e) => {
               // Fallback to old logo if image is not found
               e.target.onerror = null; 
@@ -43,8 +43,8 @@ export default function Navbar() {
               e.target.nextSibling.style.display = 'flex';
             }}
           />
-          <div className="hidden w-12 h-12 bg-gradient-to-br from-primary to-blue-700 rounded-xl items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform">
-            <span className="text-white font-bold text-xl">KG</span>
+          <div className="hidden w-14 h-14 md:h-16 md:w-16 bg-gradient-to-br from-primary to-blue-700 rounded-xl items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform">
+            <span className="text-white font-bold text-2xl">KG</span>
           </div>
           <div className="flex flex-col justify-center">
             <span className="text-2xl md:text-[28px] font-black tracking-tighter leading-none" style={{ fontFamily: 'Inter, sans-serif' }}>

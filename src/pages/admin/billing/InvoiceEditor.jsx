@@ -68,6 +68,7 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
     discount: 0,
     total_amount: 0,
     advance_payment: 0,
+    payment_date: '',
     balance_due: 0,
     tax_type: '',
     tax_rate: 0,
@@ -341,6 +342,19 @@ const InvoiceEditor = ({ initialData, settings, onSave, onCancel }) => {
                     className="w-24 bg-gray-950 border border-gray-800 rounded px-2 py-1 text-white text-right text-xs focus:border-[#00AEEF] outline-none" 
                   />
                 </div>
+
+                {(Number(invoice.advance_payment) > 0 || invoice.status === 'Paid') && (
+                  <div className="flex justify-between items-center text-sm text-gray-400 pt-2 border-t border-gray-800">
+                    <span>Payment Date</span>
+                    <input 
+                      type="date" 
+                      value={invoice.payment_date || ''} 
+                      onChange={e => setInvoice({...invoice, payment_date: e.target.value})} 
+                      className="w-32 bg-gray-950 border border-gray-800 rounded px-2 py-1 text-white text-xs focus:border-[#00AEEF] outline-none" 
+                      style={{ colorScheme: 'dark' }}
+                    />
+                  </div>
+                )}
 
                 <div className="flex justify-between text-lg font-bold text-[#00AEEF] pt-2 border-t border-gray-800">
                   <span>Balance Due</span>

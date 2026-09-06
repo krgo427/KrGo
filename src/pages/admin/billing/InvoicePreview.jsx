@@ -222,12 +222,12 @@ const InvoicePreview = React.forwardRef(({ invoice, settings }, ref) => {
               
               {isPaid ? (
                 <div className="flex justify-between items-center text-sm font-semibold text-gray-800 border-b pb-3" style={{ borderColor: blueLightBorder }}>
-                  <span>Amount Paid</span>
+                  <span>Amount Paid {invoice.payment_date && <span className="text-gray-500 font-medium text-[10px] ml-2">(on {formatDate(invoice.payment_date)})</span>}</span>
                   <span>{formatCurrency(total, invoice.currency)}</span>
                 </div>
               ) : (
                 <div className="flex justify-between items-center text-sm font-semibold text-gray-800 border-b pb-3" style={{ borderColor: blueLightBorder }}>
-                  <span>Advance Received</span>
+                  <span>Advance Received {invoice.payment_date && <span className="text-gray-500 font-medium text-[10px] ml-2">(on {formatDate(invoice.payment_date)})</span>}</span>
                   <span>{formatCurrency(advance, invoice.currency)}</span>
                 </div>
               )}
