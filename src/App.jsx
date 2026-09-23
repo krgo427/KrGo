@@ -1,6 +1,7 @@
 import './index.css'
 import { useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import Home from './pages/Home'
 import About from './pages/About'
 import PortfolioPage from './pages/PortfolioPage'
@@ -61,6 +62,7 @@ function App() {
         </Route>
       </Routes>
       <HelpAssistFloat />
+      <Analytics />
     </ClickSpark>
   )
 }
